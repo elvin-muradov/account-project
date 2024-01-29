@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Companies\CompanyController;
-use App\Http\Controllers\Api\V1\Users\AuthController;
-use App\Http\Controllers\Api\V1\Users\UserController;
+use App\Http\Controllers\Api\V1\Companies\RentalContractController;
+use App\Http\Controllers\Api\V1\Orders\OrderController;
+use App\Http\Controllers\Api\V1\Users\RolePermissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,25 +17,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login', [AuthController::class, 'login']);
+require __DIR__ . '/auth.php'; // Login/Register routes - (User/Employee)
+require __DIR__ . '/users_employees.php'; // Users/Employee routes
+require __DIR__ . '/companies.php'; // Company routes
+require __DIR__ . '/orders.php'; // Order routes
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:user'])->group(function () {
+    //Roles
+    Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
+    Route::get('/company-director-or-main-user', [OrderController::class, 'companyDirectorOrMainUser']);
 
-    // Users Routes
-    Route::get('/users', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
-    Route::get('/users/{user}', [UserController::class, 'show']);
-    Route::post('/users/{user}', [UserController::class, 'update']);
-    Route::delete('/users/{user}', [UserController::class, 'destroy']);
-
-    // Company Routes
-    Route::get('/companies', [CompanyController::class, 'index']);
-    Route::post('/companies', [CompanyController::class, 'store']);
-    Route::post('/companies/{company}', [CompanyController::class, 'update']);
-    Route::get('/companies/{company}', [CompanyController::class, 'show']);
-    Route::delete('/companies/{company}', [CompanyController::class, 'destroy']);
+    // Rental Contracts Routes
+    Route::get('/rental-contracts', [RentalContractController::class, 'indexAllRentalContracts']);
+    Route::get('/shop-rental-contracts', [RentalContractController::class, 'indexShopRentalContracts']);
+    Route::get('/warehouse-rental-contracts', [RentalContractController::class, 'indexWarehouseRentalContracts']);
+    Route::get('/vehicle-rental-contracts', [RentalContractController::class, 'indexVehicleRentalContracts']);
+    Route::post('/rental-contracts', [RentalContractController::class, 'store']);
+    Route::get('/rental-contracts/{rentalContract}', [RentalContractController::class, 'show']);
+    Route::post('/rental-contracts/{rentalContract}', [RentalContractController::class, 'update']);
+    Route::delete('/rental-contracts/{rentalContract}', [RentalContractController::class, 'destroy']);
 });
-
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

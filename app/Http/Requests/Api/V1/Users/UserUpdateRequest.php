@@ -3,7 +3,10 @@
 namespace App\Http\Requests\Api\V1\Users;
 
 use App\Enums\EducationTypesEnum;
+use App\Models\User;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -18,10 +21,12 @@ class UserUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
+        $user = User::query()->find($this->user);
+
         return [
             'name' => ['required', 'string', 'min:3', 'max:35'],
             'surname' => ['required', 'string', 'min:3', 'max:35'],
@@ -31,13 +36,19 @@ class UserUpdateRequest extends FormRequest
             'phone' => ['required', 'string', 'unique:users,phone,' . $this->user, 'phone:AZ'],
             'birth_date' => ['required', 'date'],
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
-            'education_files' => ['nullable', 'array'],
-            'education_files.*' => ['file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
+            'education_files' => ['nullable', 'array', Rule::requiredIf(empty($user->education_files))],
+            'education_files.*' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
             'certificate_files' => ['nullable', 'array'],
-            'certificate_files.*' => ['file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
-            'cv_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
-            'self_photo_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
-            'previous_job' => ['nullable', 'string', 'max:255']
+            'certificate_files.*' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
+            'cv_files' => ['nullable', 'array', Rule::requiredIf(empty($user->cv_files))],
+            'cv_files.*' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
+            'self_photo_files' => ['nullable', 'array', Rule::requiredIf(empty($user->self_photo_files))],
+            'self_photo_files.*' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
+            'previous_job' => ['nullable', 'string', 'max:255'],
+            'delete_education_files' => ['sometimes', 'array'],
+            'delete_cv_files' => ['sometimes', 'array'],
+            'delete_certificate_files' => ['sometimes', 'array'],
+            'delete_self_photo_files' => ['sometimes', 'array'],
         ];
     }
 }

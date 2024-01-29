@@ -7,8 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -21,19 +20,24 @@ return new class extends Migration
             $table->enum('company_obligation', CompanyObligationsEnum::toArray()); // Şirkət mükəlləfiyyəti
             $table->enum('owner_type', UserTypesEnum::toArray()); // Fiziki yaxud Hüquqi
             $table->jsonb('company_emails'); // Şirkət e-poçtları
-            $table->unsignedBigInteger('voen'); // VÖEN
-            $table->date('voen_date'); // VÖEN alınma tarixi
+            $table->longText('company_address')->nullable(); // Şirkət ünvanı
+            $table->unsignedBigInteger('tax_id_number'); // VÖEN
+            $table->date('tax_id_number_date'); // VÖEN alınma tarixi
             $table->unsignedBigInteger('dsmf_number'); // DSMF üçot nömrəsi
-            $table->jsonb('charter_file'); // Nizamnamə faylı
-            $table->jsonb('extract_file'); // Çıxarış faylı
-            $table->unsignedBigInteger('main_user_id'); // Səlahiyyətli şəxs
-            $table->jsonb('director_id_card_file'); // Direktorun ŞV faylı
-            $table->jsonb('creators_files');
+            $table->unsignedBigInteger('main_user_id')->nullable(); // Səlahiyyətli şəxs
+            $table->unsignedBigInteger('director_id')->nullable(); // Direktor
+            $table->jsonb('tax_id_number_files')->nullable(); // VÖEN faylları
+            $table->jsonb('charter_files')->nullable(); // Nizamnamə faylları
+            $table->jsonb('extract_files')->nullable(); // Çıxarış faylları
+            $table->jsonb('director_id_card_files')->nullable(); // Direktorun ŞV faylları
+            $table->jsonb('creators_files')->nullable(); // Təsisçi faylları
+            $table->jsonb('fixed_asset_files')->nullable(); // Mülkiyyətində olan əsas vəsaitlərin faylları
+            $table->jsonb('founding_decision_files')->nullable(); // Təsisçi qərarı faylları
             $table->string('asan_sign'); // ASAN imza mobil nömrəsi
             $table->date('asan_sign_start_date'); // ASAN imza başlama vaxtı
             $table->date('birth_id'); // İD doğum tarixi
-            $table->unsignedInteger('pin1'); // PİN 1
-            $table->unsignedInteger('pin2'); // PİN 2
+            $table->unsignedInteger('pin1'); // PİN1
+            $table->unsignedInteger('pin2'); // PİN2
             $table->unsignedInteger('puk'); // PUK
             $table->unsignedInteger('statistic_code'); // Statistika kodu
             $table->string('statistic_password'); // Statistika şifrəsi
@@ -45,7 +49,8 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('main_user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('main_user_id')->nullOnDelete()->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('director_id')->nullOnDelete()->references('id')->on('users')->onDelete('cascade');
         });
     }
 

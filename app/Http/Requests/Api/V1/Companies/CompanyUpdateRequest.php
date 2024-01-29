@@ -5,7 +5,10 @@ namespace App\Http\Requests\Api\V1\Companies;
 use App\Enums\CompanyCategoriesEnum;
 use App\Enums\CompanyObligationsEnum;
 use App\Enums\UserTypesEnum;
+use App\Models\Company\Company;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CompanyUpdateRequest extends FormRequest
 {
@@ -20,25 +23,42 @@ class CompanyUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
+        $usedCompany = Company::query()->find($this->company);
+
         return [
-            'company_name' => ['required', 'string', 'min:3', 'max:35', 'unique:companies,company_name,' . $this->company],
+            'company_name' => ['required', 'string', 'min:3', 'max:35',
+                'unique:companies,company_name,' . $this->company],
             'company_category' => ['required', 'in:' . CompanyCategoriesEnum::toString()],
             'company_obligation' => ['required', 'in:' . CompanyObligationsEnum::toString()],
+            'company_address' => ['nullable', 'string', 'min:3', 'max:255'],
             'company_emails' => ['required', 'array'],
+            'company_emails.*' => ['required', 'email:rfc,dns'],
             'owner_type' => ['required', 'in:' . UserTypesEnum::toString()],
-            'voen' => ['required', 'integer', 'digits:10'],
-            'voen_date' => ['required', 'date'],
+            'tax_id_number' => ['required', 'integer', 'digits:10'],
+            'tax_id_number_date' => ['required', 'date'],
             'dsmf_number' => ['required', 'integer', 'digits:13'],
-            'charter_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'extract_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'main_user_id' => ['required', 'integer', 'exists:users,id'],
-            'director_id_card_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'creators_files' => ['required', 'array'],
-            'creators_files.*' => ['mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'main_user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'director_id' => ['nullable', 'integer', 'exists:users,id'],
+            'tax_id_number_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->tax_id_number_files))],
+            'tax_id_number_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'charter_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->charter_files))],
+            'charter_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'extract_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->extract_files))],
+            'extract_files .*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'director_id_card_files' => ['nullable', 'array',
+                Rule::requiredIf(empty($usedCompany->director_id_card_files))],
+            'director_id_card_files .*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'creators_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->creators_files))],
+            'creators_files .*' => ['mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'fixed_asset_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->fixed_asset_files))],
+            'fixed_asset_files .*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'founding_decision_files' => ['nullable', 'array',
+                Rule::requiredIf(empty($usedCompany->founding_decision_files))],
+            'founding_decision_files .*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'asan_sign' => ['required', 'phone:AZ'],
             'asan_sign_start_date' => ['required', 'date'],
             'birth_id' => ['required', 'date'],
@@ -51,7 +71,14 @@ class CompanyUpdateRequest extends FormRequest
             'operator_azercell_password' => ['required', 'max:255'],
             'ydm_account_email' => ['nullable', 'email:filter'],
             'ydm_password' => ['nullable', 'max:255'],
-            'ydm_card_expired_at' => ['nullable', 'date']
+            'ydm_card_expired_at' => ['nullable', 'date'],
+            'delete_tax_id_number_files' => ['sometimes', 'array'],
+            'delete_charter_files' => ['sometimes', 'array'],
+            'delete_extract_files' => ['sometimes', 'array'],
+            'delete_director_id_card_files' => ['sometimes', 'array'],
+            'delete_creators_files' => ['sometimes', 'array'],
+            'delete_fixed_asset_files' => ['sometimes', 'array'],
+            'delete_founding_decision_files' => ['sometimes', 'array'],
         ];
     }
 }

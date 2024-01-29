@@ -22,6 +22,7 @@ trait AuthTrait
                 return Hash::check($password, $user->password) ? $user : false;
             }
         }
+
         return false;
     }
 

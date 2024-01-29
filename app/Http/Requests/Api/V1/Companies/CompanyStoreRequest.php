@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1\Companies;
 use App\Enums\CompanyCategoriesEnum;
 use App\Enums\CompanyObligationsEnum;
 use App\Enums\UserTypesEnum;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CompanyStoreRequest extends FormRequest
@@ -20,7 +21,7 @@ class CompanyStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -28,17 +29,29 @@ class CompanyStoreRequest extends FormRequest
             'company_name' => ['required', 'string', 'min:3', 'max:35', 'unique:companies,company_name'],
             'company_category' => ['required', 'in:' . CompanyCategoriesEnum::toString()],
             'company_obligation' => ['required', 'in:' . CompanyObligationsEnum::toString()],
+            'company_address' => ['nullable', 'string', 'min:3', 'max:255'],
             'company_emails' => ['required', 'array'],
+            'company_emails.*' => ['required', 'email:rfc,dns'],
             'owner_type' => ['required', 'in:' . UserTypesEnum::toString()],
-            'voen' => ['required', 'integer', 'digits:10'],
-            'voen_date' => ['required', 'date'],
+            'tax_id_number' => ['required', 'integer', 'digits:10'],
+            'tax_id_number_date' => ['required', 'date'],
             'dsmf_number' => ['required', 'integer', 'digits:13'],
-            'charter_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'extract_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'main_user_id' => ['required', 'integer', 'exists:users,id'],
-            'director_id_card_file' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'tax_id_number_files' => ['required', 'array'],
+            'tax_id_number_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'charter_files' => ['required', 'array'],
+            'charter_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'extract_files' => ['required', 'array'],
+            'extract_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'main_user_id' => ['nullable', 'integer', 'exists:employees,id'],
+            'director_id' => ['nullable', 'integer', 'exists:employees,id'],
+            'director_id_card_files' => ['required', 'array'],
+            'director_id_card_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'creators_files' => ['required', 'array'],
             'creators_files.*' => ['mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'fixed_asset_files' => ['required', 'array'],
+            'fixed_asset_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
+            'founding_decision_files' => ['required', 'array'],
+            'founding_decision_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'asan_sign' => ['required', 'phone:AZ'],
             'asan_sign_start_date' => ['required', 'date'],
             'birth_id' => ['required', 'date'],

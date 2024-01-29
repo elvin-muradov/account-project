@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -22,15 +21,16 @@ return new class extends Migration
             $table->string('phone');
             $table->timestamp('birth_date');
             $table->enum('education', EducationTypesEnum::toArray());
-            $table->jsonb('education_files');
+            $table->jsonb('education_files')->nullable();
             $table->jsonb('certificate_files')->nullable();
-            $table->jsonb('cv_file')->nullable();
-            $table->jsonb('self_photo_file')->nullable();
+            $table->jsonb('cv_files')->nullable();
+            $table->jsonb('self_photo_files')->nullable();
             $table->text('previous_job')->nullable();
             $table->enum('account_status', StatusTypesEnum::toArray())->default('PENDING');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->dateTime('last_login_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

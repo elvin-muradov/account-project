@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Traits\HttpResponses;
 use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 class Handler extends ExceptionHandler
 {
     use HttpResponses;
+
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -30,17 +32,18 @@ class Handler extends ExceptionHandler
 
     /**
      * Register the exception handling callbacks for the application.
+     * @throws Throwable
      */
     public function render($request, Throwable $e): Response|Throwable|JsonResponse
     {
         return match ($request->expectsJson()) {
-            $e instanceof HttpResponseException, $e instanceof QueryException => $this->error(
-                message: $e->getMessage(),
-                code: 500
-            ),
             $e instanceof NotFoundHttpException, $e instanceof RouteNotFoundException => $this->error(
                 message: $e->getMessage(),
                 code: 404
+            ),
+            $e instanceof HttpResponseException, $e instanceof QueryException => $this->error(
+                message: $e->getMessage(),
+                code: 500
             ),
             $e instanceof AuthAuthenticationException => $this->error(
                 message: $e->getMessage(),

@@ -25,12 +25,15 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'birth_date' => Carbon::parse($this->birth_date)->format('d.m.Y'),
             'education' => $this->education,
-            'education_files' => json_decode($this->education_files),
-            'cv_file' => json_decode($this->cv_file),
-            'certificate_files' => json_decode($this->certificate_files),
+            'education_files' => $this->education_files,
+            'cv_files' => $this->cv_files,
+            'self_photo_files' => $this->self_photo_files,
+            'certificate_files' => $this->certificate_files,
             'previous_job' => $this->previous_job,
             'account_status' => $this->account_status,
             'created_at' => $this->created_at,
+            'last_login_at' => $this->last_login_at,
+            'roles' => $this->whenLoaded('roles')
         ];
     }
 }

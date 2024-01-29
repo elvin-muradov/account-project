@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -30,12 +31,13 @@ class User extends Authenticatable
         'education',
         'education_files',
         'certificate_files',
-        'cv_file',
-        'self_photo_file',
+        'cv_files',
+        'self_photo_files',
         'previous_job',
         'account_status',
         'email',
         'password',
+        'last_login_at'
     ];
 
     /**
@@ -56,6 +58,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'education_files' => 'array',
+        'certificate_files' => 'array',
+        'cv_files' => 'array',
+        'self_photo_files' => 'array',
+        'birth_date' => 'datetime',
     ];
 
     public function companyMain(): HasMany

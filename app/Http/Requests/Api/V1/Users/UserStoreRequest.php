@@ -33,12 +33,14 @@ class UserStoreRequest extends FormRequest
             'phone' => ['required', 'string', 'unique:users,phone', 'phone:AZ'],
             'birth_date' => ['required', 'date'],
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
-            'education_files' => ['nullable', 'array'],
+            'education_files' => ['required', 'array'],
             'education_files.*' => ['mimes:png,jpg,jpeg,webp,pdf,docx', 'max:4096'],
             'certificate_files' => ['nullable', 'array'],
             'certificate_files.*' => ['mimes:png,jpg,jpeg,webp,pdf,docx', 'max:4096'],
-            'cv_file' => ['nullable', 'file', 'mimes:pdf,docx', 'max:4096'],
-            'self_photo_file' => ['nullable', 'file', 'mimes:png,jpeg,jpg,webp', 'max:4096'],
+            'cv_files' => ['required', 'array'],
+            'cv_files.*' => ['mimes:pdf,docx', 'max:4096'],
+            'self_photo_files' => ['required', 'array'],
+            'self_photo_files.*' => ['mimes:png,jpeg,jpg,webp', 'max:4096'],
             'previous_job' => ['nullable', 'string', 'max:255'],
             'account_status' => ['nullable', 'in:' . StatusTypesEnum::toString()]
         ];
