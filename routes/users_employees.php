@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:user'])->group(function () {
+Route::middleware(['auth:user', 'lang'])->group(function () {
     // Users Routes
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);

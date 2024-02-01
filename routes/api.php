@@ -21,8 +21,9 @@ require __DIR__ . '/auth.php'; // Login/Register routes - (User/Employee)
 require __DIR__ . '/users_employees.php'; // Users/Employee routes
 require __DIR__ . '/companies.php'; // Company routes
 require __DIR__ . '/orders.php'; // Order routes
+require __DIR__ . '/enums.php'; // ENUMs
 
-Route::middleware(['auth:user'])->group(function () {
+Route::middleware(['auth:user', 'lang'])->group(function () {
     //Roles
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
     Route::get('/company-director-or-main-user', [OrderController::class, 'companyDirectorOrMainUser']);

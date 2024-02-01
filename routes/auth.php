@@ -11,17 +11,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/generate-otp', [AuthController::class, 'sendOTP']);
+Route::middleware(['lang'])->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/generate-otp', [AuthController::class, 'sendOTP']);
 
-Route::post('/login-employee', [EmployeeAuthController::class, 'login']);
+    Route::post('/login-employee', [EmployeeAuthController::class, 'login']);
+});
 
-Route::middleware(['auth:employee'])->group(function () {
+Route::middleware(['auth:employee', 'lang'])->group(function () {
     Route::post('/logout-employee', [EmployeeAuthController::class, 'logout']);
 });
 
-Route::middleware(['auth:user'])->group(function () {
+Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
