@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 
 class EnumsController extends Controller
 {
+    use HttpResponses;
     public function companyCategories(): array
     {
         return [
