@@ -90,6 +90,7 @@ if (!function_exists('deleteFiles')) {
             if ($notEmpty && count($deletedFiles) >= count($currentFiles)) {
                 return false;
             }
+            
             $deletedFile = getElementByKey($currentFiles, 'generated_name', $file);
             $key = array_search($deletedFile, $currentFiles);
 
