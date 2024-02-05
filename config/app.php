@@ -56,6 +56,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    's3_url' => env('AWS_URL', 'http://94.20.88.123:9002/buckets/'),
 
     'asset_url' => env('ASSET_URL'),
 

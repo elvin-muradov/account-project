@@ -39,7 +39,7 @@ if (!function_exists("returnFilesArray")) {
             ));
 
             $returnedArray[] = [
-                'path' => $strForPath . '/' . $fileName,
+                'path' => config('app.s3_url') . $strForPath . '/' . $fileName,
                 'bucket' => $strForPath,
                 'generated_name' => $fileName,
                 'original_name' => $file->getClientOriginalName(),
@@ -72,7 +72,7 @@ if (!function_exists("returnOrderFile")) {
         ));
 
         $returnedArray[] = [
-            'path' => $bucket . '/' . $fileName,
+            'path' => config('app.s3_url') . $bucket . '/' . $fileName,
             'bucket' => $bucket,
             'generated_name' => $fileName,
             'original_name' => $fileName,
