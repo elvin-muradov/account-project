@@ -23,6 +23,8 @@ class MainDocumentController extends Controller
 
         $type = $request->input('type');
 
+        dd($request->all());
+
         if ($company) {
             return match ($type) {
                 CompanyMainDocuments::tax_id_number_files->value => $this->success(data: $company->tax_id_number_files),
