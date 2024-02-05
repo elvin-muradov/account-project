@@ -22,7 +22,7 @@ class MainDocumentController extends Controller
         $company = Company::query()->find($company);
 
         $type = $request->input('type');
-        
+
         if ($company) {
             return match ($type) {
                 CompanyMainDocuments::tax_id_number_files->value => $this->success(data: $company->tax_id_number_files),
