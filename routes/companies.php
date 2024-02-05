@@ -22,8 +22,8 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::post('/companies', [CompanyController::class, 'store']);
     Route::post('/companies/{company}', [CompanyController::class, 'update']);
     Route::get('/companies/{company}', [CompanyController::class, 'show']);
-    Route::get('/companies/{company}/main-documents', [MainDocumentController::class, 'companyMainDocuments']);
     Route::delete('/companies/{company}', [CompanyController::class, 'destroy']);
+    Route::get('/companies/{company}/main-documents', [MainDocumentController::class, 'companyMainDocuments']);
 
     //Company Activity Codes Routes
     Route::get('/activity-codes', [ActivityCodeController::class, 'index']);
