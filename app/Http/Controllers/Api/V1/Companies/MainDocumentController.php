@@ -16,7 +16,7 @@ class MainDocumentController extends Controller
     public function companyMainDocuments(Request $request, $company): JsonResponse
     {
         $request->validate([
-            'type' => ['required', 'string', 'in:' . CompanyMainDocuments::toString()]
+            'type' => ['nullable', 'string', 'in:' . CompanyMainDocuments::toString()]
         ]);
 
         $company = Company::query()->find($company);
@@ -34,7 +34,15 @@ class MainDocumentController extends Controller
                 CompanyMainDocuments::fixed_asset_files->value => $this->success(data: $company->fixed_asset_files),
                 CompanyMainDocuments::founding_decision_files->value => $this
                     ->success(data: $company->founding_decision_files),
-                default => $this->error(message: 'Fayllar tapılmadı', code: 404),
+                default => $this->success(data: [
+                    'tax_id_number_files' => $company->tax_id_number_files,
+                    'charter_files' => $company->charter_files,
+                    'extract_files' => $company->extract_files,
+                    'director_id_card_files' => $company->director_id_card_files,
+                    'creators_files' => $company->creators_files,
+                    'fixed_asset_files' => $company->fixed_asset_files,
+                    'founding_decision_files' => $company->founding_decision_files,
+                ]),
             };
         } else {
             return $this->error(message: 'Şirkət tapılmadı', code: 404);
