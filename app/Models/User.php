@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Company\Company;
+use App\Models\Envelopes\Envelope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -68,5 +69,10 @@ class User extends Authenticatable
     public function companyMain(): HasMany
     {
         return $this->hasMany(Company::class);
+    }
+
+    public function sentEnvelopes(): HasMany
+    {
+        return $this->hasMany(Envelope::class, 'sender_id');
     }
 }

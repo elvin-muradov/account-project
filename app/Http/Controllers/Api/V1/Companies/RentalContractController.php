@@ -91,8 +91,14 @@ class RentalContractController extends Controller
         if ($request->has('delete_contract_files') && $request->delete_contract_files != null) {
             $deletedRentalContractFiles = $request->input('delete_contract_files');
             $rentalContractFiles = $rentalContract->contract_files ?? [];
-            $deletedFiles = deleteFiles($deletedRentalContractFiles, $rentalContractFiles);
-            $rentalContract->contract_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedRentalContractFiles, $rentalContractFiles, true);
+            if (is_array($deletedFiles)) {
+                $rentalContract->contract_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
 
         if ($request->hasFile('contract_files')) {

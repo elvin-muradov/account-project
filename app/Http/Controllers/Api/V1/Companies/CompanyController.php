@@ -92,44 +92,86 @@ class CompanyController extends Controller
         if ($request->has('delete_tax_id_number_files') && $request->delete_tax_id_number_files != null) {
             $deletedTinFiles = $request->input('delete_tax_id_number_files');
             $tinFiles = $company->tax_id_number_files ?? [];
-            $deletedFiles = deleteFiles($deletedTinFiles, $tinFiles);
-            $company->tax_id_number_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedTinFiles, $tinFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->tax_id_number_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_charter_files') && $request->delete_charter_files != null) {
             $deletedCharterFiles = $request->input('delete_charter_files');
             $charterFiles = $company->charter_files ?? [];
-            $deletedFiles = deleteFiles($deletedCharterFiles, $charterFiles);
-            $company->charter_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedCharterFiles, $charterFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->charter_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_extract_files') && $request->delete_extract_files != null) {
             $deletedExtractFiles = $request->input('delete_extract_files');
             $extractFiles = $company->extract_files ?? [];
-            $deletedFiles = deleteFiles($deletedExtractFiles, $extractFiles);
-            $company->extract_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedExtractFiles, $extractFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->extract_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_director_id_card_files') && $request->delete_director_id_card_files != null) {
             $deletedDirectorCardFiles = $request->input('delete_director_id_card_files');
             $directorCardFiles = $company->director_id_card_files ?? [];
-            $deletedFiles = deleteFiles($deletedDirectorCardFiles, $directorCardFiles);
-            $company->director_id_card_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedDirectorCardFiles, $directorCardFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->director_id_card_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_creators_files') && $request->delete_creators_files != null) {
             $deletedCreatorsFiles = $request->input('delete_creators_files');
             $creatorsFiles = $company->creators_files ?? [];
-            $deletedFiles = deleteFiles($deletedCreatorsFiles, $creatorsFiles);
-            $company->creators_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedCreatorsFiles, $creatorsFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->creators_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_founding_decision_files') && $request->delete_founding_decision_files != null) {
             $deletedFoundingDecisionFiles = $request->input('delete_founding_decision_files');
             $foundingDecisionFiles = $company->founding_decision_files ?? [];
-            $deletedFiles = deleteFiles($deletedFoundingDecisionFiles, $foundingDecisionFiles);
-            $company->founding_decision_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedFoundingDecisionFiles, $foundingDecisionFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->founding_decision_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
         if ($request->has('delete_fixed_asset_files') && $request->delete_fixed_asset_files != null) {
             $deletedFixedAssetFiles = $request->input('delete_fixed_asset_files');
             $fixedAssetFiles = $company->fixed_asset_files ?? [];
-            $deletedFiles = deleteFiles($deletedFixedAssetFiles, $fixedAssetFiles);
-            $company->fixed_asset_files = array_values($deletedFiles);
+            $deletedFiles = deleteFiles($deletedFixedAssetFiles, $fixedAssetFiles, true);
+            if (is_array($deletedFiles)) {
+                $company->fixed_asset_files = array_values($deletedFiles);
+            } else {
+                return $this->error(
+                    message: "Ən az bir faylın qalması vacibdir", code: 400
+                );
+            }
         }
 
         if ($request->hasFile('tax_id_number_files')) {

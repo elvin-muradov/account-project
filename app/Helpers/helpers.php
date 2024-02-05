@@ -82,12 +82,17 @@ if (!function_exists("returnOrderFile")) {
     }
 }
 if (!function_exists('deleteFiles')) {
-    function deleteFiles($deletedFiles, $currentFiles)
+    function deleteFiles($deletedFiles, $currentFiles, bool $notEmpty = false)
     {
         $s3 = App::make('aws')->createClient('s3');
+
         foreach ($deletedFiles as $file) {
+            if ($notEmpty && count($deletedFiles) >= count($currentFiles)) {
+                return false;
+            }
             $deletedFile = getElementByKey($currentFiles, 'generated_name', $file);
             $key = array_search($deletedFile, $currentFiles);
+
             if ($deletedFile != null) {
                 $s3->deleteObject(array(
                     'Bucket' => $deletedFile['bucket'],
@@ -105,6 +110,7 @@ if (!function_exists('deleteFiles')) {
 
         return $currentFiles;
     }
+
 }
 if (!function_exists('checkFilesAndDeleteFromStorage')) {
     function checkFilesAndDeleteFromStorage($files): void

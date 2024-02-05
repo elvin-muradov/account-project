@@ -3,6 +3,7 @@
 namespace App\Models\Company;
 
 use App\Models\Employee;
+use App\Models\Envelopes\Envelope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,5 +46,15 @@ class Company extends Model
     public function activityCodes(): HasMany
     {
         return $this->hasMany(ActivityCode::class, 'company_id');
+    }
+
+    public function fromCompanyEnvelopes(): HasMany
+    {
+        return $this->hasMany(Envelope::class, 'from_company_id');
+    }
+
+    public function toCompanyEnvelopes(): HasMany
+    {
+        return $this->hasMany(Envelope::class, 'to_company_id');
     }
 }
