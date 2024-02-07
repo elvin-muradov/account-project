@@ -57,4 +57,9 @@ class Company extends Model
     {
         return $this->hasMany(Envelope::class, 'to_company_id');
     }
+
+    public function warehouses(): HasMany
+    {
+        return $this->hasMany(Warehouse::class, 'company_id');
+    }
 }

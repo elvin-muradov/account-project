@@ -6,8 +6,12 @@ use App\Enums\CompanyMainDocuments;
 use App\Http\Controllers\Controller;
 use App\Models\Company\Company;
 use App\Traits\HttpResponses;
+use GuzzleHttp\Client;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MainDocumentController extends Controller
 {
