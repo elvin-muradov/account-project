@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Employee\EmployeeStoreRequest;
 use App\Http\Requests\Api\V1\Employee\EmployeeUpdateRequest;
 use App\Http\Resources\Api\V1\Employee\EmployeeCollection;
 use App\Http\Resources\Api\V1\Employee\EmployeeResource;
+use App\Models\Company\Company;
 use App\Models\Employee;
 use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
@@ -44,7 +45,9 @@ class EmployeeController extends Controller
 
     public function show($employee): JsonResponse
     {
-        $employee = Employee::query()->find($employee);
+        $employee = Employee::query()
+            ->with('company')
+            ->find($employee);
 
         if (!$employee) {
             return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
@@ -95,5 +98,13 @@ class EmployeeController extends Controller
         return $this->success(
             message: 'Əməkdaş uğurla silindi'
         );
+    }
+
+    public function companyEmployees(Request $request, $company): JsonResponse
+    {
+        $employees = Employee::query()->where('company_id', $company)
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new EmployeeCollection($employees));
     }
 }

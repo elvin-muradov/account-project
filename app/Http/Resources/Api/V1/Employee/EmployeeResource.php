@@ -21,7 +21,8 @@ class EmployeeResource extends JsonResource
             'surname' => $this->surname,
             'father_name' => $this->father_name,
             'company_id' => $this->company_id,
-            'company' => $this->whenLoaded('company'),
+            'company' => $this->whenLoaded('company') ?
+                $this->company->only('id', 'company_name') : null,
             'birth_date' => Carbon::parse($this->birth_date)->format('d.m.Y'),
             'id_card_serial' => $this->id_card_serial,
             'fin_code' => $this->fin_code,

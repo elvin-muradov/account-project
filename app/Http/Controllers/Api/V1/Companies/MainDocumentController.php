@@ -6,8 +6,12 @@ use App\Enums\CompanyMainDocuments;
 use App\Http\Controllers\Controller;
 use App\Models\Company\Company;
 use App\Traits\HttpResponses;
+use GuzzleHttp\Client;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MainDocumentController extends Controller
 {
@@ -22,7 +26,7 @@ class MainDocumentController extends Controller
         $company = Company::query()->find($company);
 
         $type = $request->input('type');
-        
+
         if ($company) {
             return match ($type) {
                 CompanyMainDocuments::tax_id_number_files->value => $this->success(data: $company->tax_id_number_files),

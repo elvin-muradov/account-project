@@ -28,6 +28,7 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::post('/employees', [EmployeeController::class, 'store']);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
+    Route::get('/companies/{company}/employees', [EmployeeController::class, 'companyEmployees']);
     Route::post('/employees/{employee}', [EmployeeController::class, 'update']);
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
 });
