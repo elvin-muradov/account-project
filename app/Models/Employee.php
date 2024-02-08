@@ -18,11 +18,6 @@ class Employee extends Authenticatable
     protected $guarded = [];
 
     protected $casts = [
-        'birth_date' => 'date',
-        'id_card_date' => 'date',
-        'start_date_of_employment' => 'date',
-        'end_date_of_employment' => 'date',
-        'salary_card_expiration_date' => 'date',
         'salary' => 'float',
     ];
 

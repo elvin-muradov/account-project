@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Companies\RentalContractController;
+use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Controllers\Api\V1\Users\RolePermissionController;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ require __DIR__ . '/envelopes.php'; // Envelopes
 Route::middleware(['auth:user', 'lang'])->group(function () {
     //Roles
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
+    Route::get('/currency-rates', [CurrencyController::class, 'index']);
     Route::get('/company-director-or-main-user', [OrderController::class, 'companyDirectorOrMainUser']);
 
     // Rental Contracts Routes

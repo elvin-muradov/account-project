@@ -90,7 +90,7 @@ if (!function_exists('deleteFiles')) {
             if ($notEmpty && count($deletedFiles) >= count($currentFiles)) {
                 return false;
             }
-            
+
             $deletedFile = getElementByKey($currentFiles, 'generated_name', $file);
             $key = array_search($deletedFile, $currentFiles);
 
@@ -147,5 +147,64 @@ if (!function_exists('getGender')) {
             'FEMALE' => 'qızı',
             default => null,
         };
+    }
+}
+
+if (!function_exists('getCbaRates')) {
+    function getCbaRates($today)
+    {
+        $xml = simplexml_load_file("https://cbar.az/currencies/$today.xml") or die("Error");
+
+        $exchangesArray = $xml->children()[1]->children();
+
+        $azn = [
+            'code' => 'AZN',
+            'name' => 'Azərbaycan manatı',
+            'rate' => "1",
+            'symbol' => '₼',
+            'bank' => 'CBAR'
+        ];
+
+        $usd = [
+            'code' => $exchangesArray[0]->attributes()->Code->__toString(),
+            'name' => trim(preg_replace('/\d+/', '', $exchangesArray[0]->Name->__toString())),
+            'rate' => $exchangesArray[0]->Value->__toString(),
+            'symbol' => '$',
+            'bank' => 'CBAR'
+        ];
+
+        $eur = [
+            'code' => $exchangesArray[1]->attributes()->Code->__toString(),
+            'name' => trim(preg_replace('/\d+/', '', $exchangesArray[1]->Name->__toString())),
+            'rate' => $exchangesArray[1]->Value->__toString(),
+            'symbol' => '€',
+            'bank' => 'CBAR'
+        ];
+
+        $gbp = [
+            'code' => $exchangesArray[16]->attributes()->Code->__toString(),
+            'name' => trim(preg_replace('/\d+/', '', $exchangesArray[16]->Name->__toString())),
+            'rate' => $exchangesArray[16]->Value->__toString(),
+            'symbol' => '£',
+            'bank' => 'CBAR'
+        ];
+
+        $try = [
+            'code' => $exchangesArray[38]->attributes()->Code->__toString(),
+            'name' => trim(preg_replace('/\d+/', '', $exchangesArray[38]->Name->__toString())),
+            'rate' => $exchangesArray[38]->Value->__toString(),
+            'symbol' => '₺',
+            'bank' => 'CBAR'
+        ];
+
+        $rub = [
+            'code' => $exchangesArray[34]->attributes()->Code->__toString(),
+            'name' => trim(preg_replace('/\d+/', '', $exchangesArray[34]->Name->__toString())),
+            'rate' => $exchangesArray[34]->Value->__toString(),
+            'symbol' => '₽',
+            'bank' => 'CBAR'
+        ];
+
+        return [$azn, $usd, $eur, $gbp, $try, $rub];
     }
 }
