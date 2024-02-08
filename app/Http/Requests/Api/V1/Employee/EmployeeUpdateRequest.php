@@ -42,7 +42,7 @@ class EmployeeUpdateRequest extends FormRequest
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
             'salary' => ['nullable', 'numeric'],
             'salary_card_expiration_date' => ['nullable', 'date'],
-            'password' => ['required', 'confirmed', 'string', 'min:8', 'max:16'],
+            'password' => ['nullable', 'confirmed', 'string', 'min:8', 'max:16'],
             'company_id' => ['required', 'numeric', 'exists:companies,id'],
         ];
     }
