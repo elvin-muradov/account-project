@@ -21,57 +21,67 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:user', 'lang'])->group(function () {
+Route::middleware(['lang'])->group(function () {
     Route::get('/hiring-orders', [HiringOrderController::class, 'index']);
     Route::post('/hiring-orders', [HiringOrderController::class, 'store']);
     Route::get('/hiring-orders/{hiringOrder}/download', [OrderController::class, 'downloadHiringOrderFile']);
+    Route::get('/hiring-orders/{hiringOrder}/get-file', [OrderController::class, 'getHiringOrderFile']);
     Route::get('/hiring-orders/{hiringOrder}', [HiringOrderController::class, 'show']);
     Route::post('/hiring-orders/{hiringOrder}', [HiringOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\HiringOrder');
+    //->middleware('check_role_update:App\Models\Orders\HiringOrder');
     Route::post('/hiring-orders/{hiringOrder}/delete', [HiringOrderController::class, 'destroy']);
 
     Route::get('/business-trip-orders', [BusinessTripOrderController::class, 'index']);
     Route::post('/business-trip-orders', [BusinessTripOrderController::class, 'store']);
     Route::get('/business-trip-orders/{businessTripOrder}/download',
         [OrderController::class, 'downloadBusinessTripOrderFile']);
+    Route::get('/business-trip-orders/{businessTripOrder}/get-file',
+        [OrderController::class, 'getBusinessTripOrderFile']);
     Route::get('/business-trip-orders/{businessTripOrder}', [BusinessTripOrderController::class, 'show']);
     Route::post('/business-trip-orders/{businessTripOrder}', [BusinessTripOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\BusinessTripOrder');
+    //->middleware('check_role_update:App\Models\Orders\BusinessTripOrder');
     Route::post('/business-trip-orders/{businessTripOrder}/delete', [BusinessTripOrderController::class, 'destroy']);
 
     Route::get('/termination-orders', [TerminationOrderController::class, 'index']);
     Route::post('/termination-orders', [TerminationOrderController::class, 'store']);
     Route::get('/termination-orders/{terminationOrder}/download', [OrderController::class,
         'downloadTerminationOrderFile']);
+    Route::get('/termination-orders/{terminationOrder}/get-file', [OrderController::class,
+        'getTerminationOrderFile']);
     Route::get('/termination-orders/{terminationOrder}', [TerminationOrderController::class, 'show']);
     Route::post('/termination-orders/{terminationOrder}', [TerminationOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\TerminationOrder');
+    //->middleware('check_role_update:App\Models\Orders\TerminationOrder');
     Route::post('/termination-orders/{terminationOrder}/delete', [TerminationOrderController::class, 'destroy']);
 
     Route::get('/pregnant-orders', [PregnantOrderController::class, 'index']);
     Route::post('/pregnant-orders', [PregnantOrderController::class, 'store']);
     Route::get('/pregnant-orders/{pregnantOrder}/download', [OrderController::class, 'downloadPregnantOrderFile']);
+    Route::get('/pregnant-orders/{pregnantOrder}/get-file', [OrderController::class, 'getPregnantOrderFile']);
     Route::get('/pregnant-orders/{pregnantOrder}', [PregnantOrderController::class, 'show']);
     Route::post('/pregnant-orders/{pregnantOrder}', [PregnantOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\PregnantOrder');
+    //->middleware('check_role_update:App\Models\Orders\PregnantOrder');
     Route::post('/pregnant-orders/{pregnantOrder}/delete', [PregnantOrderController::class, 'destroy']);
 
     Route::get('/default-holiday-orders', [DefaultHolidayOrderController::class, 'index']);
     Route::post('/default-holiday-orders', [DefaultHolidayOrderController::class, 'store']);
     Route::get('/default-holiday-orders/{defaultHolidayOrder}/download',
         [OrderController::class, 'downloadDefaultHolidayOrderFile']);
+    Route::get('/default-holiday-orders/{defaultHolidayOrder}/get-file',
+        [OrderController::class, 'getDefaultHolidayOrderFile']);
     Route::get('/default-holiday-orders/{defaultHolidayOrder}', [PregnantOrderController::class, 'show']);
     Route::post('/default-holiday-orders/{defaultHolidayOrder}', [PregnantOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\DefaultHolidayOrder');
+    //->middleware('check_role_update:App\Models\Orders\DefaultHolidayOrder');
     Route::post('/default-holiday-orders/{defaultHolidayOrder}/delete', [PregnantOrderController::class, 'destroy']);
 
     Route::get('/motherhood-holiday-orders', [MotherhoodOrderController::class, 'index']);
     Route::post('/motherhood-holiday-orders', [MotherhoodOrderController::class, 'store']);
     Route::get('/motherhood-holiday-orders/{motherhoodHolidayOrder}/download',
         [OrderController::class, 'downloadMotherhoodHolidayOrderFile']);
+    Route::get('/motherhood-holiday-orders/{motherhoodHolidayOrder}/get-file',
+        [OrderController::class, 'getMotherhoodHolidayOrderFile']);
     Route::get('/motherhood-holiday-orders/{motherhoodHolidayOrder}', [MotherhoodOrderController::class, 'show']);
     Route::post('/motherhood-holiday-orders/{motherhoodHolidayOrder}', [MotherhoodOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\MotherhoodHolidayOrder');
+    //->middleware('check_role_update:App\Models\Orders\MotherhoodHolidayOrder');
     Route::post('/motherhood-holiday-orders/{motherhoodHolidayOrder}/delete',
         [MotherhoodOrderController::class, 'destroy']);
 
@@ -79,9 +89,11 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::post('/award-orders', [AwardOrderController::class, 'store']);
     Route::get('/award-orders/{awardOrder}/download',
         [OrderController::class, 'downloadAwardOrderFile']);
+    Route::get('/award-orders/{awardOrder}/get-file',
+        [OrderController::class, 'getAwardOrderFile']);
     Route::get('/award-orders/{awardOrder}', [AwardOrderController::class, 'show']);
     Route::post('/award-orders/{awardOrder}', [AwardOrderController::class, 'update']);
-        //->middleware('check_role_update:App\Models\Orders\AwardOrder');
+    //->middleware('check_role_update:App\Models\Orders\AwardOrder');
     Route::post('/award-orders/{awardOrder}/delete',
         [AwardOrderController::class, 'destroy']);
 });

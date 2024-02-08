@@ -14,18 +14,6 @@ class BusinessTripOrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-        $genders = [
-            [
-                'value' => 'MALE',
-                'label' => trans('genders.MALE')
-            ],
-            [
-                'value' => 'FEMALE',
-                'label' => trans('genders.FEMALE')
-            ]
-        ];
-
         return [
             'id' => $this->id,
             'order_number' => $this->order_number,
@@ -39,7 +27,7 @@ class BusinessTripOrderResource extends JsonResource
             'name' => $this->name,
             'surname' => $this->surname,
             'father_name' => $this->father_name,
-            'gender' => getLabelValue($this->gender, $genders),
+            'gender' => $this->gender,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'city_name' => $this->city_name,

@@ -14,17 +14,6 @@ class TerminationOrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $genders = [
-            [
-                'value' => 'MALE',
-                'label' => trans('genders.MALE')
-            ],
-            [
-                'value' => 'FEMALE',
-                'label' => trans('genders.FEMALE')
-            ]
-        ];
-
         return [
             'id' => $this->id,
             'order_number' => $this->order_number,
@@ -34,7 +23,7 @@ class TerminationOrderResource extends JsonResource
             'days_count' => $this->days_count,
             'name' => $this->name,
             'surname' => $this->surname,
-            'gender' => getLabelValue($this->gender, $genders),
+            'gender' => $this->gender,
             'employment_start_date' => $this->employment_start_date,
             'termination_date' => $this->termination_date,
             'generated_file' => $this->generated_file,

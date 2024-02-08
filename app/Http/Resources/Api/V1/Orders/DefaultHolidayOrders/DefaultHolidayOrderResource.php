@@ -14,17 +14,6 @@ class DefaultHolidayOrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $genders = [
-            [
-                'value' => 'MALE',
-                'label' => trans('genders.MALE')
-            ],
-            [
-                'value' => 'FEMALE',
-                'label' => trans('genders.FEMALE')
-            ]
-        ];
-
         return [
             'id' => $this->id,
             'order_number' => $this->order_number,
@@ -36,7 +25,7 @@ class DefaultHolidayOrderResource extends JsonResource
             'surname' => $this->surname,
             'father_name' => $this->father_name,
             'position' => $this->position,
-            'gender' => getLabelValue($this->gender, $genders),
+            'gender' => $this->gender,
             'holiday_start_date' => $this->holiday_start_date,
             'days_count' => $this->days_count,
             'holiday_end_date' => $this->holiday_end_date,

@@ -73,14 +73,59 @@ class OrderController extends Controller
         }, $order->generated_file[0]['original_name']);
     }
 
+    public function getOrderFile($order, $type)
+    {
+        $order = match ($type) {
+            'hiring' => HiringOrder::query()->find($order),
+            'business_trip' => BusinessTripOrder::query()->find($order),
+            'termination' => TerminationOrder::query()->find($order),
+            'pregnant' => PregnantOrder::query()->find($order),
+            'default_holiday' => DefaultHolidayOrder::query()->find($order),
+            'motherhood_holiday' => MotherhoodHolidayOrder::query()->find($order),
+            'award' => AwardOrder::query()->find($order),
+            default => null,
+        };
+
+        if (!$order) {
+            return $this->error(message: 'Əmr tapılmadı', code: 404);
+        }
+
+        $s3 = App::make('aws')->createClient('s3');
+
+        $file = $s3->getObject([
+            'Bucket' => $type . '_orders',
+            'Key' => $order->generated_file[0]['generated_name'],
+        ]);
+
+        if (!$file) {
+            return $this->error(message: 'Fayl tapılmadı', code: 404);
+        }
+
+        $file = $file->get('Body');
+
+        return response()->stream(function () use ($file) {
+            echo $file;
+        });
+    }
+
     public function downloadHiringOrderFile($hiringOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->downloadOrderFile($hiringOrder, 'hiring');
     }
 
+    public function getHiringOrderFile($hiringOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($hiringOrder, 'hiring');
+    }
+
     public function downloadBusinessTripOrderFile($businessTripOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->downloadOrderFile($businessTripOrder, 'business_trip');
+    }
+
+    public function getBusinessTripOrderFile($businessTripOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($businessTripOrder, 'business_trip');
     }
 
     public
@@ -89,15 +134,30 @@ class OrderController extends Controller
         return $this->downloadOrderFile($terminationOrder, 'termination');
     }
 
+    public function getTerminationOrderFile($terminationOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($terminationOrder, 'termination');
+    }
+
     public function downloadPregnantOrderFile($pregnantOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->downloadOrderFile($pregnantOrder, 'pregnant');
+    }
+
+    public function getPregnantOrderFile($pregnantOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($pregnantOrder, 'pregnant');
     }
 
     public
     function downloadDefaultHolidayOrderFile($defaultHolidayOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->downloadOrderFile($defaultHolidayOrder, 'default_holiday');
+    }
+
+    public function getDefaultHolidayOrderFile($defaultHolidayOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($defaultHolidayOrder, 'default_holiday');
     }
 
     public
@@ -107,9 +167,20 @@ class OrderController extends Controller
         return $this->downloadOrderFile($motherhoodHolidayOrder, 'motherhood_holiday');
     }
 
+    public function getMotherhoodHolidayOrderFile($motherhoodHolidayOrder):
+    Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($motherhoodHolidayOrder, 'motherhood_holiday');
+    }
+
     public
     function downloadAwardOrderFile($awardOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->downloadOrderFile($awardOrder, 'award');
+    }
+
+    public function getAwardOrderFile($awardOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($awardOrder, 'award');
     }
 }

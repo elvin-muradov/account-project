@@ -27,6 +27,8 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/companies/{company}', [CompanyController::class, 'show']);
     Route::delete('/companies/{company}', [CompanyController::class, 'destroy']);
     Route::get('/companies/{company}/main-documents', [MainDocumentController::class, 'companyMainDocuments']);
+    Route::get('/companies/{company}/{type}/download-documents', [MainDocumentController::class, 'downloadCompanyMainDocument'])
+    ->withoutMiddleware(['auth:user']);
 
     //Company Activity Codes Routes
     Route::get('/activity-codes', [ActivityCodeController::class, 'index']);

@@ -14,17 +14,6 @@ class PregnantHolidayOrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $genders = [
-            [
-                'value' => 'MALE',
-                'label' => trans('genders.MALE')
-            ],
-            [
-                'value' => 'FEMALE',
-                'label' => trans('genders.FEMALE')
-            ]
-        ];
-
         return [
             'id' => $this->id,
             'order_number' => $this->order_number,
@@ -36,7 +25,7 @@ class PregnantHolidayOrderResource extends JsonResource
             'name' => $this->name,
             'surname' => $this->surname,
             'father_name' => $this->father_name,
-            'gender' => getLabelValue($this->gender, $genders),
+            'gender' => $this->gender,
             'position' => $this->position,
             'holiday_start_date' => $this->holiday_start_date,
             'holiday_end_date' => $this->holiday_end_date,
