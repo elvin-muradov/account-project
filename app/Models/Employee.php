@@ -22,7 +22,7 @@ class Employee extends Authenticatable
     ];
 
     protected $hidden = [
-        'password', 'remember_token'
+        'remember_token'
     ];
 
     public function company(): BelongsTo
