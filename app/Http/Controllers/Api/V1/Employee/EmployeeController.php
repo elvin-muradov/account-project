@@ -66,6 +66,10 @@ class EmployeeController extends Controller
 
         $employee = Employee::query()->find($employee);
 
+        if (!$employee) {
+            return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
+        }
+        
         if ($request->has('password') && $request->password != null &&
             $request->password != '' && trim($request->password) != '') {
 
@@ -73,11 +77,6 @@ class EmployeeController extends Controller
             $data = array_merge($data, $lowerCases, $password);
         } else {
             $data = array_merge($data, ['password' => $employee->password]);
-        }
-
-
-        if (!$employee) {
-            return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
         }
 
         $employee->update($data);
