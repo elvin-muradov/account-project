@@ -64,14 +64,17 @@ class EmployeeController extends Controller
         $lowerCases = array_map('strtolower', $request->only('email'));
         $data = array_merge($data, $lowerCases);
 
+        $employee = Employee::query()->find($employee);
+
         if ($request->has('password') && $request->password != null &&
             $request->password != '' && trim($request->password) != '') {
 
             $password = ['password' => Hash::make($request->password)];
             $data = array_merge($data, $lowerCases, $password);
+        } else {
+            $data = array_merge($data, $lowerCases, ['password' => $employee->password]);
         }
 
-        $employee = Employee::query()->find($employee);
 
         if (!$employee) {
             return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
