@@ -39,7 +39,7 @@ if (!function_exists("returnFilesArray")) {
             ));
 
             $returnedArray[] = [
-                'path' => env('BASE_URL') . '/' . $strForPath . '/' . $fileName,
+                'path' => env('BASE_URL') . '/api/' . $strForPath . '/' . $fileName,
                 'bucket' => $strForPath,
                 'generated_name' => $fileName,
                 'original_name' => $file->getClientOriginalName(),
@@ -72,7 +72,7 @@ if (!function_exists("returnOrderFile")) {
         ));
 
         $returnedArray[] = [
-            'path' => env('BASE_URL') . '/' . $bucket . '/' . $fileName,
+            'path' => env('BASE_URL') . '/api/' . $bucket . '/' . $fileName,
             'bucket' => $bucket,
             'generated_name' => $fileName,
             'original_name' => $fileName,
