@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderStore;
 use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderUpdate;
+use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderCollection;
+use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\DefaultHolidayOrder;
 use App\Traits\HttpResponses;
@@ -23,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class DefaultHolidayOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $defaultHolidayOrders = DefaultHolidayOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new DefaultHolidayOrderCollection($defaultHolidayOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -189,7 +200,7 @@ class DefaultHolidayOrderController extends Controller
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
-        return $this->success(data: $defaultHolidayOrder);
+        return $this->success(data: DefaultHolidayOrderResource::make($defaultHolidayOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\AwardOrder\AwardOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\AwardOrder\AwardOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\AwardOrders\AwardOrderCollection;
+use App\Http\Resources\Api\V1\Orders\AwardOrders\AwardOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\AwardOrder;
 use App\Traits\HttpResponses;
@@ -27,6 +29,15 @@ use PhpOffice\PhpWord\Writer\Word2007;
 class AwardOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $awardOrders = AwardOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new AwardOrderCollection($awardOrders));
+    }
 
     /**
      * @throws Exception
@@ -79,7 +90,7 @@ class AwardOrderController extends Controller
 
         unlink($filePath);
 
-        return $this->success(data: $awardOrder, message: 'Mükafat əmri uğurla yaradıldı');
+        return $this->success(data: $awardOrder, message: 'Mükafat əmri uğurla yaradıldı', code: 201);
     }
 
     /**
@@ -153,7 +164,7 @@ class AwardOrderController extends Controller
             return $this->error(message: "Mükafat əmri tapılmadı", code: 404);
         }
 
-        return $this->success(data: $awardOrder);
+        return $this->success(data: AwardOrderResource::make($awardOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

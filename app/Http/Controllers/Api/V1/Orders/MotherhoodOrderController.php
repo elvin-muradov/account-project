@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\MotherhoodHolidayOrder\MotherhoodHolidayOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\MotherhoodHolidayOrder\MotherhoodHolidayOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\MotherhoodHolidayOrders\MotherhoodHolidayOrderCollection;
+use App\Http\Resources\Api\V1\Orders\MotherhoodHolidayOrders\MotherhoodHolidayOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\MotherhoodHolidayOrder;
 use App\Traits\HttpResponses;
@@ -23,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class MotherhoodOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $motherhoodHolidayOrders = MotherhoodHolidayOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new MotherhoodHolidayOrderCollection($motherhoodHolidayOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -156,7 +167,8 @@ class MotherhoodOrderController extends Controller
 
         unlink($filePath);
 
-        return $this->success(data: $motherhoodHolidayOrder, message: 'Məzuniyyət əmri uğurla yeniləndi');
+        return $this->success(data: $motherhoodHolidayOrder,
+            message: 'Məzuniyyət əmri uğurla yeniləndi');
     }
 
 
@@ -168,7 +180,7 @@ class MotherhoodOrderController extends Controller
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
-        return $this->success(data: $motherhoodHolidayOrder);
+        return $this->success(data: MotherhoodHolidayOrderResource::make($motherhoodHolidayOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

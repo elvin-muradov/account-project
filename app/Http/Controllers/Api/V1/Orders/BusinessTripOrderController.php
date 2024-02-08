@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderCollection;
+use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\BusinessTripOrder;
 use App\Traits\HttpResponses;
@@ -23,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class BusinessTripOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $businessTripOrders = BusinessTripOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new BusinessTripOrderCollection($businessTripOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -168,7 +179,7 @@ class BusinessTripOrderController extends Controller
             return $this->error(message: 'Ezamiyyət əmri tapılmadı', code: 404);
         }
 
-        return $this->success(data: $businessTripOrder);
+        return $this->success(data: BusinessTripOrderResource::make($businessTripOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

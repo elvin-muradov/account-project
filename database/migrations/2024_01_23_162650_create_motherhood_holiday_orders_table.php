@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->date('employment_start_date')->nullable();
             $table->text('type_of_holiday')->nullable();
             $table->longText('main_part_of_order')->nullable();
+            $table->jsonb('generated_file')->nullable();
             $table->string('d_name')->nullable();
             $table->string('d_surname')->nullable();
             $table->string('d_father_name')->nullable();

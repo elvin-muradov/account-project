@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\PregnantOrder\PregnantOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\PregnantOrder\PregnantOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\PregnantHolidayOrders\PregnantHolidayOrderCollection;
+use App\Http\Resources\Api\V1\Orders\PregnantHolidayOrders\PregnantHolidayOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\PregnantOrder;
 use App\Traits\HttpResponses;
@@ -23,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class PregnantOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $pregnantOrders = PregnantOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new PregnantHolidayOrderCollection($pregnantOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -165,7 +176,7 @@ class PregnantOrderController extends Controller
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
-        return $this->success(data: $pregnantOrder);
+        return $this->success(data: PregnantHolidayOrderResource::make($pregnantOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

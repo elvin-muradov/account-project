@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\TerminationOrder\TerminationOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\TerminationOrder\TerminationOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderCollection;
+use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\TerminationOrder;
 use App\Traits\HttpResponses;
@@ -23,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class TerminationOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $terminationOrders = TerminationOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new TerminationOrderCollection($terminationOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -171,7 +182,7 @@ class TerminationOrderController extends Controller
             return $this->error(message: 'Xitam əmri tapılmadı', code: 404);
         }
 
-        return $this->success(data: $terminationOrder);
+        return $this->success(data: TerminationOrderResource::make($terminationOrder));
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

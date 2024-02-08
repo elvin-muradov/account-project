@@ -208,3 +208,13 @@ if (!function_exists('getCbaRates')) {
         return [$azn, $usd, $eur, $gbp, $try, $rub];
     }
 }
+
+if (!function_exists('getLabelValue')) {
+    function getLabelValue(string $type, array $arr): array
+    {
+        return [
+            'label' => collect($arr)->where('value', $type)->first()['label'],
+            'value' => $type
+        ];
+    }
+}

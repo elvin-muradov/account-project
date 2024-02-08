@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderUpdateRequest;
+use App\Http\Resources\Api\V1\Orders\HiringOrders\HiringOrderCollection;
+use App\Http\Resources\Api\V1\Orders\HiringOrders\HiringOrderResource;
 use App\Models\Company\Company;
 use App\Models\Orders\HiringOrder;
 use App\Traits\HttpResponses;
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
@@ -22,6 +25,15 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class HiringOrderController extends Controller
 {
     use HttpResponses;
+
+    public function index(Request $request): JsonResponse
+    {
+        $hiringOrders = HiringOrder::query()
+            ->with('company')
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new HiringOrderCollection($hiringOrders));
+    }
 
     /**
      * @throws CopyFileException
@@ -157,7 +169,7 @@ class HiringOrderController extends Controller
             return $this->error(message: 'İşə götürmə sənədi tapılmadı', code: 404);
         }
 
-        return $this->success(data: $hiringOrder, message: 'İşə götürmə sənədi tapıldı');
+        return $this->success(data: HiringOrderResource::make($hiringOrder), message: 'İşə götürmə sənədi tapıldı');
     }
 
     private function getCompany($companyId): Builder|array|Collection|Model

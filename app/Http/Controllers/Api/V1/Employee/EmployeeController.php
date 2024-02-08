@@ -69,7 +69,7 @@ class EmployeeController extends Controller
         if (!$employee) {
             return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
         }
-        
+
         if ($request->has('password') && $request->password != null &&
             $request->password != '' && trim($request->password) != '') {
 
