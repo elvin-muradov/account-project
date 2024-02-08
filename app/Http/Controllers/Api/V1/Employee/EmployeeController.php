@@ -72,7 +72,7 @@ class EmployeeController extends Controller
             $password = ['password' => Hash::make($request->password)];
             $data = array_merge($data, $lowerCases, $password);
         } else {
-            $data = array_merge($data, ['password ' => $employee->password]);
+            $data = array_merge($data, ['password' => $employee->password]);
         }
 
 
