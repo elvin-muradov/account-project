@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('tax_id_number')->nullable();
             $table->longText('first_part_of_order')->nullable();
             $table->longText('business_trip_to')->nullable();
+            $table->string('position')->nullable();
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->string('father_name')->nullable();

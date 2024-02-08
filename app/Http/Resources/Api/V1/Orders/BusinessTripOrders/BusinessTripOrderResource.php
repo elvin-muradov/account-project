@@ -24,6 +24,7 @@ class BusinessTripOrderResource extends JsonResource
             'tax_id_number' => $this->tax_id_number,
             'first_part_of_order' => $this->first_part_of_order,
             'business_trip_to' => $this->business_trip_to,
+            'position' => $this->position,
             'name' => $this->name,
             'surname' => $this->surname,
             'father_name' => $this->father_name,
