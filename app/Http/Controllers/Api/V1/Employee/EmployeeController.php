@@ -65,7 +65,7 @@ class EmployeeController extends Controller
         $data = array_merge($data, $lowerCases);
 
         $employee = Employee::query()->find($employee);
-
+        
         if ($request->has('password') && $request->password != null &&
             $request->password != '' && trim($request->password) != '') {
 
