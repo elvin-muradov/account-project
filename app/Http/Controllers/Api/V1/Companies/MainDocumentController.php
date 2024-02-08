@@ -81,10 +81,13 @@ class MainDocumentController extends Controller
 
                 $object = $s3->getObject([
                     'Bucket' => $type,
-                    'Key' => $company->$type[0]['generated_name']
+                    'Key' => $company->$type[0]['generated_name'],
                 ]);
 
-                dd($object->get('Body'));
+                return response($object->get('Body'), 200, [
+                    'Content-Type' => $object['@metadata']['headers']['content-type'],
+                    'Content-Length' => $object['@metadata']['headers']['content-length']
+                ]);
             }
         }
     }

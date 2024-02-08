@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Companies\RentalContractController;
 use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
+use App\Http\Controllers\Api\V1\S3ApiGatewayController;
 use App\Http\Controllers\Api\V1\Users\RolePermissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,8 @@ require __DIR__ . '/companies.php'; // Company routes
 require __DIR__ . '/orders.php'; // Order routes
 require __DIR__ . '/enums.php'; // ENUMs
 require __DIR__ . '/envelopes.php'; // Envelopes
+
+Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
 
 Route::middleware(['auth:user', 'lang'])->group(function () {
     //Roles
