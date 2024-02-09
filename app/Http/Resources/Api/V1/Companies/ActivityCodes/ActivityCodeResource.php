@@ -18,10 +18,8 @@ class ActivityCodeResource extends JsonResource
             'id' => (int)$this->id,
             'activity_code' => $this->activity_code,
             'company_id' => $this->company_id,
-            'company' => [
-                'id' => $this->company->id,
-                'company_name' => $this->company->company_name
-            ],
+            'company' => $this->whenLoaded('company') ?
+                $this->company->only(['id', 'company_name']) : null,
             'created_at' => $this->created_at,
         ];
     }
