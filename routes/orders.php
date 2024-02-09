@@ -68,10 +68,10 @@ Route::middleware(['lang'])->group(function () {
         [OrderController::class, 'downloadDefaultHolidayOrderFile']);
     Route::get('/default-holiday-orders/{defaultHolidayOrder}/get-file',
         [OrderController::class, 'getDefaultHolidayOrderFile']);
-    Route::get('/default-holiday-orders/{defaultHolidayOrder}', [PregnantOrderController::class, 'show']);
-    Route::post('/default-holiday-orders/{defaultHolidayOrder}', [PregnantOrderController::class, 'update']);
+    Route::get('/default-holiday-orders/{defaultHolidayOrder}', [DefaultHolidayOrderController::class, 'show']);
+    Route::post('/default-holiday-orders/{defaultHolidayOrder}', [DefaultHolidayOrderController::class, 'update']);
     //->middleware('check_role_update:App\Models\Orders\DefaultHolidayOrder');
-    Route::post('/default-holiday-orders/{defaultHolidayOrder}/delete', [PregnantOrderController::class, 'destroy']);
+    Route::post('/default-holiday-orders/{defaultHolidayOrder}/delete', [DefaultHolidayOrderController::class, 'destroy']);
 
     Route::get('/motherhood-holiday-orders', [MotherhoodOrderController::class, 'index']);
     Route::post('/motherhood-holiday-orders', [MotherhoodOrderController::class, 'store']);

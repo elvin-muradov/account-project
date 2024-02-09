@@ -22,6 +22,7 @@ class MotherhoodHolidayOrderResource extends JsonResource
             'tax_id_number' => $this->tax_id_number,
             'name' => $this->name,
             'surname' => $this->surname,
+            'father_name' => $this->father_name,
             'gender' => $this->gender,
             'position' => $this->position,
             'holiday_start_date' => $this->holiday_start_date,
@@ -30,6 +31,9 @@ class MotherhoodHolidayOrderResource extends JsonResource
             'type_of_holiday' => $this->type_of_holiday,
             'main_part_of_order' => $this->main_part_of_order,
             'generated_file' => $this->generated_file,
+            'd_name' => $this->d_name,
+            'd_surname' => $this->d_surname,
+            'd_father_name' => $this->d_father_name,
             'created_at' => $this->created_at
         ];
     }
