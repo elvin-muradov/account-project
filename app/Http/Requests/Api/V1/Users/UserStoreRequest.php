@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\Users;
 
 use App\Enums\EducationTypesEnum;
 use App\Enums\StatusTypesEnum;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserStoreRequest extends FormRequest
@@ -19,7 +20,7 @@ class UserStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -42,7 +43,10 @@ class UserStoreRequest extends FormRequest
             'self_photo_files' => ['required', 'array'],
             'self_photo_files.*' => ['mimes:png,jpeg,jpg,webp', 'max:4096'],
             'previous_job' => ['nullable', 'string', 'max:255'],
-            'account_status' => ['nullable', 'in:' . StatusTypesEnum::toString()]
+            'account_status' => ['nullable', 'in:' . StatusTypesEnum::toString()],
+            'role_name' => ['nullable', 'string', 'in:department_head,accountant,leading_expert'],
+            'company_ids' => ['nullable', 'array', 'min:1'],
+            'company_ids.*' => ['nullable', 'integer', 'exists:companies,id']
         ];
     }
 }

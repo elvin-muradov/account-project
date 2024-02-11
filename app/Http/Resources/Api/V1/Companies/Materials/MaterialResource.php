@@ -25,7 +25,7 @@ class MaterialResource extends JsonResource
             'company' => $this->whenLoaded('company') ?
                 $this->company->only('id', 'company_name') : null,
             'warehouse' => $this->whenLoaded('warehouse') ?
-                $this->warehouse->only('id', 'name') : null,
+                $this->warehouse?->only('id', 'name') : null,
             'materialGroup' => $this->whenLoaded('materialGroup') ?
                 $this->materialGroup->only('id', 'name') : null,
             'created_at' => $this->created_at

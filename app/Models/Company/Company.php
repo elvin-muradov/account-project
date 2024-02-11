@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
@@ -61,5 +62,10 @@ class Company extends Model
     public function warehouses(): HasMany
     {
         return $this->hasMany(Warehouse::class, 'company_id');
+    }
+
+    public function accountant(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'accountant_id');
     }
 }

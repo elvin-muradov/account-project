@@ -19,12 +19,12 @@ class CheckRoleForUpdate
      *
      * @param \Closure(Request): (Response) $next
      */
-    public function handle(Request $request, Closure $next, $model): Response|JsonResponse
+    public function handle(Request $request, Closure $next, $model, string $route): Response|JsonResponse
     {
         $user = $request->user('user');
 
-        $createdAt = $model::find($request->route('envelope'))->created_at;
-        $afterTwoMonths = Carbon::make($createdAt)->addSeconds(2);
+        $createdAt = $model::find($request->route($route))->created_at;
+        $afterTwoMonths = Carbon::make($createdAt)->addSeconds(15);
 
         $check = $afterTwoMonths > now();
 

@@ -33,12 +33,5 @@ class RolePermissionSeeder extends Seeder
             'display_name_en' => 'Leading expert',
             'display_name_ru' => 'Ведущий эксперт',
         ]);
-
-        $employeeRole = Role::query()->create([
-            'name' => 'employee',
-            'display_name_az' => 'Əməkdaş',
-            'display_name_en' => 'Employee',
-            'display_name_ru' => 'Сотрудник',
-        ]);
     }
 }

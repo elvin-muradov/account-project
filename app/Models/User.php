@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Models\Company\Company;
 use App\Models\Envelopes\Envelope;
+use App\Traits\HasCompaniesServed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasCompaniesServed;
 
     /**
      * The attributes that are mass assignable.
@@ -74,5 +76,10 @@ class User extends Authenticatable
     public function sentEnvelopes(): HasMany
     {
         return $this->hasMany(Envelope::class, 'sender_id');
+    }
+
+    public function companiesServed(): HasMany
+    {
+        return $this->hasMany(Company::class, 'accountant_id');
     }
 }

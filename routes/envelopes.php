@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:user', 'lang'])->group(function () {
-    //Company Routes
+    // Company Routes
     Route::get('/envelopes', [EnvelopeController::class, 'index']);
     Route::post('/envelopes', [EnvelopeController::class, 'store']);
     Route::post('/envelopes/{envelope}', [EnvelopeController::class, 'update'])
-        ->middleware('check_role_update:App\Models\Envelopes\Envelope');
+        ->middleware('check_role_update:App\Models\Envelopes\Envelope,envelope');
     Route::get('/envelopes/{envelope}', [EnvelopeController::class, 'show']);
     Route::delete('/envelopes/{envelope}', [EnvelopeController::class, 'destroy']);
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\V1\Users;
 
+use App\Http\Resources\Api\V1\Companies\CompanyResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -33,7 +34,20 @@ class UserResource extends JsonResource
             'account_status' => $this->account_status,
             'created_at' => $this->created_at,
             'last_login_at' => $this->last_login_at,
-            'roles' => $this->whenLoaded('roles')
+            'roles' => $this->whenLoaded('roles') ?
+                $this->roles->map(fn($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'display_name_az' => $role->display_name_az,
+                    'display_name_en' => $role->display_name_en,
+                    'display_name_ru' => $role->display_name_ru,
+                ]) : [],
+            'companiesServed' => $this->whenLoaded('companiesServed') ?
+                $this->companiesServed->map(fn($company) => [
+                    'id' => $company->id,
+                    'company_name' => $company->company_name,
+                    'accountant_assign_date' => $company->accountant_assign_date
+                ]) : []
         ];
     }
 }

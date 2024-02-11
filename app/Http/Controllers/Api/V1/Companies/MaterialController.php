@@ -47,7 +47,7 @@ class MaterialController extends Controller
                 'description' => $request->input('description'),
                 'company_id' => $request->input('company_id'),
                 'material_group_id' => $request->input('material_group_id'),
-                'warehouse_id' => $request->input('warehouse_id'),
+                'warehouse_id' => $request->input('warehouse_id') ?? null,
             ]);
 
         return $this->success(data: MaterialResource::make($material),

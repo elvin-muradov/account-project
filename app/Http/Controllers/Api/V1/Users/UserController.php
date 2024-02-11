@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -55,6 +56,24 @@ class UserController extends Controller
         }
 
         $user = User::query()->create($data);
+
+        if ($request->input('role_name') != null) {
+            $role = Role::query()->where('name', '=', $request->input('role_name'))->first();
+            if ($role) {
+                $user->assignRole($role);
+            }
+        }
+
+        if (is_array($request->input('company_ids')) && !empty($request->input('company_ids'))) {
+            $result = $user->syncCompaniesServed($request->input('company_ids'));
+
+            return match ($result) {
+                1 => $this->error(message: "Ən çox 10 fiziki şirkətə xidmət göstərilə bilər", code: 400),
+                2 => $this->error(message: "Fiziki şirkət tapılmadı", code: 404),
+                3 => $this->error(message: "Ən çox 5 hüquqi şirkətə xidmət göstərilə bilər", code: 400),
+                4 => $this->error(message: "Hüquqi şirkət tapılmadı", code: 404)
+            };
+        }
 
         return $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu');
     }
@@ -130,6 +149,13 @@ class UserController extends Controller
 
         $user->update($data);
 
+        if ($request->input('role_name') !== null) {
+            $role = Role::query()->where('name', $request->input('role_name'))->first();
+            if ($role) {
+                $user->syncRoles($role);
+            }
+        }
+
         return $this->success(data: UserResource::make($user),
             message: "İstifadəçi uğurla yeniləndi");
 
@@ -137,7 +163,9 @@ class UserController extends Controller
 
     public function show($user): JsonResponse
     {
-        $user = User::query()->find($user);
+        $user = User::query()
+            ->with(['roles', 'companiesServed'])
+            ->find($user);
 
         if (!$user) {
             return $this->error(message: "İstifadəçi tapılmadı", code: 404);

@@ -34,6 +34,24 @@ class UserSeeder extends Seeder
             'account_status' => 'APPROVED',
             'password' => Hash::make('123456789')
         ]);
+        $orkhanDepartmentHead = User::query()->create([
+            'name' => 'Orxan',
+            'surname' => 'Accountant',
+            'father_name' => 'Ata adı',
+            'phone' => '+994554660019',
+            'email' => 'orkhan@gmail.com',
+            'email_verified_at' => Carbon::now(),
+            'username' => 'orkhan',
+            'birth_date' => '1990-04-10 23:59:00',
+            'education' => 'FULL',
+            'education_files' => null,
+            'certificate_files' => null,
+            'cv_files' => null,
+            'self_photo_files' => null,
+            'previous_job' => 'Mühasib',
+            'account_status' => 'APPROVED',
+            'password' => Hash::make('123456789')
+        ]);
 
         $leadingExpert = User::query()->create([
             'name' => 'Alı kişi',
@@ -73,6 +91,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123456789')
         ]);
 
+        $orkhanDepartmentHead->assignRole('department_head');
         $departmentHead->assignRole('department_head');
         $leadingExpert->assignRole('leading_expert');
         $accountant->assignRole('accountant');

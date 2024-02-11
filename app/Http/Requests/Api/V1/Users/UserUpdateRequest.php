@@ -45,6 +45,7 @@ class UserUpdateRequest extends FormRequest
             'self_photo_files' => ['nullable', 'array', Rule::requiredIf(empty($user->self_photo_files))],
             'self_photo_files.*' => ['nullable', 'file', 'mimes:png,jpg,jpeg,pdf,docx,doc'],
             'previous_job' => ['nullable', 'string', 'max:255'],
+            'role_name' => ['nullable', 'string', 'in:department_head,accountant,leading_expert'],
             'delete_education_files' => ['sometimes', 'array'],
             'delete_cv_files' => ['sometimes', 'array'],
             'delete_certificate_files' => ['sometimes', 'array'],

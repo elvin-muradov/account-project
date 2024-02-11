@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Controllers\Api\V1\S3ApiGatewayController;
 use App\Http\Controllers\Api\V1\Users\RolePermissionController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,9 +27,11 @@ require __DIR__ . '/orders.php'; // Order routes
 require __DIR__ . '/enums.php'; // ENUMs
 require __DIR__ . '/envelopes.php'; // Envelopes
 
+Route::get('/test', [TestController::class, 'test']);
+
 Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
 
-Route::middleware(['auth:user', 'lang'])->group(function () {
+Route::middleware(['auth:user', 'lang', 'role:accountant,department_head,leading_expert'])->group(function () {
     //Roles
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
     Route::get('/currency-rates', [CurrencyController::class, 'index']);

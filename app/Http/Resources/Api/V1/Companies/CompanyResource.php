@@ -52,7 +52,10 @@ class CompanyResource extends JsonResource
             'ydm_password' => $this->ydm_password,
             'ydm_card_expired_at' => $this->ydm_card_expired_at,
             'activity_codes' => $this->whenLoaded('activityCodes'),
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'accountant' => $this->whenLoaded('accountant') ?
+                $this->accountant->only('id', 'name', 'surname') : null,
+            'accountant_assign_date' => $this->accountant_assign_date
         ];
     }
 }
