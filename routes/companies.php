@@ -22,13 +22,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:user', 'lang'])->group(function () {
     //Company Routes
     Route::get('/companies', [CompanyController::class, 'index']);
+    Route::get('/individual-companies', [CompanyController::class, 'individualCompanies']);
+    Route::get('/legal-companies', [CompanyController::class, 'legalCompanies']);
+    Route::get('/has-not-accountant-companies', [CompanyController::class, 'hasNotAccountantCompanies']);
     Route::post('/companies', [CompanyController::class, 'store']);
     Route::post('/companies/{company}', [CompanyController::class, 'update']);
     Route::get('/companies/{company}', [CompanyController::class, 'show']);
     Route::delete('/companies/{company}', [CompanyController::class, 'destroy']);
     Route::get('/companies/{company}/main-documents', [MainDocumentController::class, 'companyMainDocuments']);
     Route::get('/companies/{company}/{type}/download-documents', [MainDocumentController::class, 'downloadCompanyMainDocument'])
-    ->withoutMiddleware(['auth:user']);
+        ->withoutMiddleware(['auth:user']);
 
     //Company Activity Codes Routes
     Route::get('/activity-codes', [ActivityCodeController::class, 'index']);

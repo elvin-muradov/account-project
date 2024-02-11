@@ -68,6 +68,14 @@ class User extends Authenticatable
         'birth_date' => 'datetime',
     ];
 
+    public function assignCompanies(array $companyIds)
+    {
+        $individualCompanyCount = $this->companiesServed()->where('type', 'INDIVIDUAL')->count();
+        $legalCompanyCount = $this->companiesServed()->where('type', 'LEGAL')->count();
+
+
+    }
+
     public function companyMain(): HasMany
     {
         return $this->hasMany(Company::class);

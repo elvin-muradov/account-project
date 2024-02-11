@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -55,6 +56,7 @@ class UserController extends Controller
             $data = array_merge($data, ['certificate_files' => returnFilesArray($ctFiles, 'certificate_files')]);
         }
 
+        DB::beginTransaction();
         $user = User::query()->create($data);
 
         if ($request->input('role_name') != null) {
@@ -67,13 +69,22 @@ class UserController extends Controller
         if (is_array($request->input('company_ids')) && !empty($request->input('company_ids'))) {
             $result = $user->syncCompaniesServed($request->input('company_ids'));
 
+            if ($result != 5) {
+                DB::rollBack();
+            } else {
+                DB::commit();
+            }
+
             return match ($result) {
                 1 => $this->error(message: "Ən çox 10 fiziki şirkətə xidmət göstərilə bilər", code: 400),
                 2 => $this->error(message: "Fiziki şirkət tapılmadı", code: 404),
                 3 => $this->error(message: "Ən çox 5 hüquqi şirkətə xidmət göstərilə bilər", code: 400),
-                4 => $this->error(message: "Hüquqi şirkət tapılmadı", code: 404)
+                4 => $this->error(message: "Hüquqi şirkət tapılmadı", code: 404),
+                5 => $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu')
             };
         }
+
+        DB::commit();
 
         return $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu');
     }

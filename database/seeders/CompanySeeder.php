@@ -13,28 +13,56 @@ class CompanySeeder extends Seeder
      */
     public function run(): void
     {
-        $firstCompany = Company::query()->create([
-            'company_name' => 'Bamsı Beyrək',
-            'company_category' => 'MICRO',
-            'company_obligation' => 'SIMPLIFIED',
-            'company_address' => 'Baku, Azerbaijan',
-            'company_emails' => ['company1@mail.ru','company2@mail.ru'],
-            'owner_type' => 'LEGAL',
-            'tax_id_number' => 1234567890,
-            'tax_id_number_date' => '2021-01-01',
-            'dsmf_number' => 1234567890123,
-            'main_user_id' => null,
-            'director_id' => null,
-            'asan_sign' => '+994501234567',
-            'asan_sign_start_date' => '2021-01-01',
-            'birth_id' => '2021-01-01',
-            'pin1' => 1234,
-            'pin2' => 12345,
-            'puk' => 12345678,
-            'statistic_code' => 12345678,
-            'statistic_password' => '12345678',
-            'operator_azercell_account' => '+994501234567',
-            'operator_azercell_password' => '12345678'
-        ]);
+
+        for ($i = 1; $i < 11; $i++) {
+            $companyLegal = Company::query()->create([
+                'company_name' => "Company $i Hüquqi",
+                'company_category' => 'MICRO',
+                'company_obligation' => 'SIMPLIFIED',
+                'company_address' => 'Baku, Azerbaijan',
+                'company_emails' => ['company1@mail.ru', 'company2@mail.ru'],
+                'owner_type' => 'LEGAL',
+                'tax_id_number' => 1234567890,
+                'tax_id_number_date' => '2021-01-01',
+                'dsmf_number' => 1234567890123,
+                'main_user_id' => null,
+                'director_id' => null,
+                'asan_sign' => '+994501234567',
+                'asan_sign_start_date' => '2021-01-01',
+                'birth_id' => '2021-01-01',
+                'pin1' => 1234,
+                'pin2' => 12345,
+                'puk' => 12345678,
+                'statistic_code' => 12345678,
+                'statistic_password' => '12345678',
+                'operator_azercell_account' => '+994501234567',
+                'operator_azercell_password' => '12345678'
+            ]);
+        }
+        for ($i = 1; $i < 11; $i++) {
+            $companyIndividual = Company::query()->create([
+                'company_name' => "Company $i Fiziki",
+                'company_category' => 'MICRO',
+                'company_obligation' => 'SIMPLIFIED',
+                'company_address' => 'Baku, Azerbaijan',
+                'company_emails' => ['company1@mail.ru', 'company2@mail.ru'],
+                'owner_type' => 'INDIVIDUAL',
+                'tax_id_number' => 1234567890,
+                'tax_id_number_date' => '2021-01-01',
+                'dsmf_number' => 1234567890123,
+                'main_user_id' => null,
+                'director_id' => null,
+                'asan_sign' => '+994501234567',
+                'asan_sign_start_date' => '2021-01-01',
+                'birth_id' => '2021-01-01',
+                'pin1' => 1234,
+                'pin2' => 12345,
+                'puk' => 12345678,
+                'statistic_code' => 12345678,
+                'statistic_password' => '12345678',
+                'operator_azercell_account' => '+994501234567',
+                'operator_azercell_password' => '12345678'
+            ]);
+        }
     }
 }

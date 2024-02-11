@@ -34,14 +34,6 @@ trait HasCompaniesServed
             ->whereNull('accountant_id')
             ->get();
 
-        if ($selectedInvididualCompanies->count() === 0) {
-            return $this->responses['NOT_FOUND_INDIVIDUAL'];
-        }
-
-        if ($selectedLegalCompanies->count() === 0) {
-            return $this->responses['NOT_FOUND_LEGAL'];
-        }
-
         $accountantInvidiualCompanies = Company::query()
             ->where('accountant_id', '=', $this->id)
             ->where('owner_type', '=', UserTypesEnum::INDIVIDUAL)
@@ -53,23 +45,26 @@ trait HasCompaniesServed
             ->get();
 
         if (
-            $accountantInvidiualCompanies->count() < 10 &&
-            $selectedInvididualCompanies->count() < $accountantInvidiualCompanies->count()
+            $accountantInvidiualCompanies->count() < 10
         ) {
-            $selectedInvididualCompanies->each(function ($company) {
-                $company->accountant_id = $this->id;
-            });
+            foreach ($selectedInvididualCompanies as $company) {
+                $company->update([
+                    'accountant_id' => $this->id
+                ]);
+            }
         } else {
+
             return $this->responses['INDIVIDUAL'];
         }
 
         if (
-            $accountantLegalCompanies->count() < 5 &&
-            $selectedLegalCompanies->count() < $accountantLegalCompanies->count()
+            $accountantLegalCompanies->count() < 5
         ) {
-            $selectedLegalCompanies->each(function ($company) {
-                $company->accountant_id = $this->id;
-            });
+            foreach ($selectedLegalCompanies as $company) {
+                $company->update([
+                    'accountant_id' => $this->id
+                ]);
+            }
         } else {
             return $this->responses['LEGAL'];
         }

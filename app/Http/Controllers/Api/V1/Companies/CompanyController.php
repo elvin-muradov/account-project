@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Companies;
 
+use App\Enums\UserTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Companies\CompanyStoreRequest;
 use App\Http\Requests\Api\V1\Companies\CompanyUpdateRequest;
@@ -262,5 +263,32 @@ class CompanyController extends Controller
         $company->delete();
 
         return $this->success(message: "Şirkət uğurla silindi");
+    }
+
+    public function hasNotAccountantCompanies(Request $request): JsonResponse
+    {
+        $companies = Company::query()
+            ->where('accountant_id', '=', null)
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new CompanyCollection($companies));
+    }
+
+    public function individualCompanies(Request $request): JsonResponse
+    {
+        $companies = Company::query()
+            ->where('owner_type', '=', UserTypesEnum::INDIVIDUAL)
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new CompanyCollection($companies));
+    }
+
+    public function legalCompanies(Request $request): JsonResponse
+    {
+        $companies = Company::query()
+            ->where('owner_type', '=', UserTypesEnum::LEGAL)
+            ->paginate($request->input('limit') ?? 10);
+
+        return $this->success(data: new CompanyCollection($companies));
     }
 }
