@@ -24,7 +24,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'phone' => $this->phone,
             'email' => $this->email,
-            'birth_date' => Carbon::parse($this->birth_date)->format('d.m.Y'),
+            'birth_date' => $this->birth_date,
             'education' => $this->education,
             'education_files' => $this->education_files,
             'cv_files' => $this->cv_files,

@@ -16,6 +16,7 @@ class Company extends Model
     use HasFactory;
 
     protected $guarded = [];
+
     protected $casts = [
         'company_emails' => 'array',
         'charter_files' => 'array',
@@ -27,6 +28,7 @@ class Company extends Model
         'fixed_asset_files' => 'array',
         'director_id' => 'integer',
         'main_user_id' => 'integer',
+        'accountant_id' => 'integer'
     ];
 
     public function mainUser(): BelongsTo

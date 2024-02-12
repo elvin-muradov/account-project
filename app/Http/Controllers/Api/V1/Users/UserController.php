@@ -66,27 +66,23 @@ class UserController extends Controller
             }
         }
 
+        $assignResult = null;
+
         if (is_array($request->input('company_ids')) && !empty($request->input('company_ids'))) {
-            $result = $user->syncCompaniesServed($request->input('company_ids'));
-
-            if ($result != 5) {
-                DB::rollBack();
-            } else {
-                DB::commit();
-            }
-
-            return match ($result) {
-                1 => $this->error(message: "Ən çox 10 fiziki şirkətə xidmət göstərilə bilər", code: 400),
-                2 => $this->error(message: "Fiziki şirkət tapılmadı", code: 404),
-                3 => $this->error(message: "Ən çox 5 hüquqi şirkətə xidmət göstərilə bilər", code: 400),
-                4 => $this->error(message: "Hüquqi şirkət tapılmadı", code: 404),
-                5 => $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu')
-            };
+            $assignResult = $user->assignCompanies($request->input('company_ids'));
         }
 
-        DB::commit();
-
-        return $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu');
+        switch ($assignResult) {
+            case 2:
+                DB::rollBack();
+                return $this->error(message: "Ən çox 10 fiziki şirkətə xidmət göstərilə bilər", code: 400);
+            case 3:
+                DB::rollBack();
+                return $this->error(message: "Ən çox 5 hüquqi şirkətə xidmət göstərilə bilər", code: 400);
+            default:
+                DB::commit();
+                return $this->success(data: UserResource::make($user), message: 'İstifadəçi uğurla əlavə olundu');
+        }
     }
 
     public function update(UserUpdateRequest $request, $user): JsonResponse
@@ -107,6 +103,8 @@ class UserController extends Controller
         if (!$user) {
             return $this->error(message: "İstifadəçi tapılmadı", code: 404);
         }
+
+        DB::beginTransaction();
 
         if ($request->has('delete_education_files') && $request->delete_education_files != null) {
             $deletedEduFiles = $request->input('delete_education_files', []);
@@ -167,9 +165,25 @@ class UserController extends Controller
             }
         }
 
-        return $this->success(data: UserResource::make($user),
-            message: "İstifadəçi uğurla yeniləndi");
+        $assignResult = null;
 
+        if (is_array($request->input('company_ids')) && !empty($request->input('company_ids'))) {
+            $assignResult = $user->assignCompanies($request->input('company_ids'));
+        }
+
+        $user->refresh();
+
+        switch ($assignResult) {
+            case 2:
+                DB::rollBack();
+                return $this->error(message: "Ən çox 10 fiziki şirkətə xidmət göstərilə bilər", code: 400);
+            case 3:
+                DB::rollBack();
+                return $this->error(message: "Ən çox 5 hüquqi şirkətə xidmət göstərilə bilər", code: 400);
+            default:
+                DB::commit();
+                return $this->success(data: UserResource::make($user), message: "İstifadəçi uğurla yeniləndi");
+        }
     }
 
     public function show($user): JsonResponse

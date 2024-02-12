@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('main_user_id')->nullable(); // Səlahiyyətli şəxs
             $table->unsignedBigInteger('director_id')->nullable(); // Direktor
             $table->unsignedBigInteger('accountant_id')->nullable(); // Mühasib
-            $table->dateTime('accountant_assign_date')->nullable(); // Mühasibin səlahiyyət tarixi
+            $table->date('accountant_assign_date')->nullable(); // Mühasibin səlahiyyət tarixi
             $table->jsonb('tax_id_number_files')->nullable(); // VÖEN faylları
             $table->jsonb('charter_files')->nullable(); // Nizamnamə faylları
             $table->jsonb('extract_files')->nullable(); // Çıxarış faylları
@@ -51,9 +51,9 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            $table->foreign('accountant_id')->nullOnDelete()->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('main_user_id')->nullOnDelete()->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('director_id')->nullOnDelete()->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('accountant_id')->nullOnDelete()->references('id')->on('users');
+            $table->foreign('main_user_id')->nullOnDelete()->references('id')->on('users');
+            $table->foreign('director_id')->nullOnDelete()->references('id')->on('users');
         });
     }
 

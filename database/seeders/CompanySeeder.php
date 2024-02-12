@@ -15,7 +15,7 @@ class CompanySeeder extends Seeder
     {
 
         for ($i = 1; $i < 11; $i++) {
-            $companyLegal = Company::query()->create([
+            Company::query()->create([
                 'company_name' => "Company $i Hüquqi",
                 'company_category' => 'MICRO',
                 'company_obligation' => 'SIMPLIFIED',
@@ -39,8 +39,8 @@ class CompanySeeder extends Seeder
                 'operator_azercell_password' => '12345678'
             ]);
         }
-        for ($i = 1; $i < 11; $i++) {
-            $companyIndividual = Company::query()->create([
+        for ($i = 1; $i < 30; $i++) {
+            Company::query()->create([
                 'company_name' => "Company $i Fiziki",
                 'company_category' => 'MICRO',
                 'company_obligation' => 'SIMPLIFIED',

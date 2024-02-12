@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('father_name');
             $table->string('username');
             $table->string('phone');
-            $table->timestamp('birth_date');
+            $table->date('birth_date');
             $table->enum('education', EducationTypesEnum::toArray());
             $table->jsonb('education_files')->nullable();
             $table->jsonb('certificate_files')->nullable();
