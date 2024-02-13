@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Companies\CompanyController;
 use App\Http\Controllers\Api\V1\Companies\MainDocumentController;
 use App\Http\Controllers\Api\V1\Companies\MaterialController;
 use App\Http\Controllers\Api\V1\Companies\MaterialGroupController;
+use App\Http\Controllers\Api\V1\Companies\MeasureController;
 use App\Http\Controllers\Api\V1\Companies\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,5 +65,12 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::post('/materials/{material}', [MaterialController::class, 'update']);
     Route::get('/materials/{material}', [MaterialController::class, 'show']);
     Route::delete('/materials/{material}', [MaterialController::class, 'destroy']);
+
+    // Measures Routes
+    Route::get('/measures', [MeasureController::class, 'index']);
+    Route::post('/measures', [MeasureController::class, 'store']);
+    Route::post('/measures/{measure}', [MeasureController::class, 'update']);
+    Route::get('/measures/{measure}', [MeasureController::class, 'show']);
+    Route::delete('/measures/{measure}', [MeasureController::class, 'destroy']);
 });
 
