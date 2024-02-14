@@ -5,15 +5,17 @@ namespace App\Models\Company;
 use App\Models\Employee;
 use App\Models\Envelopes\Envelope;
 use App\Models\User;
+use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Company extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $guarded = [];
 
@@ -69,5 +71,32 @@ class Company extends Model
     public function accountant(): BelongsTo
     {
         return $this->belongsTo(User::class, 'accountant_id');
+    }
+
+    public function scopeOrder($query, $order_by): void
+    {
+        if (is_array($order_by)) {
+            foreach ($order_by as $order) {
+                if (isset($order['related_table'])) {
+                    $query->join($order['related_table'], $order['related_table'] . ' . id',
+                        ' = ', self::getTable() . ' . ' . Str::singular($order['related_table']) . '_id')
+                        ->select($order['related_table'] . ' . ' . $order['field'], self::getTable() . ' .*')
+                        ->when(
+                            $order['related_table'] && $order['field'] && $order['sort'],
+                            function ($query) use ($order) {
+                                $query->orderBy($order['field'], $order['sort']);
+                            }
+                        );
+                } else {
+                    $query
+                        ->when(
+                            $order['field'] && $order['sort'],
+                            function ($query) use ($order) {
+                                $query->orderBy($order['field'], $order['sort']);
+                            }
+                        );
+                }
+            }
+        }
     }
 }

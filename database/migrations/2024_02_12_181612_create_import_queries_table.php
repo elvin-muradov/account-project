@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\ImportPaymentStatuses;
+use App\Enums\TransportTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +15,19 @@ return new class extends Migration {
         Schema::create('import_queries', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('query_number');
-            $table->string('company_name');
+            $table->string('query_number')->unique();
+            $table->string('customs_barcode')->unique();
+            $table->string('shipping_from');
+            $table->string('seller_company_name');
             $table->date('delivery_date');
             $table->date('customs_date');
             $table->float('invoice_value');
             $table->float('customs_value');
             $table->float('statistic_value');
+            $table->float('net_weight');
             $table->unsignedBigInteger('currency_id');
+            $table->enum('transport_type', TransportTypes::toArray());
+            $table->enum('payment_status', ImportPaymentStatuses::toArray());
 
             //Customs fee/duty
             $table->float('customs_transaction_fee')->default(0); // 2

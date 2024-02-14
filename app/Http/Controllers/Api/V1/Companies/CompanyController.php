@@ -20,7 +20,9 @@ class CompanyController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $companies = Company::query()->with(['mainUser', 'director'])
+        $companies = Company::search($request->input('filter_by'), $request->input('logic_operator'))
+            ->order($request->input('order_by'))
+            ->with(['mainUser', 'director'])
             ->paginate($request->limit ?? 10);
 
         return $this->success(data: new CompanyCollection($companies));
