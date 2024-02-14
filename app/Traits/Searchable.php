@@ -173,6 +173,15 @@ trait Searchable
                             }
                             break;
 
+                        case "notIsAnyOf":
+                            $values = collect($filter['value'])->map(function ($value) {
+                                return trim($value);
+                            })->toArray();
+
+                            if ($filter['field'] && $filter['value']) {
+                                $builder->whereNotIn($filter['field'], $values);
+                            }
+                            break;
                         default:
                             $builder;
                             break;
