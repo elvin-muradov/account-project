@@ -27,6 +27,7 @@ class CompanyStoreRequest extends FormRequest
     {
         return [
             'company_name' => ['required', 'string', 'min:3', 'max:35', 'unique:companies,company_name'],
+            'company_short_name' => ['required', 'string', 'min:2', 'max:6'],
             'company_category' => ['required', 'in:' . CompanyCategoriesEnum::toString()],
             'company_obligation' => ['required', 'in:' . CompanyObligationsEnum::toString()],
             'company_address' => ['nullable', 'string', 'min:3', 'max:255'],

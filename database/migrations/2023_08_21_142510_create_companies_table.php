@@ -16,6 +16,7 @@ return new class extends Migration {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('company_name'); // Şirkətin adı
+            $table->string('company_short_name'); // Şirkətin qısa adı
             $table->enum('company_category', CompanyCategoriesEnum::toArray()); // Şirkət kateqoriyası
             $table->enum('company_obligation', CompanyObligationsEnum::toArray()); // Şirkət mükəlləfiyyəti
             $table->enum('owner_type', UserTypesEnum::toArray()); // Fiziki yaxud Hüquqi

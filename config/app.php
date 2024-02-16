@@ -186,6 +186,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'AWS' => Aws\Laravel\AwsFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

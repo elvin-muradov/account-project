@@ -17,6 +17,7 @@ class CompanySeeder extends Seeder
         for ($i = 1; $i < 11; $i++) {
             Company::query()->create([
                 'company_name' => "Company $i Hüquqi",
+                'company_short_name' => "CYH$i",
                 'company_category' => 'MICRO',
                 'company_obligation' => 'SIMPLIFIED',
                 'company_address' => 'Baku, Azerbaijan',
@@ -42,6 +43,7 @@ class CompanySeeder extends Seeder
         for ($i = 1; $i < 30; $i++) {
             Company::query()->create([
                 'company_name' => "Company $i Fiziki",
+                'company_short_name' => "CYF$i",
                 'company_category' => 'MICRO',
                 'company_obligation' => 'SIMPLIFIED',
                 'company_address' => 'Baku, Azerbaijan',

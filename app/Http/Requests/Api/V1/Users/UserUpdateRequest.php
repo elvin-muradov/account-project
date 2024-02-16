@@ -32,7 +32,7 @@ class UserUpdateRequest extends FormRequest
             'surname' => ['required', 'string', 'min:3', 'max:35'],
             'father_name' => ['required', 'string', 'min:3', 'max:35'],
             'email' => ['required', 'email:filter', 'unique:users,email,' . $this->user, 'max:255'],
-            'password' => ['required', 'confirmed', 'string', 'min:8', 'max:16'],
+            'password' => ['nullable', 'confirmed', 'string', 'min:8', 'max:16'],
             'phone' => ['required', 'string', 'unique:users,phone,' . $this->user, 'phone:AZ'],
             'birth_date' => ['required', 'date'],
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],

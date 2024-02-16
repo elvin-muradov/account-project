@@ -18,4 +18,6 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/import-queries', [ImportQueryController::class, 'index']);
     Route::post('/import-queries', [ImportQueryController::class, 'store']);
     Route::get('/import-queries/{importQuery}', [ImportQueryController::class, 'show']);
+    Route::post('/import-queries/{importQuery}', [ImportQueryController::class, 'update']);
+    Route::delete('/import-queries/{importQuery}', [ImportQueryController::class, 'destroy']);
 });

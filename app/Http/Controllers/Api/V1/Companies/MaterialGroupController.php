@@ -59,8 +59,7 @@ class MaterialGroupController extends Controller
 
         $materialGroup->update([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id'),
-
+            'company_id' => $request->input('company_id')
         ]);
 
         return $this->success(data: MaterialGroupResource::make($materialGroup),
