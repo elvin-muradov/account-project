@@ -33,7 +33,7 @@ Route::get('/test', [TestController::class, 'test']);
 
 Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
 
-Route::middleware(['auth:user', 'lang', 'role:accountant,department_head,leading_expert'])->group(function () {
+Route::middleware(['auth:user', 'lang'])->group(function () {
     //Roles
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
     Route::get('/currency-rates', [CurrencyController::class, 'index']);
