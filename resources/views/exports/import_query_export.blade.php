@@ -25,172 +25,250 @@
         ]
     ];
 
-    $cellClass = 'style="word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
-    $wordWrap = 'style="word-wrap:break-word;"'
+    $cellBlueClass = 'style="word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
+    $cellBlue100WidthClass = 'style="width:100px;word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
+    $cellBlue300WidthClass = 'style="width:300px;word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
+    $cellTDClass = 'style="word-wrap:break-word;text-align: center;vertical-align: middle;"';
+    $cellBoldClass = 'style="font-weight:bold;"';
 @endphp
 
 
 <table>
     <tbody>
     <tr>
-        <td @php echo $cellClass; @endphp rowspan="2">N
+        <td @php echo $cellBlueClass; @endphp rowspan="2">N
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Şirkət adı
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Şirkət adı
         </td>
-        <td @php echo $cellClass; @endphp colspan="2">Tarixi
+        <td @php echo $cellBlueClass; @endphp colspan="2">Tarixi
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Sorğu №
+        <td @php echo $cellBlue100WidthClass; @endphp rowspan="2">Sorğu №
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Invoice dəyəri
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Invoice dəyəri
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Gömrük dəyəri
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Gömrük dəyəri
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Statistik dəyər
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Statistik dəyər
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Məzənnə
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Məzənnə
         </td>
-        <td @php echo $cellClass; @endphp colspan="3">Gömrük rüsumları
+        <td @php echo $cellBlueClass; @endphp colspan="3">Gömrük rüsumları
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Materiallar
+        <td @php echo $cellBlue300WidthClass; @endphp rowspan="2">Materiallar
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Metr
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Metr
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Vahidin qiyməti
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Vahidin qiyməti
         </td>
-        <td @php echo $cellClass; @endphp rowspan="2">Məbləğ
+        <td @php echo $cellBlueClass; @endphp rowspan="2">Məbləğ
         </td>
     </tr>
     <tr>
-        <td @php echo $cellClass; @endphp>Gəlmə tarixi</td>
-        <td @php echo $cellClass; @endphp>Gömrük vaxtı</td>
-        <td @php echo $cellClass; @endphp>N</td>
-        <td @php echo $cellClass; @endphp>%</td>
-        <td @php echo $cellClass; @endphp>Məbləğ</td>
+        <td @php echo $cellBlue100WidthClass; @endphp>Gəlmə tarixi</td>
+        <td @php echo $cellBlue100WidthClass; @endphp>Gömrük vaxtı</td>
+        <td @php echo $cellBlueClass; @endphp>N</td>
+        <td @php echo $cellBlueClass; @endphp>%</td>
+        <td @php echo $cellBlueClass; @endphp>Məbləğ</td>
     </tr>
-    <tr>
-        <td rowspan="8">1</td>
-        <td @php echo $wordWrap; @endphp rowspan="8">İSA TEKSTİL SANAYİ VE TİCARET LTD.ŞTİ</td>
-        <td rowspan="8">04.01.2023</td>
-        <td rowspan="8">05.01.2023</td>
-        <td rowspan="8">01231000001246</td>
-        <td>78878,80</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>1.7</td>
-        <td>2</td>
-        <td>&nbsp;</td>
-        <td>600,00</td>
-        <td>Tül Kumaş 300 - 5804109000 - Tül</td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>19</td>
-        <td>&nbsp;</td>
-        <td>0,00</td>
-        <td>Dekor Kumaş 300 - 5407520000 - Dekor neylon,poliamid</td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr style="height: 30px;">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>20</td>
-        <td>15%</td>
-        <td>27517,04</td>
-        <td>Döşəməlik Kumaş 240 - 5407730000-Divan üzlüyü</td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr style="height: 29px;">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>32</td>
-        <td>18%</td>
-        <td>37973,53</td>
-        <td>Çarşaflı Kumaş 240 - 5407820000-Çit parça (boyanmış)
-        </td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr>
-        <td>Fərq</td>
-        <td>&nbsp;</td>
-        <td>29031,20</td>
-        <td>&nbsp;</td>
-        <td>75</td>
-        <td>0</td>
-        <td>90,00</td>
-        <td>Kumaş 220 - 5801909000 - Geyim</td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr style="height: 20px;">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>85</td>
-        <td>18%</td>
-        <td>16,20</td>
-        <td>Kartela - 4911101000-Kataloq və aksesuar</td>
-        <td>18520</td>
-        <td>1,60</td>
-        <td>29632,00</td>
-    </tr>
-    <tr style="height: 21px;">
-        <td>Çəki net</td>
-        <td>&nbsp;</td>
-        <td>19347,00</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td @php echo $cellClass; @endphp colspan="5">Cəmi</td>
-        <td @php echo $cellClass; @endphp>&nbsp;</td>
-        <td @php echo $cellClass; @endphp>İstanbul</td>
-        <td @php echo $cellClass; @endphp>FCA</td>
-        <td @php echo $cellClass; @endphp>120</td>
-        <td @php echo $cellClass; @endphp>&nbsp;</td>
-        <td @php echo $cellClass; @endphp>&nbsp;</td>
-        <td @php echo $cellClass; @endphp>66196,77</td>
-        <td @php echo $cellClass; @endphp>511005230101035</td>
-        <td @php echo $cellClass; @endphp>&nbsp;</td>
-        <td @php echo $cellClass; @endphp>&nbsp;</td>
-        <td @php echo $cellClass; @endphp>78878,80</td>
-    </tr>
+    @foreach($importQueries as $key => $importQuery)
+        <tr>
+            <td @php echo $cellTDClass; @endphp rowspan="8">{{ $key+1 }}</td>
+            <td @php echo $cellTDClass; @endphp rowspan="8">{{$importQuery->seller_company_name}}</td>
+            <td @php echo $cellTDClass; @endphp rowspan="8">
+                {{\Carbon\Carbon::parse($importQuery->delivery_date)->format('d.m.Y')}}
+            </td>
+            <td @php echo $cellTDClass; @endphp rowspan="8">
+                {{\Carbon\Carbon::parse($importQuery->customs_date)->format('d.m.Y')}}
+            </td>
+            <td @php echo $cellTDClass; @endphp rowspan="8">{{$importQuery->query_number}}</td>
+            <td>{{$importQuery->invoice_value}}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>{{$importQuery->currency->rate}}</td>
+            <td>2</td>
+            <td>&nbsp;</td>
+            <td>{{$importQuery->customs_transaction_fee}}</td>
+            <td>
+                {{$importQuery->importQueryDetails->first()->material_title_local}}-
+                {{$importQuery->importQueryDetails->first()->material_barcode}}-
+                {{$importQuery->importQueryDetails->first()->material_title_az}}
+            </td>
+            <td>{{$importQuery->importQueryDetails->first()->quantity}}</td>
+            <td>{{$importQuery->importQueryDetails->first()->price_per_unit_of_measure}}</td>
+            <td>{{$importQuery->importQueryDetails->first()->subtotal_amount}}</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>19</td>
+            <td>&nbsp;</td>
+            <td>{{$importQuery->customs_transaction_fee_24_hours}}</td>
+            @if($importQuery->importQueryDetails->skip(1)->first())
+                <td>
+                    {{$importQuery->importQueryDetails->skip(1)->first()->material_title_local}}-
+                    {{$importQuery->importQueryDetails->skip(1)->first()->material_barcode}}-
+                    {{$importQuery->importQueryDetails->skip(1)->first()->material_title_az}}
+                </td>
+                <td>{{$importQuery->importQueryDetails->skip(1)->first()->quantity}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(1)->first()->price_per_unit_of_measure}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(1)->first()->subtotal_amount}}</td>
+            @else
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            @endif
+        </tr>
+        <tr style="height: 30px;">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>20</td>
+            <td>15%</td>
+            <td>{{$importQuery->import_fee}}</td>
+            @if($importQuery->importQueryDetails->skip(2)->first())
+                <td>
+                    {{$importQuery->importQueryDetails->skip(2)->first()->material_title_local}}-
+                    {{$importQuery->importQueryDetails->skip(2)->first()->material_barcode}}-
+                    {{$importQuery->importQueryDetails->skip(2)->first()->material_title_az}}
+                </td>
+                <td>{{$importQuery->importQueryDetails->skip(2)->first()->quantity}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(2)->first()->price_per_unit_of_measure}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(2)->first()->subtotal_amount}}</td>
+            @else
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            @endif
+        </tr>
+        <tr style="height: 29px;">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>32</td>
+            <td>18%</td>
+            <td>{{$importQuery->vat}}</td>
+            @if($importQuery->importQueryDetails->skip(3)->first())
+                <td>
+                    {{$importQuery->importQueryDetails->skip(3)->first()->material_title_local}}-
+                    {{$importQuery->importQueryDetails->skip(3)->first()->material_barcode}}-
+                    {{$importQuery->importQueryDetails->skip(3)->first()->material_title_az}}
+                </td>
+                <td>{{$importQuery->importQueryDetails->skip(3)->first()->quantity}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(3)->first()->price_per_unit_of_measure}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(3)->first()->subtotal_amount}}</td>
+            @else
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            @endif
+        </tr>
+        <tr>
+            <td @php echo $cellBoldClass @endphp>Fərq</td>
+            <td>&nbsp;</td>
+            <td @php echo $cellBoldClass @endphp>
+                {{$importQuery->statistic_value - $importQuery->invoice_value}}
+            </td>
+            <td>&nbsp;</td>
+            <td>75</td>
+            <td>0</td>
+            <td>{{$importQuery->electronic_customs_fee}}</td>
+            @if($importQuery->importQueryDetails->skip(4)->first())
+                <td>
+                    {{$importQuery->importQueryDetails->skip(4)->first()->material_title_local}}-
+                    {{$importQuery->importQueryDetails->skip(4)->first()->material_barcode}}-
+                    {{$importQuery->importQueryDetails->skip(4)->first()->material_title_az}}
+                </td>
+                <td>{{$importQuery->importQueryDetails->skip(4)->first()->quantity}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(4)->first()->price_per_unit_of_measure}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(4)->first()->subtotal_amount}}</td>
+            @else
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            @endif
+        </tr>
+        <tr style="height: 20px;">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>85</td>
+            <td>18%</td>
+            <td>{{$importQuery->vat_for_electronic_customs_fee}}</td>
+            @if($importQuery->importQueryDetails->skip(5)->first())
+                <td>
+                    {{$importQuery->importQueryDetails->skip(5)->first()->material_title_local}}-
+                    {{$importQuery->importQueryDetails->skip(5)->first()->material_barcode}}-
+                    {{$importQuery->importQueryDetails->skip(5)->first()->material_title_az}}
+                </td>
+                <td>{{$importQuery->importQueryDetails->skip(5)->first()->quantity}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(5)->first()->price_per_unit_of_measure}}</td>
+                <td>{{$importQuery->importQueryDetails->skip(5)->first()->subtotal_amount}}</td>
+            @else
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            @endif
+        </tr>
+        <tr style="height: 21px;">
+            <td @php echo $cellBoldClass @endphp>Çəki net</td>
+            <td>&nbsp;</td>
+            <td @php echo $cellBoldClass @endphp>{{ $importQuery->net_weight }}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td @php echo $cellBlueClass; @endphp colspan="5">Cəmi</td>
+            <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
+            <td @php echo $cellBlueClass; @endphp>{{ $importQuery->shipping_from }}</td>
+            <td @php echo $cellBlueClass; @endphp>{{ $importQuery->transport_type }}</td>
+            <td @php echo $cellBlueClass; @endphp>
+                @switch($importQuery->payment_status)
+                    @case("PAID")
+                        100
+                    @case("PART_PAID")
+                        110
+                    @case("NOT_PAID")
+                        120
+                @endswitch
+            </td>
+            <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
+            <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
+            <td @php echo $cellBlueClass; @endphp>66196,77</td>
+            <td @php echo $cellBlueClass; @endphp>511005230101035</td>
+            <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
+            <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
+            <td @php echo $cellBlueClass; @endphp>78878,80</td>
+        </tr>
+    @endforeach
     </tbody>
 </table>
 </body>
