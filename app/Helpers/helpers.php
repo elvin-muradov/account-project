@@ -220,7 +220,7 @@ if (!function_exists('getLabelValue')) {
 if (!function_exists('generateOrderNumber')) {
     function generateOrderNumber($model, $companyName): string
     {
-        $count = $model::count();
+        $count = $model::count() + 1;
 
         return $companyName . '-' . $count . '/' . date('Y');
     }
