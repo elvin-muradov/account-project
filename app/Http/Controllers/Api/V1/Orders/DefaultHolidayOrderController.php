@@ -50,9 +50,9 @@ class DefaultHolidayOrderController extends Controller
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
         $gender = getGender($request->input('gender'));
-        $charHS = substr($holidayStartDate, '-1');
-        $charHE = substr($holidayEndDate, '-1');
-        $charES = substr($employmentStartDate, '-1');
+        $charHS = substr($holidayStartDate, '-2');
+        $charHE = substr($holidayEndDate, '-2');
+        $charES = substr($employmentStartDate, '-2');
 
         $lastCharHS = getNumberEnd($charHS);
         $lastCharHE = getNumberEnd($charHE);
@@ -129,9 +129,9 @@ class DefaultHolidayOrderController extends Controller
 
         $gender = getGender($request->input('gender'));
 
-        $charHE = substr($holidayEndDate, '-1');
-        $charES = substr($employmentStartDate, '-1');
-        $charHS = substr($holidayStartDate, '-1');
+        $charHE = substr($holidayEndDate, '-2');
+        $charES = substr($employmentStartDate, '-2');
+        $charHS = substr($holidayStartDate, '-2');
 
         $lastCharHS = getNumberEnd($charHS);
         $lastCharHE = getNumberEnd($charHE);

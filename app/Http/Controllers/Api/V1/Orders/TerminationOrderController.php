@@ -48,8 +48,8 @@ class TerminationOrderController extends Controller
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $char1 = substr($terminationDate, '-1');
-        $char2 = substr($employmentStartDate, '-1');
+        $char1 = substr($terminationDate, '-2');
+        $char2 = substr($employmentStartDate, '-2');
         $lastChar1 = getNumberEnd($char1);
         $lastChar2 = getNumberEnd($char2);
         $gender = getGender($request->input('gender'));
@@ -118,8 +118,8 @@ class TerminationOrderController extends Controller
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $char1 = substr($terminationDate, '-1');
-        $char2 = substr($employmentStartDate, '-1');
+        $char1 = substr($terminationDate, '-2');
+        $char2 = substr($employmentStartDate, '-2');
         $lastChar1 = getNumberEnd($char1);
         $lastChar2 = getNumberEnd($char2);
         $gender = getGender($request->input('gender'));

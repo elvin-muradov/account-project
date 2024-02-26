@@ -131,9 +131,9 @@ if (!function_exists('getNumberEnd')) {
     function getNumberEnd($char, $lastChar = null): string
     {
         $lastChar .= match ($char) {
-            '6', '0' => '-cı',
-            '4', '3' => '-cü',
-            '9' => '-cu',
+            '06', '00', '40', '60', '90' => '-cı',
+            '04', '03' => '-cü',
+            '09', '10', '30' => '-cu',
             default => '-ci',
         };
 

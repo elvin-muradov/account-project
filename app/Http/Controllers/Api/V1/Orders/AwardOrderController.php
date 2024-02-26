@@ -52,7 +52,7 @@ class AwardOrderController extends Controller
         $companyName = $company->company_name;
 
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
-        $char = substr($orderDate, '-1');
+        $char = substr($orderDate, '-2');
         $lastCharOD = getNumberEnd($char);
 
         $data = array_merge($data, [
@@ -110,7 +110,7 @@ class AwardOrderController extends Controller
         $companyName = $company->company_name;
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
 
-        $char = substr($orderDate, '-1');
+        $char = substr($orderDate, '-2');
 
         $lastCharOD = getNumberEnd($char);
 

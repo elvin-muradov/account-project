@@ -48,7 +48,7 @@ class BusinessTripOrderController extends Controller
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $endDate = Carbon::parse($request->input('end_date'))->format('d.m.Y');
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
-        $char = substr($endDate, '-1');
+        $char = substr($endDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 
@@ -119,7 +119,7 @@ class BusinessTripOrderController extends Controller
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $endDate = Carbon::parse($request->input('end_date'))->format('d.m.Y');
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
-        $char = substr($endDate, '-1');
+        $char = substr($endDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 

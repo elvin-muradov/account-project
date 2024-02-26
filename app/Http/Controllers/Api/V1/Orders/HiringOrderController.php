@@ -47,7 +47,7 @@ class HiringOrderController extends Controller
         $companyName = $company->company_name;
 
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
-        $char = substr($startDate, '-1');
+        $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 
@@ -111,7 +111,7 @@ class HiringOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
-        $char = substr($startDate, '-1');
+        $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 
