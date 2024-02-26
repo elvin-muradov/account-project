@@ -13,7 +13,6 @@ class CurrencyController extends Controller
 {
     use HttpResponses;
 
-
     public function index(Request $request): JsonResponse
     {
         $currencies = Currency::query()

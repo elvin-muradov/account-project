@@ -1,7 +1,8 @@
 <?php
 
+use App\Models\Orders\HiringOrder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Storage;
 
 if (!function_exists("getElementByKey")) {
     function getElementByKey($array, $searchKey, $value)
@@ -149,7 +150,6 @@ if (!function_exists('getGender')) {
         };
     }
 }
-
 if (!function_exists('getCbaRates')) {
     function getCbaRates($today)
     {
@@ -208,7 +208,6 @@ if (!function_exists('getCbaRates')) {
         return [$azn, $usd, $eur, $gbp, $try, $rub];
     }
 }
-
 if (!function_exists('getLabelValue')) {
     function getLabelValue(string $type, array $arr): array
     {
@@ -216,5 +215,13 @@ if (!function_exists('getLabelValue')) {
             'label' => collect($arr)->where('value', $type)->first()['label'],
             'value' => $type
         ];
+    }
+}
+if (!function_exists('generateOrderNumber')) {
+    function generateOrderNumber($model, $companyName): string
+    {
+        $count = $model::count();
+
+        return $companyName . '-' . $count . '/' . date('Y');
     }
 }

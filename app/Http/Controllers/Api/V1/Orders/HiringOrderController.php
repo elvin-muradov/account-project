@@ -42,6 +42,7 @@ class HiringOrderController extends Controller
     public function store(HiringOrderStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
@@ -66,7 +67,7 @@ class HiringOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $hiringOrder = HiringOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(HiringOrder::class, $company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -138,7 +139,6 @@ class HiringOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'hiring_orders');
 
         $hiringOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,

@@ -67,7 +67,7 @@ class PregnantOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $pregnantOrder = PregnantOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(PregnantOrder::class, $company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -143,7 +143,6 @@ class PregnantOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'pregnant_orders');
 
         $pregnantOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),

@@ -23,7 +23,7 @@ class AwardOrderUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['required', 'string', 'max:255',
+            'order_number' => ['nullable', 'string', 'max:255',
                 'unique:award_orders,order_number,' . $this->awardOrder],
             'company_id' => ['required', 'exists:companies,id'],
             'tax_id_number' => ['required', 'integer', 'digits:10'],

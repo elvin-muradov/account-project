@@ -68,7 +68,7 @@ class MotherhoodOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $motherhoodHolidayOrder = MotherhoodHolidayOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(MotherhoodHolidayOrder::class, $company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -145,7 +145,6 @@ class MotherhoodOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'motherhood_holiday_orders');
 
         $motherhoodHolidayOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),

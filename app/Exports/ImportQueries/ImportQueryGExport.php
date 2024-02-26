@@ -4,9 +4,10 @@ namespace App\Exports\ImportQueries;
 
 use App\Models\Queries\ImportQuery;
 use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class ImportQueryExport implements FromView
+class ImportQueryGExport implements FromView
 {
     public mixed $selectedIds;
 
@@ -28,7 +29,7 @@ class ImportQueryExport implements FromView
                 ->get();
         }
 
-        return view('exports.import_queries.import_query_export', [
+        return view('exports.import_queries.import_query_export_g', [
             'importQueries' => $importQueries
         ]);
     }

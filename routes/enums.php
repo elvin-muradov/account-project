@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/company-categories', [EnumsController::class, 'companyCategories']);
+    Route::get('/transport-types', [EnumsController::class, 'transportTypes']);
 });
 

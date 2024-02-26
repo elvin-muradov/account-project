@@ -70,7 +70,7 @@ class AwardOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $awardOrder = AwardOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(AwardOrder::class, $company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -138,7 +138,6 @@ class AwardOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'award_orders');
 
         $awardOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),

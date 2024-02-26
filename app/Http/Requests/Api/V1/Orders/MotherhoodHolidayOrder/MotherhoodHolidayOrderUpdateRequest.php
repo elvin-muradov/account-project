@@ -24,7 +24,7 @@ class MotherhoodHolidayOrderUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['required', 'string', 'max:255',
+            'order_number' => ['nullable', 'string', 'max:255',
                 'unique:motherhood_holiday_orders,order_number,' . $this->motherhoodHolidayOrder],
             'company_id' => ['required', 'exists:companies,id'],
             'company_name' => ['nullable', 'string', 'max:255'],

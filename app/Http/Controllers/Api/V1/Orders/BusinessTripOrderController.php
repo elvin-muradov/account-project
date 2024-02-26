@@ -69,7 +69,7 @@ class BusinessTripOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $businessTripOrder = BusinessTripOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(BusinessTripOrder::class,$company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -147,7 +147,6 @@ class BusinessTripOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'hiring_orders');
 
         $businessTripOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),

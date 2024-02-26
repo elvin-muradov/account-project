@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/import-queries/export', [ImportQueryExcelController::class, 'exportImportQueryExcel']);
+Route::get('/import-queries-g/export', [ImportQueryExcelController::class, 'exportImportQueryGExcel']);
 

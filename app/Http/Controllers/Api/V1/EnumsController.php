@@ -27,4 +27,54 @@ class EnumsController extends Controller
             ],
         ];
     }
+
+    public function transportTypes(): array
+    {
+        return [
+            [
+                'FCA' => 'FCA',
+                'label' => trans('transport_types.FCA')
+            ],
+            [
+                'FOB' => 'FOB',
+                'label' => trans('transport_types.FOB')
+            ],
+            [
+                'CIF' => 'CIF',
+                'label' => trans('transport_types.CIF')
+            ],
+            [
+                'EXW' => 'EXW',
+                'label' => trans('transport_types.EXW')
+            ],
+            [
+                'DAP' => 'DAP',
+                'label' => trans('transport_types.DAP')
+            ],
+            [
+                'DAT' => 'DAT',
+                'label' => trans('transport_types.DAT')
+            ],
+            [
+                'CPT' => 'CPT',
+                'label' => trans('transport_types.CPT')
+            ],
+            [
+                'CIP' => 'CIP',
+                'label' => trans('transport_types.CIP')
+            ],
+            [
+                'DDP' => 'DDP',
+                'label' => trans('transport_types.DDP')
+            ],
+            [
+                'FAS' => 'FAS',
+                'label' => trans('transport_types.FAS')
+            ],
+            [
+                'CFR' => 'CFR',
+                'label' => trans('transport_types.CFR')
+            ]
+        ];
+    }
 }

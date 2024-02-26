@@ -78,7 +78,7 @@ class DefaultHolidayOrderController extends Controller
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $defaultHolidayOrder = DefaultHolidayOrder::query()->create([
-            'order_number' => $request->input('order_number'),
+            'order_number' => generateOrderNumber(DefaultHolidayOrder::class, $company->company_short_name),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -166,7 +166,6 @@ class DefaultHolidayOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'default_holiday_orders');
 
         $defaultHolidayOrder->update([
-            'order_number' => $request->input('order_number'),
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),

@@ -52,7 +52,7 @@ class ImportQueryStoreRequest extends FormRequest
             'import_query_details.*.measure' => ['required', 'string', 'max:255'],
             'import_query_details.*.quantity' => ['required', 'numeric'],
             'import_query_details.*.price_per_unit_of_measure' => ['required', 'numeric'],
-            'import_query_details.*.subtotal_amount' => ['required', 'numeric'],
+            'import_query_details.*.subtotal_amount' => ['nullable', 'numeric'],
         ];
     }
 }

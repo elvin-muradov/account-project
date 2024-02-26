@@ -92,7 +92,7 @@ class ImportQueryController extends Controller
                 'measure' => $importQueryDetail['measure'],
                 'quantity' => $importQueryDetail['quantity'],
                 'price_per_unit_of_measure' => $importQueryDetail['price_per_unit_of_measure'],
-                'subtotal_amount' => $importQueryDetail['quantity'] * $importQueryDetail['price_per_unit_of_measure'],
+                'subtotal_amount' => $importQueryDetail['subtotal_amount'],
             ]);
         }
 

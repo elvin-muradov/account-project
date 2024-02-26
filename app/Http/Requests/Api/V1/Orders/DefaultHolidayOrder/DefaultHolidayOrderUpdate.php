@@ -23,7 +23,7 @@ class DefaultHolidayOrderUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['required', 'string', 'max:255',
+            'order_number' => ['nullable', 'string', 'max:255',
                 'unique:default_holiday_orders,order_number,' . $this->defaultHolidayOrder],
             'company_id' => ['required', 'exists:companies,id'],
             'tax_id_number' => ['required', 'integer', 'digits:10'],

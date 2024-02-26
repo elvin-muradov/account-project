@@ -24,7 +24,7 @@ class HiringOrderStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['required', 'string', 'max:255', 'unique:hiring_orders,order_number'],
+            'order_number' => ['nullable', 'string', 'max:255', 'unique:hiring_orders,order_number'],
             'company_id' => ['required', 'exists:companies,id'],
             'tax_id_number' => ['required', 'integer', 'digits:10'],
             'name' => ['required', 'string', 'max:255'],

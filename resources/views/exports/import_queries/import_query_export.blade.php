@@ -25,6 +25,7 @@
         ]
     ];
 
+    $cellGreenClass = 'style="word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #92D050;"';
     $cellBlueClass = 'style="word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
     $cellBlue100WidthClass = 'style="width:100px;word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
     $cellBlue300WidthClass = 'style="width:300px;word-wrap:break-word;border: 2px solid #000;font-style: italic;font-weight: bold;text-align: center;vertical-align: middle;background-color: #9BC2E6;"';
@@ -82,8 +83,8 @@
             </td>
             <td @php echo $cellTDClass; @endphp rowspan="8">{{$importQuery->query_number}}</td>
             <td>{{$importQuery->invoice_value}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td>{{$importQuery->customs_value}}</td>
+            <td>{{$importQuery->statistic_value}}</td>
             <td>{{$importQuery->currency->rate}}</td>
             <td>2</td>
             <td>&nbsp;</td>
@@ -196,9 +197,9 @@
             @endif
         </tr>
         <tr style="height: 20px;">
+            <td @php echo $cellBoldClass @endphp>Çəki net</td>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td @php echo $cellBoldClass @endphp>{{ $importQuery->net_weight }}</td>
             <td>&nbsp;</td>
             <td>85</td>
             <td>18%</td>
@@ -219,10 +220,36 @@
                 <td>&nbsp;</td>
             @endif
         </tr>
+        @foreach($importQuery->importQueryDetails->skip(6) as $importQueryDetail)
+            <tr style="height: 20px;">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                @if($importQuery->importQueryDetails->skip(5)->first())
+                    <td>
+                        {{$importQueryDetail->material_title_local}}-
+                        {{$importQueryDetail->material_barcode}}-
+                        {{$importQueryDetail->material_title_az}}
+                    </td>
+                    <td>{{$importQueryDetail->quantity}}</td>
+                    <td>{{$importQueryDetail->price_per_unit_of_measure}}</td>
+                    <td>{{$importQueryDetail->subtotal_amount}}</td>
+                @else
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                @endif
+            </tr>
+        @endforeach
         <tr style="height: 21px;">
-            <td @php echo $cellBoldClass @endphp>Çəki net</td>
             <td>&nbsp;</td>
-            <td @php echo $cellBoldClass @endphp>{{ $importQuery->net_weight }}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
@@ -254,19 +281,30 @@
                 @switch($importQuery->payment_status)
                     @case("PAID")
                         100
+                        @break
                     @case("PART_PAID")
                         110
+                        @break
                     @case("NOT_PAID")
                         120
+                        @break=
                 @endswitch
             </td>
             <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
             <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
-            <td @php echo $cellBlueClass; @endphp>66196,77</td>
-            <td @php echo $cellBlueClass; @endphp>511005230101035</td>
+            <td @php echo $cellGreenClass; @endphp>
+                {{
+                    $importQuery->customs_transaction_fee + $importQuery->customs_transaction_fee_24_hours +
+                    $importQuery->import_fee + $importQuery->vat +
+                    $importQuery->electronic_customs_fee + $importQuery->vat_for_electronic_customs_fee
+                }}
+            </td>
+            <td @php echo $cellBlueClass; @endphp>{{$importQuery->customs_barcode}}</td>
             <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
             <td @php echo $cellBlueClass; @endphp>&nbsp;</td>
-            <td @php echo $cellBlueClass; @endphp>78878,80</td>
+            <td @php echo $cellBlueClass; @endphp>
+                {{ $importQuery->importQueryDetails->sum('subtotal_amount') }}
+            </td>
         </tr>
     @endforeach
     </tbody>
