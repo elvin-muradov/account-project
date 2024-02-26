@@ -45,6 +45,7 @@ class BusinessTripOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
+        $orderNumber = generateOrderNumber(BusinessTripOrder::class, $company->company_short_name);
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $endDate = Carbon::parse($request->input('end_date'))->format('d.m.Y');
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
@@ -53,6 +54,7 @@ class BusinessTripOrderController extends Controller
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
@@ -62,14 +64,14 @@ class BusinessTripOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/BUSINESS_TRIP.docx');
-        $fileName = 'BUSINESS_TRIP_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'BUSINESS_TRIP_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/business_trip_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $businessTripOrder = BusinessTripOrder::query()->create([
-            'order_number' => generateOrderNumber(BusinessTripOrder::class,$company->company_short_name),
+            'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -116,6 +118,7 @@ class BusinessTripOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
+        $orderNumber = $businessTripOrder->order_number;
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $endDate = Carbon::parse($request->input('end_date'))->format('d.m.Y');
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
@@ -124,6 +127,7 @@ class BusinessTripOrderController extends Controller
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
@@ -133,18 +137,19 @@ class BusinessTripOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/BUSINESS_TRIP.docx');
-        $fileName = 'BUSINESS_TRIP_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'BUSINESS_TRIP_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/business_trip_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $businessTripOrderCurrentFile = $businessTripOrder->generated_file ?? [];
+
         $s3 = AWS::createClient('s3');
         $s3->deleteObject(array(
             'Bucket' => $businessTripOrderCurrentFile[0]['bucket'],
             'Key' => $businessTripOrderCurrentFile[0]['generated_name']
         ));
-        $generatedFilePath = returnOrderFile($filePath, $fileName, 'hiring_orders');
+        $generatedFilePath = returnOrderFile($filePath, $fileName, 'business_trip_orders');
 
         $businessTripOrder->update([
             'company_id' => $request->input('company_id'),

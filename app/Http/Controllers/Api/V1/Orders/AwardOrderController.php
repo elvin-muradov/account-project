@@ -51,26 +51,27 @@ class AwardOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
+        $orderNumber = generateOrderNumber(AwardOrder::class, $company->company_short_name);
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
         $char = substr($orderDate, '-2');
         $lastCharOD = getNumberEnd($char);
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'company_name' => $companyName,
             'order_date' => $orderDate,
             'last_char_od' => $lastCharOD
         ]);
 
         $documentPath = public_path('assets/order_templates/AWARD.docx');
-        $fileName = 'AWARD_ORDER_' . Str::slug($companyName) . '_'
-            . $request->input('order_number') . '.docx';
+        $fileName = 'AWARD_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/award_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $awardOrder = AwardOrder::query()->create([
-            'order_number' => generateOrderNumber(AwardOrder::class, $company->company_short_name),
+            'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -106,6 +107,7 @@ class AwardOrderController extends Controller
             return $this->error(message: 'Mükafat əmri tapılmadı', code: 404);
         }
 
+        $orderNumber = $awardOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
@@ -115,14 +117,14 @@ class AwardOrderController extends Controller
         $lastCharOD = getNumberEnd($char);
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char_od' => $lastCharOD,
             'company_name' => $companyName,
             'order_date' => $orderDate
         ]);
 
         $documentPath = public_path('assets/order_templates/AWARD.docx');
-        $fileName = 'AWARD_ORDER_' . Str::slug($companyName) .
-            '_' . $request->input('order_number') . '.docx';
+        $fileName = 'AWARD_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/award_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);

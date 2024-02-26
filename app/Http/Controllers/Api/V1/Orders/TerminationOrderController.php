@@ -48,6 +48,8 @@ class TerminationOrderController extends Controller
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
+        $orderNumber = generateOrderNumber(TerminationOrder::class, $company->company_short_name);
+
         $char1 = substr($terminationDate, '-2');
         $char2 = substr($employmentStartDate, '-2');
         $lastChar1 = getNumberEnd($char1);
@@ -55,6 +57,7 @@ class TerminationOrderController extends Controller
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char1' => $lastChar1,
             'last_char2' => $lastChar2,
             'company_name' => $companyName,
@@ -65,14 +68,14 @@ class TerminationOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/LEAVING_WORK.docx');
-        $fileName = 'TERMINATION_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'TERMINATION_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/termination_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $terminationOrder = TerminationOrder::query()->create([
-            'order_number' => generateOrderNumber(TerminationOrder::class, $company->company_short_name),
+            'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -113,6 +116,7 @@ class TerminationOrderController extends Controller
             return $this->error(message: 'Xitam sənədi tapılmadı', code: 404);
         }
 
+        $orderNumber = $terminationOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
@@ -125,6 +129,7 @@ class TerminationOrderController extends Controller
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char1' => $lastChar1,
             'last_char2' => $lastChar2,
             'company_name' => $companyName,
@@ -135,7 +140,7 @@ class TerminationOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/LEAVING_WORK.docx');
-        $fileName = 'TERMINATION_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'TERMINATION_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/termination_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);

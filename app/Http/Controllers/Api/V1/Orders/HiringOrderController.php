@@ -46,12 +46,14 @@ class HiringOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
+        $orderNumber = generateOrderNumber(HiringOrder::class, $company->company_short_name);
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
@@ -60,15 +62,14 @@ class HiringOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
-        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) .
-            '_' . generateOrderNumber(HiringOrder::class, $company->company_short_name) . '.docx';
+        $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/hiring_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $hiringOrder = HiringOrder::query()->create([
-            'order_number' => generateOrderNumber(HiringOrder::class, $company->company_short_name),
+            'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -111,12 +112,14 @@ class HiringOrderController extends Controller
 
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $orderNumber = $hiringOrder->order_number;
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
         $gender = getGender($request->input('gender'));
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
@@ -125,8 +128,7 @@ class HiringOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
-        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) . '_'
-            . generateOrderNumber(HiringOrder::class, $company->company_short_name) . '.docx';
+        $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/hiring_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);

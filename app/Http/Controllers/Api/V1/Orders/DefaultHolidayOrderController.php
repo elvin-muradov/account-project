@@ -45,6 +45,7 @@ class DefaultHolidayOrderController extends Controller
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
 
+        $orderNumber = generateOrderNumber(DefaultHolidayOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
@@ -59,6 +60,7 @@ class DefaultHolidayOrderController extends Controller
         $lastCharES = getNumberEnd($charES);
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char_hs' => $lastCharHS,
             'last_char_he' => $lastCharHE,
             'last_char_es' => $lastCharES,
@@ -70,15 +72,14 @@ class DefaultHolidayOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
-        $fileName = 'DEFAULT_HOLIDAY_ORDER_' . Str::slug($companyName) . '_'
-            . $request->input('order_number') . '.docx';
+        $fileName = 'DEFAULT_HOLIDAY_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/default_holiday_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
 
         $defaultHolidayOrder = DefaultHolidayOrder::query()->create([
-            'order_number' => generateOrderNumber(DefaultHolidayOrder::class, $company->company_short_name),
+            'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $request->input('tax_id_number'),
@@ -121,6 +122,7 @@ class DefaultHolidayOrderController extends Controller
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
+        $orderNumber = $defaultHolidayOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
@@ -138,6 +140,7 @@ class DefaultHolidayOrderController extends Controller
         $lastCharES = getNumberEnd($charES);
 
         $data = array_merge($data, [
+            'order_number' => $orderNumber,
             'last_char_hs' => $lastCharHS,
             'last_char_he' => $lastCharHE,
             'last_char_es' => $lastCharES,
@@ -149,8 +152,7 @@ class DefaultHolidayOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
-        $fileName = 'DEFAULT_HOLIDAY_ORDER_' . Str::slug($companyName) .
-            '_' . $request->input('order_number') . '.docx';
+        $fileName = 'DEFAULT_HOLIDAY_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/default_holiday_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
