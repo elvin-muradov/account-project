@@ -60,7 +60,8 @@ class HiringOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
-        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) .
+            '_' . generateOrderNumber(HiringOrder::class, $company->company_short_name) . '.docx';
         $filePath = public_path('assets/hiring_orders/' . $fileName);
 
         $templateProcessor = new TemplateProcessor($documentPath);
@@ -124,7 +125,8 @@ class HiringOrderController extends Controller
         ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
-        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) . '_' . $request->input('order_number') . '.docx';
+        $fileName = 'HIRING_ORDER_' . Str::slug($companyName) . '_'
+            . generateOrderNumber(HiringOrder::class, $company->company_short_name) . '.docx';
         $filePath = public_path('assets/hiring_orders/' . $fileName);
         $templateProcessor = new TemplateProcessor($documentPath);
         $this->templateProcessor($templateProcessor, $filePath, $data);
