@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AttendanceLogDayTypes;
 use App\Models\Orders\HiringOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -131,9 +132,10 @@ if (!function_exists('getNumberEnd')) {
     function getNumberEnd($char, $lastChar = null): string
     {
         $lastChar .= match ($char) {
-            '06', '00', '40', '60', '90' => '-cı',
-            '04', '03' => '-cü',
-            '09', '10', '30' => '-cu',
+            '06', '16', '26', '36', '40', '46', '56', '60', '66', '76', '86', '90', '96' => '-cı',
+            '04', '03', '13', '14', '23', '24', '33', '34', '43', '44',
+            '53', '54', '63', '64', '73', '74', '83', '84', '93', '94' => '-cü',
+            '09', '10', '19', '29', '30', '39', '49', '59', '69', '79', '89', '99' => '-cu',
             default => '-ci',
         };
 
@@ -223,5 +225,66 @@ if (!function_exists('generateOrderNumber')) {
         $count = $model::count() + 1;
 
         return $companyName . '-' . $count . '/' . date('Y');
+    }
+}
+if (!function_exists('toFloat')) {
+    function toFloat(float|int|string $value): float
+    {
+        return number_format(floatval($value), 2, '.', '');
+    }
+}
+if (!function_exists('returnMonthDaysAsArray')) {
+    function returnMonthDaysAsArray(int $count): array
+    {
+        $days = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $days[] = $i + 1;
+        }
+
+        return $days;
+    }
+}
+if (!function_exists('checkMonthDaysUnique')) {
+    function checkMonthDaysUnique(int $count, array $requestDays): bool
+    {
+        $monthDays = returnMonthDaysAsArray($count);
+
+        foreach ($requestDays as $key => $day) {
+            if (count(array_unique($requestDays)) !== count($monthDays)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+if (!function_exists('getMonthWorkDayHours')) {
+    function getMonthWorkDayHours(array $config): float|int
+    {
+        return array_sum(array_column($config, 'status'));
+    }
+}
+if (!function_exists('getCelebrationRestDaysCount')) {
+    function getCelebrationRestDaysCount(array $config): int
+    {
+        $dayTypes = array_values(AttendanceLogDayTypes::toArray());
+        $array = array_count_values(array_column($config, 'status'));
+
+        $totalDays = 0;
+
+        foreach ($dayTypes as $dayType) {
+            if (array_key_exists($dayType, $array)) {
+                $totalDays += $array[$dayType];
+            }
+        }
+
+        return $totalDays;
+    }
+}
+if (!function_exists('getMonthWorkDaysCount')) {
+    function getMonthWorkDaysCount(array $config): float|int
+    {
+        return count($config) - getCelebrationRestDaysCount($config);
     }
 }

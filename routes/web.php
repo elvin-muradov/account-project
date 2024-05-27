@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/api', function () {
+    $c = \Carbon\Carbon::createFromDate(2023, 1, 1, null);
+
+    dd($c);
 });

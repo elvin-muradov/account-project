@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1\Employee;
 use App\Enums\EducationTypesEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EmployeeStoreRequest extends FormRequest
 {
@@ -44,6 +45,9 @@ class EmployeeStoreRequest extends FormRequest
             'salary_card_expiration_date' => ['nullable', 'date'],
             'password' => ['required', 'confirmed', 'string', 'min:8', 'max:16'],
             'company_id' => ['required', 'numeric', 'exists:companies,id'],
+            'position_id' => ['required', 'integer',
+                Rule::exists("positions", "id")
+                    ->where("company_id", $this->company_id)],
         ];
     }
 }

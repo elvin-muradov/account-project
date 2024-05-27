@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Orders\AwardOrderController;
 use App\Http\Controllers\Api\V1\Orders\BusinessTripOrderController;
 use App\Http\Controllers\Api\V1\Orders\DefaultHolidayOrderController;
 use App\Http\Controllers\Api\V1\Orders\HiringOrderController;
+use App\Http\Controllers\Api\V1\Orders\IllnessOrderController;
 use App\Http\Controllers\Api\V1\Orders\MotherhoodOrderController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Controllers\Api\V1\Orders\PregnantOrderController;
@@ -61,6 +62,15 @@ Route::middleware(['lang'])->group(function () {
     Route::post('/pregnant-orders/{pregnantOrder}', [PregnantOrderController::class, 'update'])
         ->middleware('check_role_update:App\Models\Orders\PregnantOrder,pregnantOrder');
     Route::post('/pregnant-orders/{pregnantOrder}/delete', [PregnantOrderController::class, 'destroy']);
+
+    Route::get('/illness-orders', [IllnessOrderController::class, 'index']);
+    Route::post('/illness-orders', [IllnessOrderController::class, 'store']);
+    Route::get('/illness-orders/{illnessOrder}/download', [OrderController::class, 'downloadIllnessOrderFile']);
+    Route::get('/illness-orders/{illnessOrder}/get-file', [OrderController::class, 'getIllnessOrderFile']);
+    Route::get('/illness-orders/{illnessOrder}', [IllnessOrderController::class, 'show']);
+    Route::post('/illness-orders/{illnessOrder}', [IllnessOrderController::class, 'update'])
+        ->middleware('check_role_update:App\Models\Orders\IllnessOrder,illnessOrder');
+    Route::post('/illness-orders/{illnessOrder}/delete', [IllnessOrderController::class, 'destroy']);
 
     Route::get('/default-holiday-orders', [DefaultHolidayOrderController::class, 'index']);
     Route::post('/default-holiday-orders', [DefaultHolidayOrderController::class, 'store']);

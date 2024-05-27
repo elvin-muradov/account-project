@@ -8,6 +8,7 @@ use App\Models\Orders\AwardOrder;
 use App\Models\Orders\BusinessTripOrder;
 use App\Models\Orders\DefaultHolidayOrder;
 use App\Models\Orders\HiringOrder;
+use App\Models\Orders\IllnessOrder;
 use App\Models\Orders\MotherhoodHolidayOrder;
 use App\Models\Orders\PregnantOrder;
 use App\Models\Orders\TerminationOrder;
@@ -80,6 +81,7 @@ class OrderController extends Controller
             'business_trip' => BusinessTripOrder::query()->find($order),
             'termination' => TerminationOrder::query()->find($order),
             'pregnant' => PregnantOrder::query()->find($order),
+            'illness' => IllnessOrder::query()->find($order),
             'default_holiday' => DefaultHolidayOrder::query()->find($order),
             'motherhood_holiday' => MotherhoodHolidayOrder::query()->find($order),
             'award' => AwardOrder::query()->find($order),
@@ -147,6 +149,16 @@ class OrderController extends Controller
     public function getPregnantOrderFile($pregnantOrder): Throwable|JsonResponse|StreamedResponse
     {
         return $this->getOrderFile($pregnantOrder, 'pregnant');
+    }
+
+    public function downloadIllnessOrderFile($illnessOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->downloadOrderFile($illnessOrder, 'illness');
+    }
+
+    public function getIllnessOrderFile($illnessOrder): Throwable|JsonResponse|StreamedResponse
+    {
+        return $this->getOrderFile($illnessOrder, 'illness');
     }
 
     public

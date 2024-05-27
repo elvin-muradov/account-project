@@ -69,18 +69,18 @@ class ImportQueryController extends Controller
             'customs_date' => $request->input('customs_date'),
             'transport_type' => $request->input('transport_type'),
             'payment_status' => $request->input('payment_status'),
-            'net_weight' => $request->input('net_weight'),
-            'statistic_value' => $request->input('statistic_value'), // ???
-            'invoice_value' => $invoiceValue,
-            'customs_value' => $customsValue,
-            'customs_transaction_fee' => $customsTransactionFee, //// $request->input('customs_transaction_fee')
+            'net_weight' => toFloat($request->input('net_weight')),
+            'statistic_value' => toFloat($request->input('statistic_value')), // ???
+            'invoice_value' => toFloat($invoiceValue),
+            'customs_value' => toFloat($customsValue),
+            'customs_transaction_fee' => toFloat($customsTransactionFee), // $request->input('customs_transaction_fee')
             'customs_transaction_fee_24_hours'
-            => $customsTransactionFee24, // $request->input('customs_transaction_fee_24_hours')
-            'import_fee' => $importFee, // $request->input('import_fee'), // customsValue*0.15
-            'vat' => $vat, // $request->input('vat')
-            'electronic_customs_fee' => $electronicCustomsFee, // $request->input('electronic_customs_fee')
+            => toFloat($customsTransactionFee24), // $request->input('customs_transaction_fee_24_hours')
+            'import_fee' => toFloat($importFee), // $request->input('import_fee'), // customsValue*0.15
+            'vat' => toFloat($vat), // $request->input('vat')
+            'electronic_customs_fee' => toFloat($electronicCustomsFee), // $request->input('electronic_customs_fee')
             'vat_for_electronic_customs_fee'
-            => $vatForElectronicCustomsFee, // $request->input('vat_for_electronic_customs_fee')
+            => toFloat($vatForElectronicCustomsFee), // $request->input('vat_for_electronic_customs_fee')
         ]);
 
         foreach ($importQueryDetails as $importQueryDetail) {
@@ -90,9 +90,9 @@ class ImportQueryController extends Controller
                 'material_barcode' => $importQueryDetail['material_barcode'],
                 'material_title_az' => $importQueryDetail['material_title_az'],
                 'measure' => $importQueryDetail['measure'],
-                'quantity' => $importQueryDetail['quantity'],
-                'price_per_unit_of_measure' => $importQueryDetail['price_per_unit_of_measure'],
-                'subtotal_amount' => $importQueryDetail['subtotal_amount'],
+                'quantity' => toFloat($importQueryDetail['quantity']),
+                'price_per_unit_of_measure' => toFloat($importQueryDetail['price_per_unit_of_measure']),
+                'subtotal_amount' => toFloat($importQueryDetail['subtotal_amount']),
             ]);
         }
 
@@ -110,16 +110,16 @@ class ImportQueryController extends Controller
         }
 
         $invoiceValue = 0;
-        $customsTransactionFee = $request->input('customs_transaction_fee');
-        $customsTransactionFee24 = $request->input('customs_transaction_fee_24_hours');
-        $electronicCustomsFee = $request->input('electronic_customs_fee');
-        $statisticValue = $request->input('statistic_value');
+        $customsTransactionFee = toFloat($request->input('customs_transaction_fee'));
+        $customsTransactionFee24 = toFloat($request->input('customs_transaction_fee_24_hours'));
+        $electronicCustomsFee = toFloat($request->input('electronic_customs_fee'));
+        $statisticValue = toFloat($request->input('statistic_value'));
         $currencyId = $request->input('currency_id');
         $currency = Currency::query()->find($currencyId);
         $customsValue = $currency->rate * $statisticValue;
-        $importFee = $customsValue * 0.15;
-        $vat = ($customsValue + $customsTransactionFee + $customsTransactionFee24 + $importFee) * 0.18;
-        $vatForElectronicCustomsFee = $electronicCustomsFee * 0.18;
+        $importFee = toFloat($customsValue * 0.15);
+        $vat = toFloat(($customsValue + $customsTransactionFee + $customsTransactionFee24 + $importFee) * 0.18);
+        $vatForElectronicCustomsFee = toFloat($electronicCustomsFee * 0.18);
 
         $importQueryDetails = [];
 
@@ -147,17 +147,17 @@ class ImportQueryController extends Controller
             'transport_type' => $request->input('transport_type'),
             'payment_status' => $request->input('payment_status'),
             'net_weight' => $request->input('net_weight'),
-            'statistic_value' => $request->input('statistic_value'),
-            'invoice_value' => $invoiceValue,
-            'customs_value' => $customsValue,
-            'customs_transaction_fee' => $customsTransactionFee, //// $request->input('customs_transaction_fee')
+            'statistic_value' => toFloat($request->input('statistic_value')),
+            'invoice_value' => toFloat($invoiceValue),
+            'customs_value' => toFloat($customsValue),
+            'customs_transaction_fee' => toFloat($customsTransactionFee), // $request->input('customs_transaction_fee')
             'customs_transaction_fee_24_hours'
-            => $customsTransactionFee24, // $request->input('customs_transaction_fee_24_hours')
-            'import_fee' => $importFee, // $request->input('import_fee'), // customsValue*0.15
-            'vat' => $vat, // $request->input('vat')
-            'electronic_customs_fee' => $electronicCustomsFee, // $request->input('electronic_customs_fee')
+            => toFloat($customsTransactionFee24), // $request->input('customs_transaction_fee_24_hours')
+            'import_fee' => toFloat($importFee), // $request->input('import_fee'), // customsValue*0.15
+            'vat' => toFloat($vat), // $request->input('vat')
+            'electronic_customs_fee' => toFloat($electronicCustomsFee), // $request->input('electronic_customs_fee')
             'vat_for_electronic_customs_fee'
-            => $vatForElectronicCustomsFee, // $request->input('vat_for_electronic_customs_fee')
+            => toFloat($vatForElectronicCustomsFee), // $request->input('vat_for_electronic_customs_fee')
         ]);
 
         ImportQueryDetail::query()->where('import_query_id', $importQuery->id)->delete();
@@ -169,11 +169,11 @@ class ImportQueryController extends Controller
                     'material_title_local' => $importQueryDetail['material_title_local'],
                     'material_barcode' => $importQueryDetail['material_barcode'],
                     'material_title_az' => $importQueryDetail['material_title_az'],
-                    'measure' => $importQueryDetail['measure'],
-                    'quantity' => $importQueryDetail['quantity'],
-                    'price_per_unit_of_measure' => $importQueryDetail['price_per_unit_of_measure'],
+                    'measure' => toFloat($importQueryDetail['measure']),
+                    'quantity' => toFloat($importQueryDetail['quantity']),
+                    'price_per_unit_of_measure' => toFloat($importQueryDetail['price_per_unit_of_measure']),
                     'subtotal_amount'
-                    => $importQueryDetail['quantity'] * $importQueryDetail['price_per_unit_of_measure'],
+                    => toFloat($importQueryDetail['quantity'] * $importQueryDetail['price_per_unit_of_measure']),
                 ]);
         }
 

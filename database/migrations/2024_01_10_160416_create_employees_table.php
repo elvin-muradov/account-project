@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('surname');
             $table->string('father_name')->nullable();
             $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('position_id')->nullable();
             $table->date('birth_date');
             $table->string('id_card_serial')->unique();
             $table->string('fin_code')->unique();
@@ -36,6 +37,10 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('position_id')
+                ->nullOnDelete()
+                ->references('id')
+                ->on('positions');
         });
     }
 

@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Companies\ActivityCodeController;
+use App\Http\Controllers\Api\V1\Companies\AttendanceLogConfigController;
+use App\Http\Controllers\Api\V1\Companies\AttendanceLogController;
 use App\Http\Controllers\Api\V1\Companies\CompanyController;
 use App\Http\Controllers\Api\V1\Companies\MainDocumentController;
 use App\Http\Controllers\Api\V1\Companies\MaterialController;
 use App\Http\Controllers\Api\V1\Companies\MaterialGroupController;
 use App\Http\Controllers\Api\V1\Companies\MeasureController;
+use App\Http\Controllers\Api\V1\Companies\PositionController;
 use App\Http\Controllers\Api\V1\Companies\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,5 +75,29 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::post('/measures/{measure}', [MeasureController::class, 'update']);
     Route::get('/measures/{measure}', [MeasureController::class, 'show']);
     Route::delete('/measures/{measure}', [MeasureController::class, 'destroy']);
+
+    // Positions Routes
+    Route::get('/positions', [PositionController::class, 'index']);
+    Route::post('/positions', [PositionController::class, 'store']);
+    Route::post('/positions/{position}', [PositionController::class, 'update']);
+    Route::get('/positions/{position}', [PositionController::class, 'show']);
+    Route::delete('/positions/{position}', [PositionController::class, 'destroy']);
+
+    // Company Positions
+    Route::get('/company-positions', [PositionController::class, 'showPositionsByCompany']);
+
+    // AttendanceLogConfig Routes
+    Route::get('/attendance-logs-config', [AttendanceLogConfigController::class, 'index']);
+    Route::post('/attendance-logs-config', [AttendanceLogConfigController::class, 'store']);
+    Route::post('/attendance-logs-config/{attendanceLogConfig}', [AttendanceLogConfigController::class, 'update']);
+    Route::get('/attendance-logs-config/{attendanceLogConfig}', [AttendanceLogConfigController::class, 'show']);
+    Route::delete('/attendance-logs-config/{attendanceLogConfig}', [AttendanceLogConfigController::class, 'destroy']);
+
+    // AttendanceLog Routes
+    Route::get('/attendance-logs', [AttendanceLogController::class, 'index']);
+    Route::post('/attendance-logs', [AttendanceLogController::class, 'store']);
+    Route::post('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'update']);
+    Route::get('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'show']);
+    Route::delete('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'destroy']);
 });
 

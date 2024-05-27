@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>İdxal Excel Export</title>
+    <title>İdxal</title>
 </head>
 <body>
 @php
@@ -73,15 +73,17 @@
     </tr>
     @foreach($importQueries as $key => $importQuery)
         <tr>
-            <td @php echo $cellTDClass; @endphp rowspan="8">{{ $key+1 }}</td>
-            <td @php echo $cellTDClass; @endphp rowspan="8">{{$importQuery->seller_company_name}}</td>
-            <td @php echo $cellTDClass; @endphp rowspan="8">
+            <td @php echo $cellTDClass; @endphp rowspan="{{$importQuery->importQueryDetails->count() + 2}}">
+                {{ $key+1 }}
+            </td>
+            <td @php echo $cellTDClass; @endphp rowspan="{{$importQuery->importQueryDetails->count() + 2}}">{{$importQuery->seller_company_name}}</td>
+            <td @php echo $cellTDClass; @endphp rowspan="{{$importQuery->importQueryDetails->count() + 2}}">
                 {{\Carbon\Carbon::parse($importQuery->delivery_date)->format('d.m.Y')}}
             </td>
-            <td @php echo $cellTDClass; @endphp rowspan="8">
+            <td @php echo $cellTDClass; @endphp rowspan="{{$importQuery->importQueryDetails->count() + 2}}">
                 {{\Carbon\Carbon::parse($importQuery->customs_date)->format('d.m.Y')}}
             </td>
-            <td @php echo $cellTDClass; @endphp rowspan="8">{{$importQuery->query_number}}</td>
+            <td @php echo $cellTDClass; @endphp rowspan="{{$importQuery->importQueryDetails->count() + 2}}">{{$importQuery->query_number}}</td>
             <td>{{$importQuery->invoice_value}}</td>
             <td>{{$importQuery->customs_value}}</td>
             <td>{{$importQuery->statistic_value}}</td>

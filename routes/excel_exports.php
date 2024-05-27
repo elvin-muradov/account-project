@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Excel\ImportCostExcelController;
 use App\Http\Controllers\Api\V1\Excel\ImportQueryExcelController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/import-queries/export', [ImportQueryExcelController::class, 'exportImportQueryExcel']);
 Route::get('/import-queries-g/export', [ImportQueryExcelController::class, 'exportImportQueryGExcel']);
+Route::get('/import-costs/export', [ImportCostExcelController::class, 'exportImportCostsExcel']);
+Route::get('/import-costs-vn/export', [ImportCostExcelController::class, 'exportImportCostsVNExcel']);
 

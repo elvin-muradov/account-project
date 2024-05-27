@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>İdxal M Excel Export</title>
+    <title>İdxal M</title>
 </head>
 <body>
 @php

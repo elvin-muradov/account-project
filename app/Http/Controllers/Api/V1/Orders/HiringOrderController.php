@@ -7,6 +7,8 @@ use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderUpdateRequest;
 use App\Http\Resources\Api\V1\Orders\HiringOrders\HiringOrderCollection;
 use App\Http\Resources\Api\V1\Orders\HiringOrders\HiringOrderResource;
+use App\Models\Company\AttendanceLog;
+use App\Models\Company\AttendanceLogConfig;
 use App\Models\Company\Company;
 use App\Models\Orders\HiringOrder;
 use App\Traits\HttpResponses;
@@ -61,6 +63,56 @@ class HiringOrderController extends Controller
             'tax_id_number' => $company->tax_id_number
         ]);
 
+        $year = Carbon::parse($request->input('start_date'))->format('Y');
+        $month = Carbon::parse($request->input('start_date'))->format('n');
+        $day = Carbon::parse($request->input('start_date'))->format('j');
+
+        $attendanceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('year', $year)
+            ->where('month', $month)
+            ->first();
+
+        if (!$attendanceLogConfig) {
+            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
+        }
+
+        $attendanceLog = AttendanceLog::query()
+            ->where('company_id', $attendanceLogConfig->company_id)
+            ->where('year', $attendanceLogConfig->year)
+            ->where('month', $attendanceLogConfig->month)
+            ->where('employee_id', $request->input('employee_id'))
+            ->first();
+
+        $config = $attendanceLogConfig->config;
+
+        for ($i = 0; $i < $day - 1; $i++) {
+            $config[$i] = [
+                'day' => $i + 1,
+                'status' => 'NULL_DAY',
+            ];
+        }
+
+        if ($attendanceLog) {
+            return $this->error(message: 'İşçi artıq tabelə əlavə olunub', code: 404);
+        }
+
+        $countMonthWorkDayHours = getMonthWorkDayHours($config);
+        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
+        $countMonthWorkDays = getMonthWorkDaysCount($config);
+
+        AttendanceLog::query()
+            ->create([
+                'company_id' => $attendanceLogConfig->company_id,
+                'employee_id' => $request->input('employee_id'),
+                'year' => $attendanceLogConfig->year,
+                'month' => $attendanceLogConfig->month,
+                'days' => $config,
+                'month_work_days' => $countMonthWorkDays,
+                'celebration_days' => $countCelebrationRestDays,
+                'month_work_day_hours' => $countMonthWorkDayHours,
+            ]);
+
         $documentPath = public_path('assets/order_templates/HIRING.docx');
         $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
         $filePath = public_path('assets/hiring_orders/' . $fileName);
@@ -71,6 +123,7 @@ class HiringOrderController extends Controller
         $hiringOrder = HiringOrder::query()->create([
             'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
+            'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $request->input('name'),
@@ -126,6 +179,54 @@ class HiringOrderController extends Controller
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number,
         ]);
+
+        $year = Carbon::parse($request->input('start_date'))->format('Y');
+        $month = Carbon::parse($request->input('start_date'))->format('n');
+        $day = Carbon::parse($request->input('start_date'))->format('j');
+
+        $attendanceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('year', $year)
+            ->where('month', $month)
+            ->first();
+
+        if (!$attendanceLogConfig) {
+            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
+        }
+
+        $attendanceLog = AttendanceLog::query()
+            ->where('company_id', $attendanceLogConfig->company_id)
+            ->where('year', $attendanceLogConfig->year)
+            ->where('month', $attendanceLogConfig->month)
+            ->where('employee_id', $request->input('employee_id'))
+            ->first();
+
+        $attendanceLog?->delete();
+
+        $config = $attendanceLogConfig->config;
+
+        for ($i = 0; $i < $day - 1; $i++) {
+            $config[$i] = [
+                'day' => $i + 1,
+                'status' => 'NULL_DAY',
+            ];
+        }
+
+        $countMonthWorkDayHours = getMonthWorkDayHours($config);
+        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
+        $countMonthWorkDays = getMonthWorkDaysCount($config);
+
+        AttendanceLog::query()
+            ->create([
+                'company_id' => $attendanceLogConfig->company_id,
+                'employee_id' => $request->input('employee_id'),
+                'year' => $attendanceLogConfig->year,
+                'month' => $attendanceLogConfig->month,
+                'days' => $config,
+                'month_work_days' => $countMonthWorkDays,
+                'celebration_days' => $countCelebrationRestDays,
+                'month_work_day_hours' => $countMonthWorkDayHours,
+            ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
         $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';

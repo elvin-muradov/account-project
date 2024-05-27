@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Users;
 
+use App\Models\Company\Position;
 use App\Models\Employee;
 use App\Models\User;
 use Carbon\Carbon;
@@ -96,11 +97,22 @@ class UserSeeder extends Seeder
         $leadingExpert->assignRole('leading_expert');
         $accountant->assignRole('accountant');
 
+        $position1 = Position::query()->create([
+            'name' => 'Kassir',
+            'company_id' => 1
+        ]);
+
+        $position2 = Position::query()->create([
+            'name' => 'Satıcı',
+            'company_id' => 1
+        ]);
+
         $companyEmployee = Employee::query()->create([
             'name' => 'Bamsı',
             'surname' => 'Beyrək',
             'father_name' => 'Dədə qorqud',
             'company_id' => 1,
+            'position_id' => $position1->id,
             'birth_date' => '1999-09-30',
             'id_card_serial' => 'AZE8888888',
             'fin_code' => '4RYESJV',

@@ -73,6 +73,21 @@ class Company extends Model
         return $this->belongsTo(User::class, 'accountant_id');
     }
 
+    public function positions(): HasMany
+    {
+        return $this->hasMany(Position::class, 'company_id');
+    }
+
+    public function attendanceLogConfigs(): HasMany
+    {
+        return $this->hasMany(AttendanceLogConfig::class, 'company_id');
+    }
+
+    public function attendanceLogs(): HasMany
+    {
+        return $this->hasMany(AttendanceLog::class, 'company_id');
+    }
+
     public function scopeOrder($query, $order_by): void
     {
         if (is_array($order_by)) {
