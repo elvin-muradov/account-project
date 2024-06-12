@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\Employee;
 
 use App\Enums\EducationTypesEnum;
+use App\Enums\GenderTypes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,6 +36,7 @@ class EmployeeStoreRequest extends FormRequest
             'id_card_date' => ['required', 'date'],
             'ssn' => ['required', 'numeric', 'digits:13', 'unique:employees,ssn'],
             'start_date_of_employment' => ['required', 'date'],
+            'gender' => ['required', 'in:' . GenderTypes::toString()],
             'end_date_of_employment' => ['nullable', 'date'],
             'previous_job' => ['nullable', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255', 'unique:employees,phone', 'phone:AZ'],
@@ -43,7 +45,8 @@ class EmployeeStoreRequest extends FormRequest
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
             'salary' => ['nullable', 'numeric'],
             'salary_card_expiration_date' => ['nullable', 'date'],
-            'password' => ['required', 'confirmed', 'string', 'min:8', 'max:16'],
+            'is_director' => ['required', 'boolean'],
+            'password' => ['nullable', Rule::requiredIf($this->is_director), 'confirmed', 'string', 'min:8', 'max:16'],
             'company_id' => ['required', 'numeric', 'exists:companies,id'],
             'position_id' => ['required', 'integer',
                 Rule::exists("positions", "id")

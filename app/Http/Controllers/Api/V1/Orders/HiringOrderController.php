@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use NumberToWords\Exception\InvalidArgumentException;
+use NumberToWords\Exception\NumberToWordsException;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -44,6 +46,12 @@ class HiringOrderController extends Controller
     public function store(HiringOrderStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        try {
+            dd(getNumberAsWords($request->input('salary')));
+        } catch (InvalidArgumentException|NumberToWordsException $e) {
+            return $this->error(message: $e->getMessage(), code: 400);
+        }
 
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;

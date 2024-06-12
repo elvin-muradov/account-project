@@ -30,7 +30,8 @@ class Company extends Model
         'fixed_asset_files' => 'array',
         'director_id' => 'integer',
         'main_user_id' => 'integer',
-        'accountant_id' => 'integer'
+        'accountant_id' => 'integer',
+        'fixed_asset_files_exists' => 'boolean'
     ];
 
     public function mainUser(): BelongsTo

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\EducationTypesEnum;
+use App\Enums\GenderTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,16 +31,17 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->float('work_experience')->nullable();
             $table->enum('education', EducationTypesEnum::toArray());
+            $table->enum('gender', GenderTypes::toArray());
             $table->float('salary')->nullable();
             $table->date('salary_card_expiration_date')->nullable();
-            $table->string('password');
+            $table->boolean('is_director')->default(false);
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('position_id')
-                ->nullOnDelete()
-                ->references('id')
+                ->nullOnDelete()->references('id')
                 ->on('positions');
         });
     }

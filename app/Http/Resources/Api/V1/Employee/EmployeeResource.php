@@ -23,6 +23,11 @@ class EmployeeResource extends JsonResource
             'company_id' => $this->company_id,
             'company' => $this->whenLoaded('company') ?
                 $this->company->only('id', 'company_name') : null,
+            'position_id' => $this->position_id,
+            'position' => $this->whenLoaded('position') ?
+                $this->position->only('id', 'name') : null,
+            'is_director' => $this->is_director,
+            'gender' => $this->gender,
             'birth_date' => $this->birth_date,
             'id_card_serial' => $this->id_card_serial,
             'fin_code' => $this->fin_code,

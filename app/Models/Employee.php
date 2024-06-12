@@ -22,6 +22,7 @@ class Employee extends Authenticatable
 
     protected $casts = [
         'salary' => 'float',
+        'is_director' => 'boolean'
     ];
 
     protected $hidden = [

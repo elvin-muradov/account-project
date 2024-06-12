@@ -13,6 +13,7 @@ use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CompanyController extends Controller
 {
@@ -31,6 +32,18 @@ class CompanyController extends Controller
     public function store(CompanyStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        $taxIdNumber = $request->input('tax_id_number');
+        $taxIdNumberEndRule = Str::endsWith($taxIdNumber, '1') || Str::endsWith($taxIdNumber, '2');
+
+        if ($taxIdNumberEndRule) {
+            $taxIdNumberEndsWithBool = Str::endsWith($taxIdNumber, '1'); // True -> LEGAL, False -> INDIVIDUAL
+            $taxIdNumberEndsWithBool ? $data['owner_type'] = 'LEGAL' : $data['owner_type'] = 'INDIVIDUAL';
+        } else {
+            return $this->error(message: "VÖEN sonu 1 və ya 2 ilə bitməlidir", code: 400);
+        }
+
+        $fixedAssetFilesExists = $request->input('fixed_asset_files_exists');
 
         if ($request->hasFile('tax_id_number_files')) {
             $tinFiles = $request->file('tax_id_number_files');
@@ -59,7 +72,7 @@ class CompanyController extends Controller
             $data = array_merge($data, ['founding_decision_files' => returnFilesArray($foundingDecisionFiles,
                 'founding_decision_files')]);
         }
-        if ($request->hasFile('fixed_asset_files')) {
+        if ($request->hasFile('fixed_asset_files') && $fixedAssetFilesExists) {
             $fixedAssetFiles = $request->file('fixed_asset_files', []);
             $data = array_merge($data, ['fixed_asset_files' => returnFilesArray($fixedAssetFiles,
                 'fixed_asset_files')]);
@@ -91,6 +104,18 @@ class CompanyController extends Controller
         if (!$company) {
             return $this->error(message: "Şirkət tapılmadı", code: 404);
         }
+
+        $taxIdNumber = $request->input('tax_id_number');
+        $taxIdNumberEndRule = Str::endsWith($taxIdNumber, '1') || Str::endsWith($taxIdNumber, '2');
+
+        if ($taxIdNumberEndRule) {
+            $taxIdNumberEndsWithBool = Str::endsWith($taxIdNumber, '1'); // True -> LEGAL, False -> INDIVIDUAL
+            $taxIdNumberEndsWithBool ? $data['owner_type'] = 'LEGAL' : $data['owner_type'] = 'INDIVIDUAL';
+        } else {
+            return $this->error(message: "VÖEN sonu 1 və ya 2 ilə bitməlidir", code: 400);
+        }
+
+        $fixedAssetFilesExists = $request->input('fixed_asset_files_exists');
 
         if ($request->has('delete_tax_id_number_files') && $request->delete_tax_id_number_files != null) {
             $deletedTinFiles = $request->input('delete_tax_id_number_files');
@@ -214,7 +239,7 @@ class CompanyController extends Controller
             $data = array_merge($data, ['founding_decision_files' => array_merge($foundingDecisionFilesArr,
                 $updatedFiles)]);
         }
-        if ($request->hasFile('fixed_asset_files')) {
+        if ($request->hasFile('fixed_asset_files') && $fixedAssetFilesExists) {
             $fixedAssetFiles = $request->file('fixed_asset_files');
             $fixedAssetFilesArr = $company->fixed_asset_files ?? [];
             $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');

@@ -4,6 +4,8 @@ use App\Enums\AttendanceLogDayTypes;
 use App\Models\Orders\HiringOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
+use NumberToWords\Exception\NumberToWordsException;
+use NumberToWords\NumberToWords;
 
 if (!function_exists("getElementByKey")) {
     function getElementByKey($array, $searchKey, $value)
@@ -286,5 +288,18 @@ if (!function_exists('getMonthWorkDaysCount')) {
     function getMonthWorkDaysCount(array $config): float|int
     {
         return count($config) - getCelebrationRestDaysCount($config);
+    }
+}
+if (!function_exists('getNumberAsWords')) {
+    /**
+     * @throws NumberToWordsException
+     * @throws \NumberToWords\Exception\InvalidArgumentException
+     */
+    function getNumberAsWords(int|float $number): string
+    {
+        $numberToWords = new NumberToWords();
+        $numberToWordsTransformer = $numberToWords->getNumberTransformer('az');
+
+        return $numberToWordsTransformer->toWords($number);
     }
 }

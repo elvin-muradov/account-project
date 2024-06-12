@@ -34,6 +34,7 @@ return new class extends Migration {
             $table->jsonb('extract_files')->nullable(); // Çıxarış faylları
             $table->jsonb('director_id_card_files')->nullable(); // Direktorun ŞV faylları
             $table->jsonb('creators_files')->nullable(); // Təsisçi faylları
+            $table->boolean('fixed_asset_files_exists')->default(false); // Mülkiyyətində olan əsas vəsaitlər bool
             $table->jsonb('fixed_asset_files')->nullable(); // Mülkiyyətində olan əsas vəsaitlərin faylları
             $table->jsonb('founding_decision_files')->nullable(); // Təsisçi qərarı faylları
             $table->string('asan_sign'); // ASAN imza mobil nömrəsi

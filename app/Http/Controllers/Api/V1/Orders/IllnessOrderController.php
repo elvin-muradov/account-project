@@ -48,7 +48,8 @@ class IllnessOrderController extends Controller
         $companyName = $company->company_name;
 
         $orderNumber = generateOrderNumber(IllnessOrder::class, $company->company_short_name);
-        $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
+        $holidayStartDate = Carbon::parse($request
+            ->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
