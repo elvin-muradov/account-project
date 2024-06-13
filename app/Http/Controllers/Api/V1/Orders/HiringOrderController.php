@@ -42,6 +42,7 @@ class HiringOrderController extends Controller
 
     /**
      * @throws CopyFileException
+     * @throws CreateTemporaryFileException
      */
     public function store(HiringOrderStoreRequest $request): JsonResponse
     {
@@ -66,9 +67,9 @@ class HiringOrderController extends Controller
             'name' => $employee->name,
             'surname' => $employee->surname,
             'father_name' => $employee->father_name,
-            'd_name' => $employee->d_name,
-            'd_surname' => $employee->d_surname,
-            'd_father_name' => $employee->d_father_name,
+            'd_name' => $company->d_name,
+            'd_surname' => $company->d_surname,
+            'd_father_name' => $company->d_father_name,
             'gender' => $gender,
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number
@@ -195,9 +196,9 @@ class HiringOrderController extends Controller
             'name' => $employee->name,
             'surname' => $employee->surname,
             'father_name' => $employee->father_name,
-            'd_name' => $employee->d_name,
-            'd_surname' => $employee->d_surname,
-            'd_father_name' => $employee->d_father_name,
+            'd_name' => $company->d_name,
+            'd_surname' => $company->d_surname,
+            'd_father_name' => $company->d_father_name,
             'gender' => $gender,
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number,
