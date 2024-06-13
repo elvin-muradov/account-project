@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderUpdateReq
 use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderCollection;
 use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderResource;
 use App\Models\Company\Company;
+use App\Models\Employee;
 use App\Models\Orders\BusinessTripOrder;
 use App\Traits\HttpResponses;
 use Aws\Laravel\AwsFacade as AWS;
@@ -43,6 +44,7 @@ class BusinessTripOrderController extends Controller
     {
         $data = $request->validated();
         $company = $this->getCompany($request->input('company_id'));
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
         $companyName = $company->company_name;
 
         $orderNumber = generateOrderNumber(BusinessTripOrder::class, $company->company_short_name);
@@ -51,13 +53,21 @@ class BusinessTripOrderController extends Controller
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
         $char = substr($endDate, '-2');
         $lastChar = getNumberEnd($char);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
+            'tax_id_number' => $company->tax_id_number,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
+            'position' => $employee->position?->name,
             'start_date' => $startDate,
             'end_date' => $endDate,
             'order_date' => $orderDate
@@ -74,19 +84,19 @@ class BusinessTripOrderController extends Controller
             'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
-            'position' => $request->input('position'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'gender' => $employee->gender,
+            'position' => $employee->position?->name,
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'order_date' => $request->input('order_date'),
             'city_name' => $request->input('city_name'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'first_part_of_order' => $request->input('first_part_of_order'),
             'business_trip_to' => $request->input('business_trip_to'),
         ]);
@@ -116,6 +126,7 @@ class BusinessTripOrderController extends Controller
         }
 
         $company = $this->getCompany($request->input('company_id'));
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
         $companyName = $company->company_name;
 
         $orderNumber = $businessTripOrder->order_number;
@@ -124,10 +135,18 @@ class BusinessTripOrderController extends Controller
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
         $char = substr($endDate, '-2');
         $lastChar = getNumberEnd($char);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
+            'position' => $employee->position?->name,
+            'tax_id_number' => $company->tax_id_number,
             'last_char' => $lastChar,
             'company_name' => $companyName,
             'gender' => $gender,
@@ -154,19 +173,19 @@ class BusinessTripOrderController extends Controller
         $businessTripOrder->update([
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'position' => $request->input('position'),
-            'gender' => $request->input('gender'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'gender' => $employee->gender,
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'order_date' => $request->input('order_date'),
             'city_name' => $request->input('city_name'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'first_part_of_order' => $request->input('first_part_of_order'),
             'business_trip_to' => $request->input('business_trip_to'),
             'generated_file' => $generatedFilePath
