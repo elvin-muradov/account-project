@@ -10,6 +10,7 @@ use App\Http\Resources\Api\V1\Orders\HiringOrders\HiringOrderResource;
 use App\Models\Company\AttendanceLog;
 use App\Models\Company\AttendanceLogConfig;
 use App\Models\Company\Company;
+use App\Models\Employee;
 use App\Models\Orders\HiringOrder;
 use App\Traits\HttpResponses;
 use Aws\Laravel\AwsFacade as AWS;
@@ -41,85 +42,87 @@ class HiringOrderController extends Controller
 
     /**
      * @throws CopyFileException
-     * @throws CreateTemporaryFileException
      */
     public function store(HiringOrderStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        try {
-            dd(getNumberAsWords($request->input('salary')));
-        } catch (InvalidArgumentException|NumberToWordsException $e) {
-            return $this->error(message: $e->getMessage(), code: 400);
-        }
-
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with(['position'])->find($data['employee_id']);
 
         $orderNumber = generateOrderNumber(HiringOrder::class, $company->company_short_name);
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
+            'position' => $employee->position?->name,
+            'salary_in_words' => getNumberAsWords($data['salary']),
             'order_number' => $orderNumber,
             'last_char' => $lastChar,
             'company_name' => $companyName,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'd_name' => $employee->d_name,
+            'd_surname' => $employee->d_surname,
+            'd_father_name' => $employee->d_father_name,
             'gender' => $gender,
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number
         ]);
 
-        $year = Carbon::parse($request->input('start_date'))->format('Y');
-        $month = Carbon::parse($request->input('start_date'))->format('n');
-        $day = Carbon::parse($request->input('start_date'))->format('j');
-
-        $attendanceLogConfig = AttendanceLogConfig::query()
-            ->where('company_id', $request->input('company_id'))
-            ->where('year', $year)
-            ->where('month', $month)
-            ->first();
-
-        if (!$attendanceLogConfig) {
-            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
-        }
-
-        $attendanceLog = AttendanceLog::query()
-            ->where('company_id', $attendanceLogConfig->company_id)
-            ->where('year', $attendanceLogConfig->year)
-            ->where('month', $attendanceLogConfig->month)
-            ->where('employee_id', $request->input('employee_id'))
-            ->first();
-
-        $config = $attendanceLogConfig->config;
-
-        for ($i = 0; $i < $day - 1; $i++) {
-            $config[$i] = [
-                'day' => $i + 1,
-                'status' => 'NULL_DAY',
-            ];
-        }
-
-        if ($attendanceLog) {
-            return $this->error(message: 'İşçi artıq tabelə əlavə olunub', code: 404);
-        }
-
-        $countMonthWorkDayHours = getMonthWorkDayHours($config);
-        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
-        $countMonthWorkDays = getMonthWorkDaysCount($config);
-
-        AttendanceLog::query()
-            ->create([
-                'company_id' => $attendanceLogConfig->company_id,
-                'employee_id' => $request->input('employee_id'),
-                'year' => $attendanceLogConfig->year,
-                'month' => $attendanceLogConfig->month,
-                'days' => $config,
-                'month_work_days' => $countMonthWorkDays,
-                'celebration_days' => $countCelebrationRestDays,
-                'month_work_day_hours' => $countMonthWorkDayHours,
-            ]);
+//        $year = Carbon::parse($request->input('start_date'))->format('Y');
+//        $month = Carbon::parse($request->input('start_date'))->format('n');
+//        $day = Carbon::parse($request->input('start_date'))->format('j');
+//
+//        $attendanceLogConfig = AttendanceLogConfig::query()
+//            ->where('company_id', $request->input('company_id'))
+//            ->where('year', $year)
+//            ->where('month', $month)
+//            ->first();
+//
+//        if (!$attendanceLogConfig) {
+//            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
+//        }
+//
+//        $attendanceLog = AttendanceLog::query()
+//            ->where('company_id', $attendanceLogConfig->company_id)
+//            ->where('year', $attendanceLogConfig->year)
+//            ->where('month', $attendanceLogConfig->month)
+//            ->where('employee_id', $request->input('employee_id'))
+//            ->first();
+//
+//        $config = $attendanceLogConfig->config;
+//
+//        for ($i = 0; $i < $day - 1; $i++) {
+//            $config[$i] = [
+//                'day' => $i + 1,
+//                'status' => 'NULL_DAY',
+//            ];
+//        }
+//
+//        if ($attendanceLog) {
+//            return $this->error(message: 'İşçi artıq tabelə əlavə olunub', code: 404);
+//        }
+//
+//        $countMonthWorkDayHours = getMonthWorkDayHours($config);
+//        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
+//        $countMonthWorkDays = getMonthWorkDaysCount($config);
+//
+//        AttendanceLog::query()
+//            ->create([
+//                'company_id' => $attendanceLogConfig->company_id,
+//                'employee_id' => $request->input('employee_id'),
+//                'year' => $attendanceLogConfig->year,
+//                'month' => $attendanceLogConfig->month,
+//                'days' => $config,
+//                'month_work_days' => $countMonthWorkDays,
+//                'celebration_days' => $countCelebrationRestDays,
+//                'month_work_day_hours' => $countMonthWorkDayHours,
+//            ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
         $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
@@ -134,17 +137,17 @@ class HiringOrderController extends Controller
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'gender' => $employee->gender,
             'start_date' => $request->input('start_date'),
-            'position' => $request->input('position'),
+            'position' => $employee->position?->name,
             'salary' => $request->input('salary'),
-            'salary_in_words' => $request->input('salary_in_words'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'salary_in_words' => getNumberAsWords($request->input('salary')),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
         ]);
 
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'hiring_orders');
@@ -152,6 +155,8 @@ class HiringOrderController extends Controller
         $hiringOrder->update([
             'generated_file' => $generatedFilePath
         ]);
+
+        $employee->update(['salary' => $request->input('salary')]);
 
         unlink($filePath);
 
@@ -173,68 +178,78 @@ class HiringOrderController extends Controller
 
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with(['position'])->find($request->input('employee_id'));
         $orderNumber = $hiringOrder->order_number;
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'position' => $employee->position?->name,
+            'salary' => $request->input('salary'),
+            'salary_in_words' => getNumberAsWords($request->input('salary')),
             'last_char' => $lastChar,
             'company_name' => $companyName,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'd_name' => $employee->d_name,
+            'd_surname' => $employee->d_surname,
+            'd_father_name' => $employee->d_father_name,
             'gender' => $gender,
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number,
         ]);
 
-        $year = Carbon::parse($request->input('start_date'))->format('Y');
-        $month = Carbon::parse($request->input('start_date'))->format('n');
-        $day = Carbon::parse($request->input('start_date'))->format('j');
-
-        $attendanceLogConfig = AttendanceLogConfig::query()
-            ->where('company_id', $request->input('company_id'))
-            ->where('year', $year)
-            ->where('month', $month)
-            ->first();
-
-        if (!$attendanceLogConfig) {
-            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
-        }
-
-        $attendanceLog = AttendanceLog::query()
-            ->where('company_id', $attendanceLogConfig->company_id)
-            ->where('year', $attendanceLogConfig->year)
-            ->where('month', $attendanceLogConfig->month)
-            ->where('employee_id', $request->input('employee_id'))
-            ->first();
-
-        $attendanceLog?->delete();
-
-        $config = $attendanceLogConfig->config;
-
-        for ($i = 0; $i < $day - 1; $i++) {
-            $config[$i] = [
-                'day' => $i + 1,
-                'status' => 'NULL_DAY',
-            ];
-        }
-
-        $countMonthWorkDayHours = getMonthWorkDayHours($config);
-        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
-        $countMonthWorkDays = getMonthWorkDaysCount($config);
-
-        AttendanceLog::query()
-            ->create([
-                'company_id' => $attendanceLogConfig->company_id,
-                'employee_id' => $request->input('employee_id'),
-                'year' => $attendanceLogConfig->year,
-                'month' => $attendanceLogConfig->month,
-                'days' => $config,
-                'month_work_days' => $countMonthWorkDays,
-                'celebration_days' => $countCelebrationRestDays,
-                'month_work_day_hours' => $countMonthWorkDayHours,
-            ]);
+//        $year = Carbon::parse($request->input('start_date'))->format('Y');
+//        $month = Carbon::parse($request->input('start_date'))->format('n');
+//        $day = Carbon::parse($request->input('start_date'))->format('j');
+//
+//        $attendanceLogConfig = AttendanceLogConfig::query()
+//            ->where('company_id', $request->input('company_id'))
+//            ->where('year', $year)
+//            ->where('month', $month)
+//            ->first();
+//
+//        if (!$attendanceLogConfig) {
+//            return $this->error(message: 'Tabel şablonu mövcud deyil', code: 404);
+//        }
+//
+//        $attendanceLog = AttendanceLog::query()
+//            ->where('company_id', $attendanceLogConfig->company_id)
+//            ->where('year', $attendanceLogConfig->year)
+//            ->where('month', $attendanceLogConfig->month)
+//            ->where('employee_id', $request->input('employee_id'))
+//            ->first();
+//
+//        $attendanceLog?->delete();
+//
+//        $config = $attendanceLogConfig->config;
+//
+//        for ($i = 0; $i < $day - 1; $i++) {
+//            $config[$i] = [
+//                'day' => $i + 1,
+//                'status' => 'NULL_DAY',
+//            ];
+//        }
+//
+//        $countMonthWorkDayHours = getMonthWorkDayHours($config);
+//        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
+//        $countMonthWorkDays = getMonthWorkDaysCount($config);
+//
+//        AttendanceLog::query()
+//            ->create([
+//                'company_id' => $attendanceLogConfig->company_id,
+//                'employee_id' => $request->input('employee_id'),
+//                'year' => $attendanceLogConfig->year,
+//                'month' => $attendanceLogConfig->month,
+//                'days' => $config,
+//                'month_work_days' => $countMonthWorkDays,
+//                'celebration_days' => $countCelebrationRestDays,
+//                'month_work_day_hours' => $countMonthWorkDayHours,
+//            ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
         $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
@@ -255,19 +270,21 @@ class HiringOrderController extends Controller
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'gender' => $employee->gender,
             'start_date' => $request->input('start_date'),
-            'position' => $request->input('position'),
+            'position' => $employee->position?->name,
             'salary' => $request->input('salary'),
-            'salary_in_words' => $request->input('salary_in_words'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'salary_in_words' => getNumberAsWords($request->input('salary')),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'generated_file' => $generatedFilePath
         ]);
+
+        $employee->update(['salary' => $request->input('salary')]);
 
         unlink($filePath);
 

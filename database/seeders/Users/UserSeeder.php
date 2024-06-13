@@ -2,6 +2,10 @@
 
 namespace Database\Seeders\Users;
 
+use App\Enums\EducationTypesEnum;
+use App\Enums\EmployeeTypes;
+use App\Enums\GenderTypes;
+use App\Models\Company\Company;
 use App\Models\Company\Position;
 use App\Models\Employee;
 use App\Models\User;
@@ -26,14 +30,14 @@ class UserSeeder extends Seeder
             'email_verified_at' => Carbon::now(),
             'username' => 'dedeqorqud',
             'birth_date' => '1969-04-10 23:59:00',
-            'education' => 'FULL',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'education_files' => null,
             'certificate_files' => null,
             'cv_files' => null,
             'self_photo_files' => null,
             'previous_job' => 'Qırat MMC-də nalvuranın nalvurançısının nalvurançısı',
             'account_status' => 'APPROVED',
-            'password' => Hash::make('123456789')
+            'password' => Hash::make('123456789'),
         ]);
         $orkhanDepartmentHead = User::query()->create([
             'name' => 'Orxan',
@@ -44,7 +48,7 @@ class UserSeeder extends Seeder
             'email_verified_at' => Carbon::now(),
             'username' => 'orkhan',
             'birth_date' => '1990-04-10 23:59:00',
-            'education' => 'FULL',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'education_files' => null,
             'certificate_files' => null,
             'cv_files' => null,
@@ -63,7 +67,7 @@ class UserSeeder extends Seeder
             'email_verified_at' => Carbon::now(),
             'username' => 'alikisi',
             'birth_date' => '1978-09-30 23:59:00',
-            'education' => 'FULL',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'education_files' => null,
             'certificate_files' => null,
             'cv_files' => null,
@@ -82,7 +86,7 @@ class UserSeeder extends Seeder
             'email_verified_at' => Carbon::now(),
             'username' => 'koroglu',
             'birth_date' => '1988-09-30 23:59:00',
-            'education' => 'FULL',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'education_files' => null,
             'certificate_files' => null,
             'cv_files' => null,
@@ -98,19 +102,19 @@ class UserSeeder extends Seeder
         $accountant->assignRole('accountant');
 
         $position1 = Position::query()->create([
-            'name' => 'Kassir',
+            'name' => 'Baş mühəndis',
             'company_id' => 1
         ]);
 
         $position2 = Position::query()->create([
-            'name' => 'Satıcı',
+            'name' => 'Aparıcı mütəxəssis',
             'company_id' => 1
         ]);
 
-        $companyEmployee = Employee::query()->create([
-            'name' => 'Bamsı',
-            'surname' => 'Beyrək',
-            'father_name' => 'Dədə qorqud',
+        $companyEmployee1 = Employee::query()->create([
+            'name' => 'Nurlan',
+            'surname' => 'Kazımov',
+            'father_name' => 'Murad',
             'company_id' => 1,
             'position_id' => $position1->id,
             'birth_date' => '1999-09-30',
@@ -120,12 +124,41 @@ class UserSeeder extends Seeder
             'ssn' => 1234567890123,
             'start_date_of_employment' => '2021-09-30',
             'end_date_of_employment' => null,
-            'previous_job' => 'Qırat MMC-də at sürücüsü',
+            'previous_job' => 'Baş mühəndis',
+            'gender' => GenderTypes::MALE->value,
             'phone' => '+994501234567',
             'email' => 'bamsibeyrek@gmail.com',
-            'education' => 'FULL',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
+            'employee_type' => EmployeeTypes::DIRECTOR->value,
             'salary' => 2500,
             'password' => Hash::make('123456789')
+        ]);
+
+        $companyEmployee2 = Employee::query()->create([
+            'name' => 'Kamil',
+            'surname' => 'Zeynalov',
+            'father_name' => 'Natiq',
+            'company_id' => 1,
+            'position_id' => $position2->id,
+            'birth_date' => '1999-09-30',
+            'id_card_serial' => 'AZE8888882',
+            'fin_code' => '4RYESJD',
+            'id_card_date' => '2019-09-30',
+            'ssn' => 1234567890124,
+            'start_date_of_employment' => '2021-09-30',
+            'end_date_of_employment' => null,
+            'previous_job' => 'Aparıcı mütəxəssis',
+            'gender' => GenderTypes::MALE->value,
+            'phone' => '+994501234560',
+            'email' => 'kamil@gmail.com',
+            'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
+            'employee_type' => EmployeeTypes::DIRECTOR->value,
+            'salary' => 2500,
+            'password' => Hash::make('123456789')
+        ]);
+
+        Company::query()->first()->update([
+            'director_id' => $companyEmployee1->id
         ]);
     }
 }

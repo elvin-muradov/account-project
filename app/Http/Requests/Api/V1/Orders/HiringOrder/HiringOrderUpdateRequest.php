@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1\Orders\HiringOrder;
 use App\Enums\GenderTypes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class HiringOrderUpdateRequest extends FormRequest
 {
@@ -24,21 +25,12 @@ class HiringOrderUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['nullable', 'string', 'max:255',
-                'unique:hiring_orders,order_number,' . $this->hiringOrder],
             'company_id' => ['required', 'exists:companies,id'],
-            'tax_id_number' => ['required', 'integer', 'digits:10'],
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'father_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:' . GenderTypes::toString()],
+            'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
+                ->where('company_id', $this->input('company_id'))
+            ],
             'start_date' => ['required', 'date'],
-            'position' => ['required', 'string', 'max:255'],
             'salary' => ['required', 'numeric'],
-            'salary_in_words' => ['required', 'string', 'max:255'],
-            'd_name' => ['required', 'string', 'max:255'],
-            'd_surname' => ['required', 'string', 'max:255'],
-            'd_father_name' => ['required', 'string', 'max:255'],
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\Employee;
 
 use App\Enums\EducationTypesEnum;
+use App\Enums\EmployeeTypes;
 use App\Enums\GenderTypes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -45,8 +46,12 @@ class EmployeeUpdateRequest extends FormRequest
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
             'salary' => ['nullable', 'numeric'],
             'salary_card_expiration_date' => ['nullable', 'date'],
-            'is_director' => ['required', 'boolean'],
-            'password' => ['nullable', Rule::requiredIf($this->is_director), 'confirmed', 'string', 'min:8', 'max:16'],
+            'employee_type' => ['required', 'in:' . EmployeeTypes::toString()],
+            'password' => ['nullable',
+                Rule::requiredIf($this
+                        ->employee_type == EmployeeTypes::DIRECTOR->value ||
+                    $this->employee_type == EmployeeTypes::FOUNDER->value),
+                'confirmed', 'string', 'min:8', 'max:16'],
             'company_id' => ['required', 'numeric', 'exists:companies,id'],
             'position_id' => ['required', 'numeric',
                 Rule::exists('positions', 'id')->where('company_id', $this->company_id)],

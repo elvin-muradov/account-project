@@ -26,7 +26,7 @@ class EmployeeResource extends JsonResource
             'position_id' => $this->position_id,
             'position' => $this->whenLoaded('position') ?
                 $this->position->only('id', 'name') : null,
-            'is_director' => $this->is_director,
+            'employee_type' => $this->employee_type,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date,
             'id_card_serial' => $this->id_card_serial,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Employee;
 
+use App\Enums\EmployeeTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Employee\EmployeeStoreRequest;
 use App\Http\Requests\Api\V1\Employee\EmployeeUpdateRequest;
@@ -31,8 +32,12 @@ class EmployeeController extends Controller
     {
         $data = $request->validated();
         $lowerCases = array_map('strtolower', $request->only('email'));
-        $password = ['password' => Hash::make($request->password)];
+        $password = ['password' => Hash::make($request->input('password'))];
         $data = array_merge($data, $lowerCases, $password);
+
+        if ($request->input('employee_type') == EmployeeTypes::EMPLOYEE->value) {
+            $data['password'] = null;
+        }
 
         $employee = Employee::query()->create($data);
 
@@ -77,6 +82,10 @@ class EmployeeController extends Controller
             $data = array_merge($data, $lowerCases, $password);
         } else {
             $data = array_merge($data, ['password' => $employee->password]);
+        }
+
+        if ($request->input('employee_type') == EmployeeTypes::EMPLOYEE->value) {
+            $data['password'] = null;
         }
 
         $employee->update($data);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\EducationTypesEnum;
+use App\Enums\EmployeeTypes;
 use App\Enums\GenderTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -34,7 +35,7 @@ return new class extends Migration {
             $table->enum('gender', GenderTypes::toArray());
             $table->float('salary')->nullable();
             $table->date('salary_card_expiration_date')->nullable();
-            $table->boolean('is_director')->default(false);
+            $table->enum('employee_type', EmployeeTypes::toArray());
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
