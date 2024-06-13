@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->string('order_number')->nullable();
             $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('employee_id');
             $table->string('company_name')->nullable();
             $table->unsignedBigInteger('tax_id_number')->nullable();
             $table->longText('first_part_of_order')->nullable();
@@ -35,7 +36,7 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->cascadeOnDelete();
-
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
         });
     }
 

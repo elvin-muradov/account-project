@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\V1\Orders\BusinessTripOrder;
 use App\Enums\GenderTypes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BusinessTripOrderUpdateRequest extends FormRequest
 {
@@ -24,24 +25,16 @@ class BusinessTripOrderUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['required', 'string', 'max:255',
-                'unique:business_trip_orders,order_number,' . $this->businessTripOrder],
             'company_id' => ['required', 'exists:companies,id'],
-            'tax_id_number' => ['required', 'integer', 'digits:10'],
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'father_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:' . GenderTypes::toString()],
+            'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
+                ->where('company_id', $this->input('company_id'))
+            ],
             'business_trip_to' => ['required', 'string'],
             'first_part_of_order' => ['required', 'string'],
-            'position' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'city_name' => ['required', 'string', 'max:255'],
-            'order_date' => ['required', 'date'],
-            'd_name' => ['required', 'string', 'max:255'],
-            'd_surname' => ['required', 'string', 'max:255'],
-            'd_father_name' => ['required', 'string', 'max:255'],
+            'order_date' => ['required', 'date']
         ];
     }
 }
