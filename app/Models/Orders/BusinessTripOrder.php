@@ -15,7 +15,9 @@ class BusinessTripOrder extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'generated_file' => 'array'
+        'generated_file' => 'array',
+        'company_id' => 'integer',
+        'employee_id' => 'integer',
     ];
 
     public function company(): BelongsTo
