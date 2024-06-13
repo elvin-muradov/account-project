@@ -83,6 +83,7 @@ class BusinessTripOrderController extends Controller
         $businessTripOrder = BusinessTripOrder::query()->create([
             'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
+            'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $employee->name,
@@ -172,6 +173,7 @@ class BusinessTripOrderController extends Controller
 
         $businessTripOrder->update([
             'company_id' => $request->input('company_id'),
+            'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $employee->name,
