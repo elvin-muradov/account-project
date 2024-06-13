@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Orders\TerminationOrder\TerminationOrderUpdateReque
 use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderCollection;
 use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderResource;
 use App\Models\Company\Company;
+use App\Models\Employee;
 use App\Models\Orders\TerminationOrder;
 use App\Traits\HttpResponses;
 use Aws\Laravel\AwsFacade as AWS;
@@ -44,6 +45,7 @@ class TerminationOrderController extends Controller
         $data = $request->validated();
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
 
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
@@ -54,17 +56,23 @@ class TerminationOrderController extends Controller
         $char2 = substr($employmentStartDate, '-2');
         $lastChar1 = getNumberEnd($char1);
         $lastChar2 = getNumberEnd($char2);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
             'last_char1' => $lastChar1,
             'last_char2' => $lastChar2,
             'company_name' => $companyName,
             'gender' => $gender,
             'termination_date' => $terminationDate,
             'employment_start_date' => $employmentStartDate,
-            'tax_id_number' => $company->tax_id_number
+            'tax_id_number' => $company->tax_id_number,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
         ]);
 
         $documentPath = public_path('assets/order_templates/LEAVING_WORK.docx');
@@ -79,16 +87,16 @@ class TerminationOrderController extends Controller
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
             'days_count' => $request->input('days_count'),
-            'gender' => $request->input('gender'),
+            'gender' => $employee->gender,
             'termination_date' => $request->input('termination_date'),
             'employment_start_date' => $request->input('employment_start_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order')
         ]);
 
@@ -119,6 +127,7 @@ class TerminationOrderController extends Controller
         $orderNumber = $terminationOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
@@ -126,17 +135,23 @@ class TerminationOrderController extends Controller
         $char2 = substr($employmentStartDate, '-2');
         $lastChar1 = getNumberEnd($char1);
         $lastChar2 = getNumberEnd($char2);
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
             'last_char1' => $lastChar1,
             'last_char2' => $lastChar2,
             'company_name' => $companyName,
             'gender' => $gender,
             'termination_date' => $terminationDate,
             'employment_start_date' => $employmentStartDate,
-            'tax_id_number' => $company->tax_id_number
+            'tax_id_number' => $company->tax_id_number,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
         ]);
 
         $documentPath = public_path('assets/order_templates/LEAVING_WORK.docx');
@@ -159,16 +174,16 @@ class TerminationOrderController extends Controller
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'gender' => $employee->gender,
             'termination_date' => $request->input('termination_date'),
             'employment_start_date' => $request->input('employment_start_date'),
             'days_count' => $request->input('days_count'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order'),
             'generated_file' => $generatedFilePath
         ]);
