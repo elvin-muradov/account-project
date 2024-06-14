@@ -10,6 +10,7 @@ use App\Http\Resources\Api\V1\Orders\IllnessOrders\IllnessOrderResource;
 use App\Models\Company\AttendanceLog;
 use App\Models\Company\AttendanceLogConfig;
 use App\Models\Company\Company;
+use App\Models\Employee;
 use App\Models\Orders\IllnessOrder;
 use App\Traits\HttpResponses;
 use Aws\Laravel\AwsFacade as AWS;
@@ -46,6 +47,7 @@ class IllnessOrderController extends Controller
         $data = $request->validated();
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
 
         $orderNumber = generateOrderNumber(IllnessOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request
@@ -53,63 +55,71 @@ class IllnessOrderController extends Controller
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'position' => $employee->position?->name,
+            'father_name' => $employee->father_name,
             'company_name' => $companyName,
+            'tax_id_number' => $company->tax_id_number,
             'gender' => $gender,
             'holiday_start_date' => $holidayStartDate,
             'holiday_end_date' => $holidayEndDate,
-            'employment_start_date' => $employmentStartDate
+            'employment_start_date' => $employmentStartDate,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
         ]);
 
-        $startYear = Carbon::parse($request->input('holiday_start_date'))->format('Y');
-        $startMonth = Carbon::parse($request->input('holiday_start_date'))->format('n');
-        $startDay = Carbon::parse($request->input('holiday_start_date'))->format('j');
-
-        $endYear = Carbon::parse($request->input('holiday_end_date'))->format('Y');
-        $endMonth = Carbon::parse($request->input('holiday_end_date'))->format('n');
-        $endDay = Carbon::parse($request->input('holiday_end_date'))->format('j');
-
-        $startAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
-            ->where('year', '=', $startYear)
-            ->where('month', '=', $startMonth)
-            ->where('employee_id', $request->input('employee_id'))
-            ->first();
-
-        $endAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
-            ->where('year', '=', $endYear)
-            ->where('month', '=', $endMonth)
-            ->where('employee_id', $request->input('employee_id'))
-            ->first();
-
-        if (!$startAttendanceLog || !$endAttendanceLog) {
-            return $this->error(message: 'İşçinin tabel məlumatı tapılmadı', code: 404);
-        }
-
-        $startConfig = $startAttendanceLog->days;
-        $endConfig = $endAttendanceLog->days;
-        $diffDays = Carbon::createFromDate($holidayStartDate)->diffInDays(Carbon::createFromDate($holidayEndDate));
-        dd($diffDays - Carbon::createFromDate($holidayStartDate)->daysInMonth);
-
-        $countMonthWorkDayHours = getMonthWorkDayHours($config);
-        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
-        $countMonthWorkDays = getMonthWorkDaysCount($config);
-
-        AttendanceLog::query()
-            ->create([
-                'company_id' => $attendanceLogConfig->company_id,
-                'employee_id' => $request->input('employee_id'),
-                'year' => $attendanceLogConfig->year,
-                'month' => $attendanceLogConfig->month,
-                'days' => $config,
-                'month_work_days' => $countMonthWorkDays,
-                'celebration_days' => $countCelebrationRestDays,
-                'month_work_day_hours' => $countMonthWorkDayHours,
-            ]);
+//        $startYear = Carbon::parse($request->input('holiday_start_date'))->format('Y');
+//        $startMonth = Carbon::parse($request->input('holiday_start_date'))->format('n');
+//        $startDay = Carbon::parse($request->input('holiday_start_date'))->format('j');
+//
+//        $endYear = Carbon::parse($request->input('holiday_end_date'))->format('Y');
+//        $endMonth = Carbon::parse($request->input('holiday_end_date'))->format('n');
+//        $endDay = Carbon::parse($request->input('holiday_end_date'))->format('j');
+//
+//        $startAttendanceLog = AttendanceLog::query()
+//            ->where('company_id', $request->input('company_id'))
+//            ->where('year', '=', $startYear)
+//            ->where('month', '=', $startMonth)
+//            ->where('employee_id', $request->input('employee_id'))
+//            ->first();
+//
+//        $endAttendanceLog = AttendanceLog::query()
+//            ->where('company_id', $request->input('company_id'))
+//            ->where('year', '=', $endYear)
+//            ->where('month', '=', $endMonth)
+//            ->where('employee_id', $request->input('employee_id'))
+//            ->first();
+//
+//        if (!$startAttendanceLog || !$endAttendanceLog) {
+//            return $this->error(message: 'İşçinin tabel məlumatı tapılmadı', code: 404);
+//        }
+//
+//        $startConfig = $startAttendanceLog->days;
+//        $endConfig = $endAttendanceLog->days;
+//        $diffDays = Carbon::createFromDate($holidayStartDate)->diffInDays(Carbon::createFromDate($holidayEndDate));
+//        dd($diffDays - Carbon::createFromDate($holidayStartDate)->daysInMonth);
+//
+//        $countMonthWorkDayHours = getMonthWorkDayHours($config);
+//        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
+//        $countMonthWorkDays = getMonthWorkDaysCount($config);
+//
+//        AttendanceLog::query()
+//            ->create([
+//                'company_id' => $attendanceLogConfig->company_id,
+//                'employee_id' => $request->input('employee_id'),
+//                'year' => $attendanceLogConfig->year,
+//                'month' => $attendanceLogConfig->month,
+//                'days' => $config,
+//                'month_work_days' => $countMonthWorkDays,
+//                'celebration_days' => $countCelebrationRestDays,
+//                'month_work_day_hours' => $countMonthWorkDayHours,
+//            ]);
 
         $documentPath = public_path('assets/order_templates/ILLNESS_HOLIDAY.docx');
         $fileName = 'ILLNESS_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
@@ -123,19 +133,19 @@ class IllnessOrderController extends Controller
             'company_id' => $request->input('company_id'),
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'position' => $request->input('position'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'position' => $employee->position?->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'gender' => $employee->gender,
             'type_of_holiday' => $request->input('type_of_holiday'),
             'holiday_start_date' => $request->input('holiday_start_date'),
             'holiday_end_date' => $request->input('holiday_end_date'),
             'employment_start_date' => $request->input('employment_start_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order')
         ]);
 
@@ -167,19 +177,29 @@ class IllnessOrderController extends Controller
         $orderNumber = $illnessOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('position')->find($illnessOrder->employee_id);
+
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
             'company_name' => $companyName,
             'gender' => $gender,
             'holiday_start_date' => $holidayStartDate,
             'holiday_end_date' => $holidayEndDate,
-            'employment_start_date' => $employmentStartDate
+            'employment_start_date' => $employmentStartDate,
+            'tax_id_number' => $company->tax_id_number,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name
         ]);
 
         $documentPath = public_path('assets/order_templates/ILLNESS_HOLIDAY.docx');
@@ -201,19 +221,19 @@ class IllnessOrderController extends Controller
         $illnessOrder->update([
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'position' => $request->input('position'),
-            'gender' => $request->input('gender'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'gender' => $employee->gender,
             'type_of_holiday' => $request->input('type_of_holiday'),
             'holiday_start_date' => $request->input('holiday_start_date'),
             'holiday_end_date' => $request->input('holiday_end_date'),
             'employment_start_date' => $request->input('employment_start_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order'),
             'generated_file' => $generatedFilePath
         ]);

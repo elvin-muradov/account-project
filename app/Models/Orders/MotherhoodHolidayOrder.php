@@ -22,4 +22,9 @@ class MotherhoodHolidayOrder extends Model
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
 }

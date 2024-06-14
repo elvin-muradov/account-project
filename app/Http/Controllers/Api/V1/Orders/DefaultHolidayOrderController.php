@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderUpdat
 use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderCollection;
 use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderResource;
 use App\Models\Company\Company;
+use App\Models\Employee;
 use App\Models\Orders\DefaultHolidayOrder;
 use App\Traits\HttpResponses;
 use Aws\Laravel\AwsFacade as AWS;
@@ -44,13 +45,14 @@ class DefaultHolidayOrderController extends Controller
         $data = $request->validated();
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('company')->find($request->input('employee_id'));
 
         $orderNumber = generateOrderNumber(DefaultHolidayOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
         $charHS = substr($holidayStartDate, '-2');
         $charHE = substr($holidayEndDate, '-2');
         $charES = substr($employmentStartDate, '-2');
@@ -61,6 +63,11 @@ class DefaultHolidayOrderController extends Controller
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'tax_id_number' => $company->tax_id_number,
             'last_char_hs' => $lastCharHS,
             'last_char_he' => $lastCharHE,
             'last_char_es' => $lastCharES,
@@ -68,7 +75,10 @@ class DefaultHolidayOrderController extends Controller
             'gender' => $gender,
             'holiday_start_date' => $holidayStartDate,
             'holiday_end_date' => $holidayEndDate,
-            'employment_start_date' => $employmentStartDate
+            'employment_start_date' => $employmentStartDate,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
@@ -81,20 +91,21 @@ class DefaultHolidayOrderController extends Controller
         $defaultHolidayOrder = DefaultHolidayOrder::query()->create([
             'order_number' => $orderNumber,
             'company_id' => $request->input('company_id'),
+            'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'position' => $request->input('position'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'gender' => $request->input('gender'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'gender' => $employee->gender,
             'days_count' => $request->input('days_count'),
             'holiday_start_date' => $request->input('holiday_start_date'),
             'holiday_end_date' => $request->input('holiday_end_date'),
             'employment_start_date' => $request->input('employment_start_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order')
         ]);
 
@@ -109,7 +120,7 @@ class DefaultHolidayOrderController extends Controller
         return $this->success(data: $defaultHolidayOrder, message: 'Məzuniyyət əmri uğurla yaradıldı');
     }
 
-    /**
+    /*
      * @throws CopyFileException
      * @throws CreateTemporaryFileException
      */
@@ -125,11 +136,13 @@ class DefaultHolidayOrderController extends Controller
         $orderNumber = $defaultHolidayOrder->order_number;
         $company = $this->getCompany($request->input('company_id'));
         $companyName = $company->company_name;
+        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
-        $gender = getGender($request->input('gender'));
+        $gender = getGender($employee->gender);
 
         $charHE = substr($holidayEndDate, '-2');
         $charES = substr($employmentStartDate, '-2');
@@ -141,6 +154,11 @@ class DefaultHolidayOrderController extends Controller
 
         $data = array_merge($data, [
             'order_number' => $orderNumber,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'tax_id_number' => $company->tax_id_number,
             'last_char_hs' => $lastCharHS,
             'last_char_he' => $lastCharHE,
             'last_char_es' => $lastCharES,
@@ -148,7 +166,10 @@ class DefaultHolidayOrderController extends Controller
             'gender' => $gender,
             'holiday_start_date' => $holidayStartDate,
             'holiday_end_date' => $holidayEndDate,
-            'employment_start_date' => $employmentStartDate
+            'employment_start_date' => $employmentStartDate,
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
@@ -170,19 +191,19 @@ class DefaultHolidayOrderController extends Controller
         $defaultHolidayOrder->update([
             'company_id' => $request->input('company_id'),
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'father_name' => $request->input('father_name'),
-            'position' => $request->input('position'),
-            'gender' => $request->input('gender'),
+            'tax_id_number' => $company->tax_id_number,
+            'name' => $employee->name,
+            'surname' => $employee->surname,
+            'father_name' => $employee->father_name,
+            'position' => $employee->position?->name,
+            'gender' => $employee->gender,
             'days_count' => $request->input('days_count'),
             'holiday_start_date' => $request->input('holiday_start_date'),
             'holiday_end_date' => $request->input('holiday_end_date'),
             'employment_start_date' => $request->input('employment_start_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order'),
             'generated_file' => $generatedFilePath
         ]);

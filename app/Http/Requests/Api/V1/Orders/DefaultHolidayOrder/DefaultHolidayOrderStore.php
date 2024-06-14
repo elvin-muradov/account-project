@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DefaultHolidayOrderStore extends FormRequest
 {
@@ -23,22 +24,15 @@ class DefaultHolidayOrderStore extends FormRequest
     public function rules(): array
     {
         return [
-            'order_number' => ['nullable', 'string', 'max:255',
-                'unique:default_holiday_orders,order_number'],
             'company_id' => ['required', 'exists:companies,id'],
-            'tax_id_number' => ['required', 'integer', 'digits:10'],
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'father_name' => ['required', 'string', 'max:255'],
-            'position' => ['required', 'string', 'max:255'],
+            'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
+                ->where('company_id', $this->input('company_id'))
+            ],
             'days_count' => ['required', 'integer', 'min:1'],
             'holiday_start_date' => ['required', 'date'],
             'holiday_end_date' => ['required', 'date'],
             'employment_start_date' => ['required', 'date'],
-            'main_part_of_order' => ['required'],
-            'd_name' => ['required', 'string', 'max:255'],
-            'd_surname' => ['required', 'string', 'max:255'],
-            'd_father_name' => ['required', 'string', 'max:255'],
+            'main_part_of_order' => ['required']
         ];
     }
 }
