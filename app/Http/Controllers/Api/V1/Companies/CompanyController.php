@@ -43,7 +43,7 @@ class CompanyController extends Controller
             return $this->error(message: "VÖEN sonu 1 və ya 2 ilə bitməlidir", code: 400);
         }
 
-        $fixedAssetFilesExists = $request->input('fixed_asset_files_exists');
+        //$fixedAssetFilesExists = $request->input('fixed_asset_files_exists') ?? true;
 
         if ($request->hasFile('tax_id_number_files')) {
             $tinFiles = $request->file('tax_id_number_files');
@@ -72,7 +72,7 @@ class CompanyController extends Controller
             $data = array_merge($data, ['founding_decision_files' => returnFilesArray($foundingDecisionFiles,
                 'founding_decision_files')]);
         }
-        if ($request->hasFile('fixed_asset_files') && $fixedAssetFilesExists) {
+        if ($request->hasFile('fixed_asset_files')) {
             $fixedAssetFiles = $request->file('fixed_asset_files', []);
             $data = array_merge($data, ['fixed_asset_files' => returnFilesArray($fixedAssetFiles,
                 'fixed_asset_files')]);
@@ -115,7 +115,7 @@ class CompanyController extends Controller
             return $this->error(message: "VÖEN sonu 1 və ya 2 ilə bitməlidir", code: 400);
         }
 
-        $fixedAssetFilesExists = $request->input('fixed_asset_files_exists');
+        //$fixedAssetFilesExists = $request->input('fixed_asset_files_exists');
 
         if ($request->has('delete_tax_id_number_files') && $request->delete_tax_id_number_files != null) {
             $deletedTinFiles = $request->input('delete_tax_id_number_files');
@@ -239,7 +239,7 @@ class CompanyController extends Controller
             $data = array_merge($data, ['founding_decision_files' => array_merge($foundingDecisionFilesArr,
                 $updatedFiles)]);
         }
-        if ($request->hasFile('fixed_asset_files') && $fixedAssetFilesExists) {
+        if ($request->hasFile('fixed_asset_files')) {
             $fixedAssetFiles = $request->file('fixed_asset_files');
             $fixedAssetFilesArr = $company->fixed_asset_files ?? [];
             $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');

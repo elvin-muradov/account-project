@@ -49,7 +49,7 @@ class CompanyStoreRequest extends FormRequest
             'director_id_card_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'creators_files' => ['required', 'array'],
             'creators_files.*' => ['mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
-            'fixed_asset_files_exists' => ['required', 'boolean'],
+            //'fixed_asset_files_exists' => ['required', 'boolean'],
             'fixed_asset_files' => ['required', 'array'],
             'fixed_asset_files.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'founding_decision_files' => ['required', 'array'],
