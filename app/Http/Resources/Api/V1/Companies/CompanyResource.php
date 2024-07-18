@@ -37,6 +37,7 @@ class CompanyResource extends JsonResource
             'director' => EmployeeResource::make($this->whenLoaded('director')),
             'director_id_card_files' => $this->director_id_card_files,
             'creators_files' => $this->creators_files,
+            'fixed_asset_files_exists' => $this->fixed_asset_files_exists,
             'fixed_asset_files' => $this->fixed_asset_files,
             'founding_decision_files' => $this->founding_decision_files,
             'asan_sign' => $this->asan_sign,
