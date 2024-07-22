@@ -20,7 +20,7 @@ class EnvelopeController extends Controller
     public function index(Request $request): JsonResponse
     {
         $envelopes = Envelope::query()->with([
-            'fromCompany', 'toCompany', 'sender'
+            'fromCompany', 'toCompany', 'creator'
         ])->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new EnvelopeCollection($envelopes));
@@ -29,7 +29,7 @@ class EnvelopeController extends Controller
     public function show($envelope): JsonResponse
     {
         $envelope = Envelope::query()->with([
-            'fromCompany', 'toCompany', 'sender'
+            'fromCompany', 'toCompany', 'creator'
         ])->find($envelope);
 
         if (!$envelope) {
@@ -50,13 +50,18 @@ class EnvelopeController extends Controller
         }
 
         $data = array_merge($data, [
+            'code' => 'ENVP-' . Envelope::query()
+                    ->where('type', '=', $request->type)
+                    ->count() + 1 . '/' . date('Y') . '/' . $request->type,
             'sent_at' => now(),
-            'sender_id' => $request->user('user')->id
+            'creator_id' => $request->user('user')->id
         ]);
 
         $envelope = Envelope::query()->create($data);
 
-        return $this->success(data: EnvelopeResource::make($envelope), code: 201);
+        return $this->success(data: EnvelopeResource::make($envelope),
+            message: "Məktub uğurla əlavə olundu",
+            code: 201);
     }
 
     public function update(EnvelopeUpdateRequest $request, $envelope): JsonResponse
@@ -81,7 +86,7 @@ class EnvelopeController extends Controller
                 );
             }
         }
-        
+
         if ($request->hasFile('envelopes')) {
             $envelopes = $request->file('envelopes');
             $envelopesArr = $envelope->envelopes ?? [];
@@ -91,7 +96,8 @@ class EnvelopeController extends Controller
 
         $envelope->update($data);
 
-        return $this->success(message: "Məktub uğurla yeniləndi");
+        return $this->success(data: EnvelopeResource::make($envelope),
+            message: "Məktub uğurla yeniləndi");
     }
 
     public function destroy($envelope): JsonResponse

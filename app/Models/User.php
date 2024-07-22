@@ -140,9 +140,9 @@ class User extends Authenticatable
         return $this->hasMany(Company::class);
     }
 
-    public function sentEnvelopes(): HasMany
+    public function createdEnvelopes(): HasMany
     {
-        return $this->hasMany(Envelope::class, 'sender_id');
+        return $this->hasMany(Envelope::class, 'creator_id');
     }
 
     public function companiesServed(): HasMany

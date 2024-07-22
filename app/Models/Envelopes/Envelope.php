@@ -17,7 +17,9 @@ class Envelope extends Model
     protected $casts = [
         'from_company_id' => 'integer',
         'to_company_id' => 'integer',
-        'sender_id' => 'integer',
+        'creator_id' => 'integer',
+        'from_company_name' => 'string',
+        'to_company_name' => 'string',
         'envelopes' => 'array'
     ];
 
@@ -31,8 +33,8 @@ class Envelope extends Model
         return $this->belongsTo(Company::class, 'to_company_id');
     }
 
-    public function sender(): BelongsTo
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Api\V1\Envelopes;
 
+use App\Enums\EnvelopeTypes;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EnvelopeStoreRequest extends FormRequest
 {
@@ -15,6 +17,23 @@ class EnvelopeStoreRequest extends FormRequest
         return true;
     }
 
+    public function prepareForValidation(): void
+    {
+        if ($this->type === EnvelopeTypes::INCOMING->value) {
+            $this->merge([
+                'from_company_id' => null,
+                'to_company_name' => null
+            ]);
+        }
+
+        if ($this->type === EnvelopeTypes::OUTGOING->value) {
+            $this->merge([
+                'to_company_id' => null,
+                'from_company_name' => null
+            ]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,8 +42,20 @@ class EnvelopeStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from_company_id' => ['required', 'exists:companies,id'],
-            'to_company_id' => ['required', 'exists:companies,id'],
+            'type' => ['required', 'in:' . EnvelopeTypes::toString()],
+            'code' => ['nullable', 'string', 'max:255'],
+            'from_company_id' => ['nullable',
+                Rule::requiredIf($this->type === EnvelopeTypes::OUTGOING->value),
+                'exists:companies,id'],
+            'to_company_id' => ['nullable',
+                Rule::requiredIf($this->type === EnvelopeTypes::INCOMING->value),
+                'exists:companies,id'],
+            'from_company_name' => ['nullable',
+                Rule::requiredIf($this->type === EnvelopeTypes::INCOMING->value),
+                'string', 'max:255'],
+            'to_company_name' => ['nullable',
+                Rule::requiredIf($this->type === EnvelopeTypes::OUTGOING->value),
+                'string', 'max:255'],
             'envelopes' => ['required', 'array'],
             'envelopes.*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
         ];
