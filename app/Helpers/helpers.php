@@ -272,7 +272,8 @@ if (!function_exists('getMonthWorkDayHours')) {
 if (!function_exists('getCelebrationRestDaysCount')) {
     function getCelebrationRestDaysCount(array $config): int
     {
-        $dayTypes = array_diff(array_values(AttendanceLogDayTypes::toArray()), [AttendanceLogDayTypes::NULL_DAY->value]);
+        $dayTypes = array_diff(array_values(AttendanceLogDayTypes::toArray()),
+            [AttendanceLogDayTypes::NULL_DAY->value]);
         $array = array_count_values(array_column($config, 'status'));
 
         $totalDays = 0;
@@ -289,7 +290,7 @@ if (!function_exists('getCelebrationRestDaysCount')) {
 if (!function_exists('getMonthWorkDaysCount')) {
     function getMonthWorkDaysCount(array $config): float|int
     {
-        return count($config) - getCelebrationRestDaysCount($config);
+        return array_sum(array_column($config, 'status')) - getCelebrationRestDaysCount($config);
     }
 }
 if (!function_exists('getNumberAsWords')) {
