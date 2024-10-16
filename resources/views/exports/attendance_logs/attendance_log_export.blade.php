@@ -40,24 +40,37 @@
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
-                    <td @php echo $cellDays; @endphp @if(gettype($value['status']) == 'integer') style="text-align: center;vertical-align: middle;background-color: #fff !important;" @endif>
-                        @if($value['status'] == 'REST_DAY')
+                    @if($value['status'] == 'REST_DAY')
+                        <td @php echo $cellDays; @endphp>
                             İ
-                        @elseif($value['status'] == 'NULL_DAY')
-                        @elseif($value['status'] == 'DAY_OF_CELEBRATION')
+                        </td>
+                    @elseif($value['status'] == 'NULL_DAY')
+                        <td></td>
+                    @elseif($value['status'] == 'DAY_OF_CELEBRATION')
+                        <td @php echo $cellDays; @endphp>
                             B
-                        @elseif($value['status'] == 'LEAVING_WORK')
+                        </td>
+                    @elseif($value['status'] == 'LEAVING_WORK')
+                        <td @php echo $cellDays; @endphp>
                             İ/Ç
-                        @elseif($value['status'] == 'ILLNESS')
+                        </td>
+                    @elseif($value['status'] == 'ILLNESS')
+                        <td @php echo $cellDays; @endphp>
                             X
-                        @elseif($value['status'] == 'BUSINESS_TRIP')
+                        </td>
+                    @elseif($value['status'] == 'BUSINESS_TRIP')
+                        <td @php echo $cellDays; @endphp>
                             E
-                        @elseif($value['status'] == 'HOLIDAY')
+                        </td>
+                    @elseif($value['status'] == 'HOLIDAY')
+                        <td @php echo $cellDays; @endphp>
                             M
-                        @else
+                        </td>
+                    @else
+                        <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
                             {{ $value['status'] }}
-                        @endif
-                    </td>
+                        </td>
+                    @endif
                 @endforeach
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->month_work_days }}</td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->celebration_days }}</td>
