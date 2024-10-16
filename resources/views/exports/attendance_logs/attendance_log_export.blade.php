@@ -3,6 +3,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tabel</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12px;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 @php
