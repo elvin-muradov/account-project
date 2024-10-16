@@ -28,7 +28,6 @@ require __DIR__ . '/companies.php'; // Company routes
 require __DIR__ . '/orders.php'; // Order routes
 require __DIR__ . '/enums.php'; // ENUMs
 require __DIR__ . '/envelopes.php'; // Envelopes
-require __DIR__ . '/excel_exports.php'; // Excel routes
 require __DIR__ . '/import_queries.php'; // Import Query routes
 
 Route::get('/test', [TestController::class, 'test']);
@@ -60,3 +59,5 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+require __DIR__ . '/excel_exports.php'; // Excel routes
