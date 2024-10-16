@@ -6,12 +6,9 @@
 </head>
 <body>
 @php
-    $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellHeadClass2 = 'style="border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellDays = 'style="border-collapse: collapse;font-weight:bold;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
+    $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
+    $cellHeadClass2 = 'style="border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
+    $cellDays = 'style="border-collapse: collapse;font-weight:bold;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
     <table style="border-collapse: collapse;border:2px solid black">
@@ -37,9 +34,11 @@
         <tbody>
         @foreach($attendanceLogs as $attendanceLog)
             <tr>
-                <td style="font-weight: bold">1</td>
-                <td>{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
-                <td>{{ $attendanceLog->employee?->position?->name }}</td>
+                <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                    1
+                </td>
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
                     <td @php echo $cellDays; @endphp>
                         @if($value['status'] == 'REST_DAY')
