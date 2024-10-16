@@ -16,7 +16,7 @@
         <thead>
         <tr>
             <th @php echo $cellHeadClass300Width; @endphp>
-                "{{ $attendanceLog->company?->company_name }}"
+                "{{ $attendanceLogs->first()->company?->company_name }}"
             </th>
             <th></th>
             <th></th>
@@ -40,7 +40,7 @@
             <td></td>
             <td></td>
             <td>
-                Direktor: {{ $company->director?->name.' '.$company->director?->surname }}
+                Direktor: {{ $attendanceLogs->first()->company?->director?->name.' '.$attendanceLogs->first()->company?->director?->surname }}
             </td>
         </tr>
         </tbody>
