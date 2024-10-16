@@ -6,11 +6,11 @@
 </head>
 <body>
 @php
-    $cellHeadClass200Width = 'style="width:200px;border-collapse:collapse;border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass200Width = 'style="width:200px;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellHeadClass2 = 'style="border-color:black;border-collapse:collapse;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass2 = 'style="border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellDays = 'style="border-color:black;border-collapse:collapse;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellDays = 'style="border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
