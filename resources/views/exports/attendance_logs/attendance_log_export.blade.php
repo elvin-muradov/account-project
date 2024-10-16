@@ -6,22 +6,21 @@
 </head>
 <body>
 @php
-    $cellHeadClass300Width = 'style="width:300px;border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:12px;
+    $cellHeadClass200Width = 'style="width:200px;border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellHeadClass2 = 'style="border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $rotated = 'style="-ms-writing-mode: tb-rl;-webkit-writing-mode: vertical-rl;writing-mode: vertical-rl;transform: rotate(180deg);white-space: nowrap;"'
 @endphp
 <table style="border:2px solid black">
     <thead>
     <tr>
         <th @php echo $cellHeadClass2; @endphp rowspan="3">№</th>
-        <th @php echo $cellHeadClass300Width; @endphp rowspan="3">Soyadı, Adı</th>
-        <th @php echo $cellHeadClass300Width; @endphp rowspan="3">Vəzifəsi</th>
+        <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Soyadı, Adı</th>
+        <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Vəzifəsi</th>
         <th @php echo $cellHeadClass2; @endphp colspan="31" rowspan="2">AYIN&nbsp;&nbsp;&nbsp;GÜNLƏRİ</th>
-        <th @php echo $rotated; @endphp rowspan="3">Ayda işlədiyi günləri</th>
-        <th @php echo $cellHeadClass300Width; @endphp rowspan="3"> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
-        <th @php echo $cellHeadClass300Width; @endphp rowspan="3">İşlənmiş saatlar</th>
+        <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Ayda işlədiyi günləri</th>
+        <th @php echo $cellHeadClass200Width; @endphp rowspan="3"> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
+        <th @php echo $cellHeadClass200Width; @endphp rowspan="3">İşlənmiş saatlar</th>
     </tr>
     <tr>
     </tr>
