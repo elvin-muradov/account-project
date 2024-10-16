@@ -6,9 +6,9 @@
 </head>
 <body>
 @php
-    $cellHeadClass200Width = 'style="width:200px;border-color:black;border-style:solid;border-width:1px;font-family:"Times New Roman", Times, serif;font-size:12px;
+    $cellHeadClass200Width = 'style="width:200px;border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellHeadClass2 = 'style="border-color:black;border-style:solid;border-width:1px;font-family:"Times New Roman", Times, serif;font-size:12px;
+    $cellHeadClass2 = 'style="border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
 @endphp
 @if($attendanceLogs->count() > 0)
