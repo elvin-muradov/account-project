@@ -45,25 +45,26 @@
                             İ
                         </td>
                     @elseif($value['status'] == 'NULL_DAY')
-                        <td></td>
+                        <td>
+                        </td>
                     @elseif($value['status'] == 'DAY_OF_CELEBRATION')
                         <td @php echo $cellDays; @endphp>
                             B
                         </td>
                     @elseif($value['status'] == 'LEAVING_WORK')
-                        <td @php echo $cellDays; @endphp>
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
                             İ/Ç
                         </td>
                     @elseif($value['status'] == 'ILLNESS')
-                        <td @php echo $cellDays; @endphp>
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
                             X
                         </td>
                     @elseif($value['status'] == 'BUSINESS_TRIP')
-                        <td @php echo $cellDays; @endphp>
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
                             E
                         </td>
                     @elseif($value['status'] == 'HOLIDAY')
-                        <td @php echo $cellDays; @endphp>
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
                             M
                         </td>
                     @else
