@@ -19,9 +19,9 @@ class AttendanceLogExport implements FromView
     {
         $attendanceLogs = AttendanceLog::query()
             ->with(['employee', 'employee.position'])
-            ->where('company_id', $this->req['company_id'])
-            ->where('year', $this->req['year'])
-            ->where('month', $this->req['month'])
+            ->where('company_id', '=', $this->req['company_id'])
+            ->where('year', '=', $this->req['year'])
+            ->where('month', '=', $this->req['month'])
             ->get();
 
         return view('exports.attendance_logs.attendance_log_export', [

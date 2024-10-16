@@ -27,7 +27,7 @@
         </tr>
         <tr>
             @foreach($attendanceLogs->first()->days as $key => $value)
-                <th id="thclass{{ $key+1 }}">{{ $key+1 }}</th>
+                <th id="thclass{{ $key+1 }}" style="width: fit-content">{{ $key+1 }}</th>
             @endforeach
         </tr>
         </thead>
