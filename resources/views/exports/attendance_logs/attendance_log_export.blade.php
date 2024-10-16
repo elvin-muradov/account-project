@@ -6,11 +6,11 @@
 </head>
 <body>
 @php
-    $cellHeadClass200Width = 'style="width:200px;border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass200Width = 'style="width:200px;border-collapse:collapse;border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellHeadClass2 = 'style="border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass2 = 'style="border-color:black;border-collapse:collapse;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellDays = 'style="border-color:black;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellDays = 'style="border-color:black;border-collapse:collapse;border-style:solid;border-width:1px;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;padding:10px 5px;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
@@ -41,7 +41,22 @@
                 <td>{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
                     <td @php echo $cellDays; @endphp>
-                        {{ $value['status'] }}
+                        @if($value['status'] == 'REST_DAY')
+                            İ
+                        @elseif($value['status'] == 'NULL_DAY')
+                        @elseif($value['status'] == 'DAY_OF_CELEBRATION')
+                            B
+                        @elseif($value['status'] == 'LEAVING_WORK')
+                            İ/Ç
+                        @elseif($value['status'] == 'ILLNESS')
+                            X
+                        @elseif($value['status'] == 'BUSINESS_TRIP')
+                            E
+                        @elseif($value['status'] == 'HOLIDAY')
+                            M
+                        @else
+                            {{ $value['status'] }}
+                        @endif
                     </td>
                 @endforeach
                 <td>{{ $attendanceLog->month_work_days }}</td>
