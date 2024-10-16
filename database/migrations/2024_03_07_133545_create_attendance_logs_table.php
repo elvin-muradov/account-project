@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->integer('month_work_days');
             $table->integer('celebration_days');
             $table->integer('month_work_day_hours');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

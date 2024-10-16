@@ -123,6 +123,9 @@ class HiringOrderController extends Controller
                 'month_work_days' => $countMonthWorkDays,
                 'celebration_days' => $countCelebrationRestDays,
                 'month_work_day_hours' => $countMonthWorkDayHours,
+                'start_date' => Carbon::createFromDate($year, $month, 1),
+                'end_date' => Carbon::createFromDate($year, $month, Carbon::createFromDate($year, $month, 1)
+                    ->daysInMonth),
             ]);
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');

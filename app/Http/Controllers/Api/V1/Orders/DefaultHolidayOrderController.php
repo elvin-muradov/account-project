@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderStore
 use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderUpdate;
 use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderCollection;
 use App\Http\Resources\Api\V1\Orders\DefaultHolidayOrders\DefaultHolidayOrderResource;
+use App\Models\Company\AttendanceLog;
 use App\Models\Company\Company;
 use App\Models\Employee;
 use App\Models\Orders\DefaultHolidayOrder;
@@ -51,6 +52,19 @@ class DefaultHolidayOrderController extends Controller
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
+
+        $attendanceLogs = AttendanceLog::query()
+            ->where('company_id', '=', $request->input('company_id'))
+            ->where('employee_id', '=', $request->input('employee_id'))
+            ->whereBetween('year', [Carbon::parse($request->input('holiday_start_date'))->year,
+                Carbon::parse($request->input('holiday_end_date'))->year])
+            ->whereBetween('month', [Carbon::parse($request->input('holiday_start_date'))->month,
+                Carbon::parse($request->input('holiday_end_date'))->month])
+            ->get();
+
+        dd($attendanceLogs);
+
+        return $this->success(data: $attendanceLogs);
 
         $gender = getGender($employee->gender);
         $charHS = substr($holidayStartDate, '-2');
