@@ -20,5 +20,6 @@ Route::get('/import-queries/export', [ImportQueryExcelController::class, 'export
 Route::get('/import-queries-g/export', [ImportQueryExcelController::class, 'exportImportQueryGExcel']);
 Route::get('/import-costs/export', [ImportCostExcelController::class, 'exportImportCostsExcel']);
 Route::get('/import-costs-vn/export', [ImportCostExcelController::class, 'exportImportCostsVNExcel']);
+Route::get('/attendance-logs/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 
 

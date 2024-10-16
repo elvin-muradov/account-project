@@ -32,7 +32,6 @@ require __DIR__ . '/excel_exports.php'; // Excel routes
 require __DIR__ . '/import_queries.php'; // Import Query routes
 
 Route::get('/test', [TestController::class, 'test']);
-Route::get('/attendance-logs/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
 
 Route::middleware(['auth:user', 'lang'])->group(function () {
