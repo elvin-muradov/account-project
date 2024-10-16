@@ -272,7 +272,7 @@ if (!function_exists('getMonthWorkDayHours')) {
 if (!function_exists('getCelebrationRestDaysCount')) {
     function getCelebrationRestDaysCount(array $config): int
     {
-        $dayTypes = array_values(AttendanceLogDayTypes::toArray());
+        $dayTypes = array_diff(array_values(AttendanceLogDayTypes::toArray()), [AttendanceLogDayTypes::NULL_DAY]);
         $array = array_count_values(array_column($config, 'status'));
 
         $totalDays = 0;
