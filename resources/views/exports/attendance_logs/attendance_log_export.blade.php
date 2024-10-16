@@ -40,7 +40,7 @@
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
-                    <td @php echo $cellDays; @endphp @if(gettype($value['status']) == 'integer') style="text-align: center;vertical-align: middle;background-color: #fff" @endif>
+                    <td @php echo $cellDays; @endphp @if(gettype($value['status']) == 'integer') style="text-align: center;vertical-align: middle;background-color: #fff !important;" @endif>
                         @if($value['status'] == 'REST_DAY')
                             İ
                         @elseif($value['status'] == 'NULL_DAY')
