@@ -290,7 +290,9 @@ if (!function_exists('getCelebrationRestDaysCount')) {
 if (!function_exists('getMonthWorkDaysCount')) {
     function getMonthWorkDaysCount(array $config): float|int
     {
-        return array_sum(array_column($config, 'status')) - getCelebrationRestDaysCount($config);
+        $config = collect($config)->where('status', '!=', 'NULL_DAY')->toArray();
+
+        return count($config) - getCelebrationRestDaysCount($config);
     }
 }
 if (!function_exists('getNumberAsWords')) {
