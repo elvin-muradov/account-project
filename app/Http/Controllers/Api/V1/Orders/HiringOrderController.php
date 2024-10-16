@@ -56,7 +56,7 @@ class HiringOrderController extends Controller
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
         $char = substr($startDate, '-2');
         $lastChar = getNumberEnd($char);
-        $gender = $employee->gender ? getGender($employee->gender) : 'MALE';
+        $gender = !empty($employee->gender) ? getGender($employee->gender) : "MALE";
 
         $data = array_merge($data, [
             'position' => $employee->position?->name,

@@ -145,7 +145,7 @@ if (!function_exists('getNumberEnd')) {
     }
 }
 if (!function_exists('getGender')) {
-    function getGender($gender): string
+    function getGender($gender): string|null
     {
         return match ($gender) {
             'MALE' => 'oğlu',
