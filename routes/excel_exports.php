@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/attendance-logs-excel/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 Route::get('/import-queries/export', [ImportQueryExcelController::class, 'exportImportQueryExcel']);
 Route::get('/import-queries-g/export', [ImportQueryExcelController::class, 'exportImportQueryGExcel']);
 Route::get('/import-costs/export', [ImportCostExcelController::class, 'exportImportCostsExcel']);
 Route::get('/import-costs-vn/export', [ImportCostExcelController::class, 'exportImportCostsVNExcel']);
-Route::get('/attendance-logs/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 
 

@@ -12,8 +12,6 @@ class AttendanceLogExcelController extends Controller
 {
     public function exportAttendanceLogExcel(Request $request): BinaryFileResponse
     {
-        dd('salam');
-
         return Excel::download(new AttendanceLogExport($request), 'attendance_log_export.xlsx');
     }
 }

@@ -8,12 +8,6 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class AttendanceLogExport implements FromView
 {
-    private mixed $req;
-
-    public function __construct($req)
-    {
-        $this->req = $req;
-    }
 
     public function view(): View
     {
