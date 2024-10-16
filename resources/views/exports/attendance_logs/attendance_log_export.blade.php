@@ -7,11 +7,11 @@
 <body>
 @php
     $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
+  overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellHeadClass2 = 'style="border-collapse: collapse;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
+  overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellDays = 'style="border-collapse: collapse;font-weight:bold;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
-  overflow:hidden;padding:10px 5px;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
+  overflow:hidden;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
     <table style="border-collapse: collapse;border:2px solid black">
