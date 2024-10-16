@@ -15,31 +15,35 @@
     <table>
         <thead>
         <tr>
-            <th @php echo $cellHeadClass300Width; @endphp>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th style="width: 400px;font-size: 18px;font-weight: bold">
                 "{{ $attendanceLogs->first()->company?->company_name }}"
             </th>
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
-            <th></th>
-            <th @php echo $cellHeadClass300Width; @endphp>
+            <th style="width: 400px;font-size: 18px;font-weight: bold">
                 Təsdiq edirəm
             </th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="width: 400px;font-size: 18px;font-weight: bold">
                 {{ ucfirst(\Carbon\Carbon::parse($attendanceLogs->first()->year.'-'.$attendanceLogs->first()->month.'-01')->isoFormat('MMMM Y')) }}
                 - TABEL
             </td>
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td>
+            <td style="width: 400px;font-size: 18px;font-weight: bold">
                 Direktor: {{ $attendanceLogs->first()->company?->director?->name.' '.$attendanceLogs->first()->company?->director?->surname }}
             </td>
         </tr>
