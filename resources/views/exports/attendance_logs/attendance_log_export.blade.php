@@ -6,12 +6,47 @@
 </head>
 <body>
 @php
+    $cellHeadClass300Width = 'style="border-collapse: collapse;width:300px;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellHeadClass2 = 'style="border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
     $cellDays = 'style="border-collapse: collapse;font-weight:bold;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
-    <table style="border-collapse: collapse;border:2px solid black">
+    <table>
+        <thead>
+        <tr>
+            <th @php echo $cellHeadClass300Width; @endphp>
+                "{{ $attendanceLog->company?->company_name }}"
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th @php echo $cellHeadClass300Width; @endphp>
+                Təsdiq edirəm
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                {{ ucfirst(\Carbon\Carbon::parse($attendanceLogs->first()->year.'-'.$attendanceLogs->first()->month.'-01')->isoFormat('MMMM Y')) }}
+                - TABEL
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Direktor: {{ $company->director?->name.' '.$company->director?->surname }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="border-collapse: collapse;border:4px solid black">
         <thead>
         <tr>
             <th @php echo $cellHeadClass2; @endphp rowspan="3">№</th>
@@ -34,11 +69,11 @@
         <tbody>
         @foreach($attendanceLogs as $key => $attendanceLog)
             <tr>
-                <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                     {{ $key + 1 }}
                 </td>
-                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
-                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->position?->name }}</td>
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
                     @if($value['status'] == 'REST_DAY')
                         <td @php echo $cellDays; @endphp>
@@ -52,30 +87,30 @@
                             B
                         </td>
                     @elseif($value['status'] == 'LEAVING_WORK')
-                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             İ/Ç
                         </td>
                     @elseif($value['status'] == 'ILLNESS')
-                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             X
                         </td>
                     @elseif($value['status'] == 'BUSINESS_TRIP')
-                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             E
                         </td>
                     @elseif($value['status'] == 'HOLIDAY')
-                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             M
                         </td>
                     @else
-                        <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
+                        <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             {{ $value['status'] }}
                         </td>
                     @endif
                 @endforeach
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->month_work_days }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->celebration_days }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->month_work_day_hours }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_days }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->celebration_days }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
             </tr>
         @endforeach
         </tbody>
