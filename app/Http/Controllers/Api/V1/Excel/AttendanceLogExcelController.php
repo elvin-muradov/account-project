@@ -12,6 +12,12 @@ class AttendanceLogExcelController extends Controller
 {
     public function exportAttendanceLogExcel(Request $request): BinaryFileResponse
     {
-        return Excel::download(new AttendanceLogExport($request), 'attendance_log_export.xlsx');
+        $req = $request->validate([
+            'company_id' => ['required', 'integer', 'exists:companies,id'],
+            'year' => ['required', 'integer'],
+            'month' => ['required', 'integer'],
+        ]);
+
+        return Excel::download(new AttendanceLogExport($req), 'attendance_log_export.xlsx');
     }
 }
