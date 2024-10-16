@@ -19,7 +19,7 @@
             <th></th>
             <th></th>
             <th></th>
-            <th style="width: 450px;font-size: 18px;font-weight: bold">
+            <th style="width: 450px;font-size: 16px;font-weight: bold;font-family: 'Times New Roman', Times, serif">
                 "{{ $attendanceLogs->first()->company?->company_name }}"
             </th>
             <th></th>
@@ -29,7 +29,10 @@
             <th></th>
             <th></th>
             <th></th>
-            <th style="width: 400px;font-size: 18px;font-weight: bold">
+            <th></th>
+            <th></th>
+            <th></th>
+            <th style="width: 400px;font-size: 16px;font-weight: bold;font-family: 'Times New Roman', Times, serif">
                 Təsdiq edirəm
             </th>
         </tr>
@@ -40,7 +43,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td style="width: 450px;font-size: 18px;font-weight: bold">
+            <td style="width: 450px;font-size: 16px;font-weight: bold;font-family: 'Times New Roman', Times, serif">
                 {{ ucfirst(\Carbon\Carbon::parse($attendanceLogs->first()->year.'-'.$attendanceLogs->first()->month.'-01')->isoFormat('MMMM Y')) }}
                 - TABEL
             </td>
@@ -51,7 +54,10 @@
             <td></td>
             <td></td>
             <td></td>
-            <td style="width: 400px;font-size: 18px;font-weight: bold">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="width: 400px;font-size: 18px;font-weight: bold;font-family: 'Times New Roman', Times, serif">
                 Direktor: {{ $attendanceLogs->first()->company?->director?->name.' '.$attendanceLogs->first()->company?->director?->surname }}
             </td>
         </tr>
