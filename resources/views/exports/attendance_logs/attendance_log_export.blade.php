@@ -59,9 +59,9 @@
                         @endif
                     </td>
                 @endforeach
-                <td>{{ $attendanceLog->month_work_days }}</td>
-                <td>{{ $attendanceLog->celebration_days }}</td>
-                <td>{{ $attendanceLog->month_work_day_hours }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->month_work_days }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->celebration_days }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle">{{ $attendanceLog->month_work_day_hours }}</td>
             </tr>
         @endforeach
         </tbody>
