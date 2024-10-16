@@ -21,5 +21,5 @@ Route::get('/import-queries-g/export', [ImportQueryExcelController::class, 'expo
 Route::get('/import-costs/export', [ImportCostExcelController::class, 'exportImportCostsExcel']);
 Route::get('/import-costs-vn/export', [ImportCostExcelController::class, 'exportImportCostsVNExcel']);
 Route::get('/attendance-logs/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel'])
-->withoutMiddleware('auth:sanctum');
+    ->withoutMiddleware(['auth']);
 
