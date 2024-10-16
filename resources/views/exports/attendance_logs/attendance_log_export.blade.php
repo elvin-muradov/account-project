@@ -19,9 +19,11 @@
             <th></th>
             <th></th>
             <th></th>
-            <th style="width: 400px;font-size: 18px;font-weight: bold">
+            <th style="width: 450px;font-size: 18px;font-weight: bold">
                 "{{ $attendanceLogs->first()->company?->company_name }}"
             </th>
+            <th></th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -38,10 +40,12 @@
             <td></td>
             <td></td>
             <td></td>
-            <td style="width: 400px;font-size: 18px;font-weight: bold">
+            <td style="width: 450px;font-size: 18px;font-weight: bold">
                 {{ ucfirst(\Carbon\Carbon::parse($attendanceLogs->first()->year.'-'.$attendanceLogs->first()->month.'-01')->isoFormat('MMMM Y')) }}
                 - TABEL
             </td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
