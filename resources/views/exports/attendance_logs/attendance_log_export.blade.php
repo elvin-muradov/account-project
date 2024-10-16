@@ -32,15 +32,15 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($attendanceLogs as $attendanceLog)
+        @foreach($attendanceLogs as $key => $attendanceLog)
             <tr>
                 <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">
-                    1
+                    {{ $key + 1 }}
                 </td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black">{{ $attendanceLog->employee?->position?->name }}</td>
                 @foreach($attendanceLog->days as $value)
-                    <td @php echo $cellDays; @endphp>
+                    <td @php echo $cellDays; @endphp @if(gettype($value['status']) == 'integer') style="text-align: center;vertical-align: middle;background-color: #fff" @endif>
                         @if($value['status'] == 'REST_DAY')
                             İ
                         @elseif($value['status'] == 'NULL_DAY')
