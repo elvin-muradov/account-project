@@ -25,6 +25,8 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
+            <th></th>
             <th style="width: 400px;font-size: 18px;font-weight: bold">
                 Təsdiq edirəm
             </th>
@@ -40,6 +42,8 @@
                 {{ ucfirst(\Carbon\Carbon::parse($attendanceLogs->first()->year.'-'.$attendanceLogs->first()->month.'-01')->isoFormat('MMMM Y')) }}
                 - TABEL
             </td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
