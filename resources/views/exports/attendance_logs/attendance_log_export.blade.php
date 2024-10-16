@@ -27,50 +27,24 @@
         </tr>
         <tr>
             @foreach($attendanceLogs->first()->days as $key => $value)
-                <th>{{ $key+1 }}</th>
+                <th id="thclass{{ $key+1 }}">{{ $key+1 }}</th>
             @endforeach
         </tr>
         </thead>
         <tbody>
         @foreach($attendanceLogs as $attendanceLog)
             <tr>
-                <td>1</td>
-                <td>XXXXXXXXX</td>
-                <td>XXXXXX</td>
-                <td>8</td>
-                <td>i</td>
-                <td>i</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>7</td>
-                <td>i</td>
-                <td>i</td>
-                <td>B</td>
-                <td>B</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>i</td>
-                <td>i</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>i</td>
-                <td>i</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>8</td>
-                <td>i</td>
-                <td>i</td>
-                <td>19</td>
-                <td>12</td>
-                <td>151</td>
+                <td style="font-weight: bold">1</td>
+                <td>{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
+                <td>{{ $attendanceLog->employee?->position?->name }}</td>
+                @foreach($attendanceLog->days as $value)
+                    <td>
+                        {{ $value['status'] }}
+                    </td>
+                @endforeach
+                <td>{{ $attendanceLog->month_work_days }}</td>
+                <td>{{ $attendanceLog->celebration_days }}</td>
+                <td>{{ $attendanceLog->month_work_day_hours }}</td>
             </tr>
         @endforeach
         </tbody>
