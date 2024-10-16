@@ -19,7 +19,7 @@
         <th @php echo $cellHeadClass300Width; @endphp rowspan="3">Soyadı, Adı</th>
         <th @php echo $cellHeadClass300Width; @endphp rowspan="3">Vəzifəsi</th>
         <th @php echo $cellHeadClass2; @endphp colspan="31" rowspan="2">AYIN&nbsp;&nbsp;&nbsp;GÜNLƏRİ</th>
-        <th @php echo $cellHeadClass300Width; echo $rotated; @endphp rowspan="3">Ayda işlədiyi günləri</th>
+        <th @php echo $rotated; @endphp rowspan="3">Ayda işlədiyi günləri</th>
         <th @php echo $cellHeadClass300Width; @endphp rowspan="3"> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
         <th @php echo $cellHeadClass300Width; @endphp rowspan="3">İşlənmiş saatlar</th>
     </tr>
