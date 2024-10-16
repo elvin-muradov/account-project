@@ -6,11 +6,11 @@
 </head>
 <body>
 @php
-    $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass200Width = 'style="border-collapse: collapse;width:200px;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellHeadClass2 = 'style="border-collapse: collapse;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellHeadClass2 = 'style="border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
-    $cellDays = 'style="border-collapse: collapse;font-weight:bold;border-color:black;border-style:solid;border-width:2px;font-family:Times New Roman, Times, serif;font-size:12px;
+    $cellDays = 'style="border-collapse: collapse;font-weight:bold;border: 2px solid black;font-family:Times New Roman, Times, serif;font-size:12px;
   overflow:hidden;word-break:normal;text-align:center;vertical-align:middle;background-color:#FFFF00"';
 @endphp
 @if($attendanceLogs->count() > 0)
@@ -29,7 +29,8 @@
         </tr>
         <tr>
             @foreach($attendanceLogs->first()->days as $key => $value)
-                <th id="thclass{{ $key+1 }}" style="width: 30px;text-align: center">{{ $key+1 }}</th>
+                <th id="thclass{{ $key+1 }}"
+                    style="width: 30px;text-align: center;border-collapse: collapse;border: 2px solid black">{{ $key+1 }}</th>
             @endforeach
         </tr>
         </thead>
