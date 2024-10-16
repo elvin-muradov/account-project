@@ -39,7 +39,8 @@ return new class extends Migration {
             $table->jsonb('founding_decision_files')->nullable(); // Təsisçi qərarı faylları
             $table->string('asan_sign'); // ASAN imza mobil nömrəsi
             $table->date('asan_sign_start_date'); // ASAN imza başlama vaxtı
-            $table->string('asan_id'); // İD
+            $table->date('asan_sign_expired_at'); // ASAN imza bitmə vaxtı
+            $table->string('asan_id'); // ID
             $table->unsignedInteger('pin1'); // PİN1
             $table->unsignedInteger('pin2'); // PİN2
             $table->unsignedInteger('puk'); // PUK

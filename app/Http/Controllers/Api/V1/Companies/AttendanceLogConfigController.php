@@ -51,17 +51,20 @@ class AttendanceLogConfigController extends Controller
         ]);
 
         if (!$checkMonthDaysUnique) {
-            return $this->error(message: 'Eyni gün birdən artıq daxil edilə bilməz', code: 400);
+            return $this->error(message: 'Zəhmət olmasa günləri düzgün daxil edin', code: 400);
         }
 
         $attendanceLogConfig = AttendanceLogConfig::query()->create([
             'company_id' => $request->input('company_id'),
             'year' => $request->input('year'),
             'month' => $request->input('month'),
-            'config' => $request->input('config')
+            'config' => $request->input('config'),
+            'log_date' => $carbonDate->format('Y-m-d'),
         ]);
 
-        return $this->success(data: $attendanceLogConfig, message: "Tabel şablonu uğurla əlavə olundu", code: 201);
+        return $this
+            ->success(data: AttendanceLogConfigResource::make($attendanceLogConfig),
+                message: "Tabel şablonu uğurla əlavə olundu", code: 201);
     }
 
     public function show($attendanceLogConfig): JsonResponse

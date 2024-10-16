@@ -42,6 +42,7 @@ class CompanyResource extends JsonResource
             'founding_decision_files' => $this->founding_decision_files,
             'asan_sign' => $this->asan_sign,
             'asan_sign_start_date' => $this->asan_sign_start_date,
+            'asan_sign_expired_at' => $this->asan_sign_expired_at,
             'asan_id' => $this->asan_id,
             'pin1' => $this->pin1,
             'pin2' => $this->pin2,

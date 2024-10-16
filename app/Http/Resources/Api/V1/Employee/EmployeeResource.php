@@ -41,7 +41,7 @@ class EmployeeResource extends JsonResource
             'work_experience' => $this->work_experience,
             'education' => $this->education,
             'salary' => $this->salary,
-            'salary_card_expiration_date' => $this->salary_card_expiration_date,
+            'salary_card_expired_at' => $this->salary_card_expired_at,
             'created_at' => Carbon::parse($this->created_at)->format('d.m.Y'),
         ];
     }

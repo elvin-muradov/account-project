@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->enum('education', EducationTypesEnum::toArray());
             $table->enum('gender', GenderTypes::toArray());
             $table->float('salary')->nullable();
-            $table->date('salary_card_expiration_date')->nullable();
+            $table->date('salary_card_expired_at')->nullable();
             $table->enum('employee_type', EmployeeTypes::toArray());
             $table->string('password')->nullable();
             $table->rememberToken();

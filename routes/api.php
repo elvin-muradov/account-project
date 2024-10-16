@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Companies\RentalContractController;
 use App\Http\Controllers\Api\V1\CurrencyController;
 use App\Http\Controllers\Api\V1\Orders\OrderController;
 use App\Http\Controllers\Api\V1\S3ApiGatewayController;
+use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\Users\RolePermissionController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -38,6 +39,12 @@ Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
     Route::get('/currency-rates', [CurrencyController::class, 'index']);
     Route::get('/company-director-or-main-user', [OrderController::class, 'companyDirectorOrMainUser']);
+
+    //Tasks
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     // Rental Contracts Routes
     Route::get('/rental-contracts', [RentalContractController::class, 'indexAllRentalContracts']);

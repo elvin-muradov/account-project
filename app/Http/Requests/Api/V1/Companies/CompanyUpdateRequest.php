@@ -63,6 +63,7 @@ class CompanyUpdateRequest extends FormRequest
             'founding_decision_files .*' => ['required', 'file', 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'asan_sign' => ['required', 'phone:AZ'],
             'asan_sign_start_date' => ['required', 'date'],
+            'asan_sign_expired_at' => ['required', 'date'],
             'asan_id' => ['required', 'string'],
             'pin1' => ['required', 'integer', 'digits:4'],
             'pin2' => ['required', 'integer', 'digits:5'],

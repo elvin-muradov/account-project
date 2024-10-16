@@ -30,6 +30,7 @@ class CompanySeeder extends Seeder
                 'director_id' => null,
                 'asan_sign' => '+994501234567',
                 'asan_sign_start_date' => '2021-01-01',
+                'asan_sign_expired_at' => '2024-07-21',
                 'asan_id' => '123456789',
                 'pin1' => 1234,
                 'pin2' => 12345,
@@ -37,7 +38,8 @@ class CompanySeeder extends Seeder
                 'statistic_code' => 12345678,
                 'statistic_password' => '12345678',
                 'operator_azercell_account' => '+994501234567',
-                'operator_azercell_password' => '12345678'
+                'operator_azercell_password' => '12345678',
+                'ydm_card_expired_at' => '2024-07-21'
             ]);
         }
         for ($i = 1; $i < 30; $i++) {
@@ -56,6 +58,7 @@ class CompanySeeder extends Seeder
                 'director_id' => null,
                 'asan_sign' => '+994501234567',
                 'asan_sign_start_date' => '2021-01-01',
+                'asan_sign_expired_at' => '2024-07-21',
                 'asan_id' => '123456789',
                 'pin1' => 1234,
                 'pin2' => 12345,
@@ -63,7 +66,8 @@ class CompanySeeder extends Seeder
                 'statistic_code' => 12345678,
                 'statistic_password' => '12345678',
                 'operator_azercell_account' => '+994501234567',
-                'operator_azercell_password' => '12345678'
+                'operator_azercell_password' => '12345678',
+                'ydm_card_expired_at' => '2024-07-21'
             ]);
         }
     }

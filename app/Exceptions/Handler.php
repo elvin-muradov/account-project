@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException as AuthAuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use InvalidArgumentException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -52,6 +53,10 @@ class Handler extends ExceptionHandler
             $e instanceof InvalidArgumentException => $this->error(
                 message: $e->getMessage(),
                 code: 23503
+            ),
+            $e instanceof UnauthorizedException => $this->error(
+                message: $e->getMessage(),
+                code: 403
             ),
 
             default => parent::render($request, $e)

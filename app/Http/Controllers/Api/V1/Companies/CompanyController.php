@@ -43,7 +43,7 @@ class CompanyController extends Controller
             return $this->error(message: "VÖEN sonu 1 və ya 2 ilə bitməlidir", code: 400);
         }
 
-        //$fixedAssetFilesExists = $request->input('fixed_asset_files_exists') ?? true;
+        $fixedAssetFilesExists = $request->input('fixed_asset_files_exists') ?? true;
 
         if ($request->hasFile('tax_id_number_files')) {
             $tinFiles = $request->file('tax_id_number_files');

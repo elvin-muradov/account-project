@@ -45,7 +45,7 @@ class EmployeeUpdateRequest extends FormRequest
             'work_experience' => ['nullable', 'numeric'],
             'education' => ['required', 'in:' . EducationTypesEnum::toString()],
             'salary' => ['nullable', 'numeric'],
-            'salary_card_expiration_date' => ['nullable', 'date'],
+            'salary_card_expired_at' => ['nullable', 'date'],
             'employee_type' => ['required', 'in:' . EmployeeTypes::toString()],
             'password' => ['nullable',
                 Rule::requiredIf($this

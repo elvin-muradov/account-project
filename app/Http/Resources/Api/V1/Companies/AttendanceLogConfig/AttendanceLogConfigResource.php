@@ -20,6 +20,7 @@ class AttendanceLogConfigResource extends JsonResource
             'company' => $this->whenLoaded('company'),
             'year' => $this->year,
             'month' => $this->month,
+            'log_date' => $this->log_date,
             'config' => $this->config,
             'created_at' => $this->created_at,
         ];

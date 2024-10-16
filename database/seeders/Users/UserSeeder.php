@@ -131,7 +131,8 @@ class UserSeeder extends Seeder
             'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'employee_type' => EmployeeTypes::DIRECTOR->value,
             'salary' => 2500,
-            'password' => Hash::make('123456789')
+            'password' => Hash::make('123456789'),
+            'salary_card_expired_at' => '2024-07-21',
         ]);
 
         $companyEmployee2 = Employee::query()->create([
@@ -154,11 +155,18 @@ class UserSeeder extends Seeder
             'education' => EducationTypesEnum::COMPLETED_HIGHER->value,
             'employee_type' => EmployeeTypes::DIRECTOR->value,
             'salary' => 2500,
-            'password' => Hash::make('123456789')
+            'password' => Hash::make('123456789'),
+            'salary_card_expired_at' => '2024-07-21',
         ]);
 
         Company::query()->first()->update([
             'director_id' => $companyEmployee1->id
+        ]);
+
+        Company::query()->whereIn('id', [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        ])->update([
+            'accountant_id' => $accountant->id
         ]);
     }
 }

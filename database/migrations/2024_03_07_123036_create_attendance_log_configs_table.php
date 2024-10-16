@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->integer('year');
             $table->integer('month');
             $table->jsonb('config');
+            $table->date('log_date');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

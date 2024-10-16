@@ -252,6 +252,8 @@ if (!function_exists('checkMonthDaysUnique')) {
     {
         $monthDays = returnMonthDaysAsArray($count);
 
+        //dd($monthDays);
+
         foreach ($requestDays as $key => $day) {
             if (count(array_unique($requestDays)) !== count($monthDays)) {
                 return false;
