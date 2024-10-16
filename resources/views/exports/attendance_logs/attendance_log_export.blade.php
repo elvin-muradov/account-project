@@ -6,7 +6,8 @@
 </head>
 <body>
 @php
-    $cellTDClass = 'style="word-wrap:break-word;text-align: center;vertical-align: middle;border: 2px solid #000"';
+    $cellTDClass = 'style="border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;font-weight:bold;text-align:center;vertical-align:middle"';
 @endphp
 <table style="border:2px solid black">
     <thead>
