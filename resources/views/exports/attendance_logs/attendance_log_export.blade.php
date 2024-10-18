@@ -132,6 +132,51 @@
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+            </td>
+            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
+            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
+
+            @foreach($attendanceLog->days as $i => $value)
+                @if($value['status'] == 'REST_DAY')
+                    <td @php echo $cellDays; @endphp>
+
+                    </td>
+                @elseif($value['status'] == 'NULL_DAY')
+                    <td style="border-collapse: collapse;border: 2px solid black;">
+                    </td>
+                @elseif($value['status'] == 'DAY_OF_CELEBRATION')
+                    <td @php echo $cellDays; @endphp>
+
+                    </td>
+                @elseif($value['status'] == 'LEAVING_WORK')
+                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+                    </td>
+                @elseif($value['status'] == 'ILLNESS')
+                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+                    </td>
+                @elseif($value['status'] == 'BUSINESS_TRIP')
+                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+                    </td>
+                @elseif($value['status'] == 'HOLIDAY')
+                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+                    </td>
+                @else
+                    <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+
+                    </td>
+                @endif
+            @endforeach
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">5</td>
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">6</td>
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">7</td>
+        </tr>
         </tbody>
     </table>
 @endif
