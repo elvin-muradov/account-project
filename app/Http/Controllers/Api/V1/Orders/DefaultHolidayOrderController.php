@@ -56,11 +56,9 @@ class DefaultHolidayOrderController extends Controller
 
         $startYear = Carbon::parse($request->input('holiday_start_date'))->format('Y');
         $startMonth = Carbon::parse($request->input('holiday_start_date'))->format('n');
-        $startDay = Carbon::parse($request->input('holiday_start_date'))->format('j');
 
         $endYear = Carbon::parse($request->input('holiday_end_date'))->format('Y');
         $endMonth = Carbon::parse($request->input('holiday_end_date'))->format('n');
-        $endDay = Carbon::parse($request->input('holiday_end_date'))->format('j');
 
         DB::beginTransaction();
 
@@ -181,6 +179,8 @@ class DefaultHolidayOrderController extends Controller
         ]);
 
         unlink($filePath);
+
+        DB::commit();
 
         return $this->success(data: $defaultHolidayOrder, message: 'Məzuniyyət əmri uğurla yaradıldı');
     }
