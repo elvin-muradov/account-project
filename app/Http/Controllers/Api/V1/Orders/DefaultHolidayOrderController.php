@@ -86,7 +86,7 @@ class DefaultHolidayOrderController extends Controller
             foreach ($log->days as $k => $day) {
                 $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
 
-                if ($dayDate >= $request->start_date && $dayDate <= $request->end_date) {
+                if ($dayDate >= $request->holiday_start_date && $dayDate <= $request->holiday_end_date) {
                     if ($day['status'] == 'NULL_DAY') {
                         DB::rollBack();
 
