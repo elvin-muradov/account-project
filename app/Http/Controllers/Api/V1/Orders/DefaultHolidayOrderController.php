@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
@@ -53,18 +54,68 @@ class DefaultHolidayOrderController extends Controller
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
+        $startYear = Carbon::parse($request->input('holiday_start_date'))->format('Y');
+        $startMonth = Carbon::parse($request->input('holiday_start_date'))->format('n');
+        $startDay = Carbon::parse($request->input('holiday_start_date'))->format('j');
+
+        $endYear = Carbon::parse($request->input('holiday_end_date'))->format('Y');
+        $endMonth = Carbon::parse($request->input('holiday_end_date'))->format('n');
+        $endDay = Carbon::parse($request->input('holiday_end_date'))->format('j');
+
+        DB::beginTransaction();
+
+        $existsAttendanceLog = AttendanceLog::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->where('year', $startYear)
+            ->where('month', $startMonth)
+            ->first();
+
+        if (!$existsAttendanceLog) {
+            return $this->error(message: 'İşçi tabeldə mövcud deyil', code: 404);
+        }
+
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', '=', $request->input('company_id'))
-            ->where('employee_id', '=', $request->input('employee_id'))
-            ->whereBetween('year', [Carbon::parse($request->input('holiday_start_date'))->year,
-                Carbon::parse($request->input('holiday_end_date'))->year])
-            ->whereBetween('month', [Carbon::parse($request->input('holiday_start_date'))->month,
-                Carbon::parse($request->input('holiday_end_date'))->month])
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->whereBetween('year', [$startYear, $endYear])
+            ->whereBetween('month', [$startMonth, $endMonth])
             ->get();
 
-        dd($attendanceLogs);
+        foreach ($attendanceLogs as $log) {
+            $monthDays = [];
 
-        return $this->success(data: $attendanceLogs);
+            foreach ($log->days as $k => $day) {
+                $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
+
+                if ($dayDate >= $request->start_date && $dayDate <= $request->end_date) {
+                    if ($day['status'] == 'NULL_DAY') {
+                        DB::rollBack();
+
+                        return $this
+                            ->error(message: "Ezamiyyət tarixi aralığı tabel üzrə düzgün qeyd olunmayıb",
+                                code: 400);
+                    }
+
+                    $day['status'] = 'DEFAULT_HOLIDAY';
+
+                    $monthDays[] = $day;
+                } else {
+                    $monthDays[] = $log->days[$k];
+                }
+            }
+
+            $countMonthWorkDayHours = getMonthWorkDayHours($monthDays);
+            $countCelebrationRestDays = getCelebrationRestDaysCount($monthDays);
+            $countMonthWorkDays = getMonthWorkDaysCount($monthDays);
+
+            $log->update([
+                'days' => $monthDays,
+                'month_work_days' => $countMonthWorkDays,
+                'celebration_days' => $countCelebrationRestDays,
+                'month_work_day_hours' => $countMonthWorkDayHours,
+            ]);
+        }
 
         $gender = getGender($employee->gender);
         $charHS = substr($holidayStartDate, '-2');
