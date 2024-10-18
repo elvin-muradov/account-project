@@ -82,7 +82,6 @@ class HiringOrderController extends Controller
         $attendanceLogConfig = AttendanceLogConfig::query()
             ->where('company_id', $request->input('company_id'))
             ->where('year', $year)
-            ->where('month', $month)
             ->first();
 
         if (!$attendanceLogConfig) {
@@ -92,41 +91,67 @@ class HiringOrderController extends Controller
         $attendanceLog = AttendanceLog::query()
             ->where('company_id', $attendanceLogConfig->company_id)
             ->where('year', $attendanceLogConfig->year)
-            ->where('month', $attendanceLogConfig->month)
             ->where('employee_id', $request->input('employee_id'))
             ->first();
-
-        $config = $attendanceLogConfig->config;
-
-        for ($i = 0; $i < $day - 1; $i++) {
-            $config[$i] = [
-                'day' => $i + 1,
-                'status' => 'NULL_DAY',
-            ];
-        }
 
         if ($attendanceLog) {
             return $this->error(message: 'İşçi artıq tabelə əlavə olunub', code: 404);
         }
 
-        $countMonthWorkDayHours = getMonthWorkDayHours($config);
-        $countCelebrationRestDays = getCelebrationRestDaysCount($config);
-        $countMonthWorkDays = getMonthWorkDaysCount($config);
+        $config = $attendanceLogConfig->config;
 
-        AttendanceLog::query()
-            ->create([
-                'company_id' => $attendanceLogConfig->company_id,
-                'employee_id' => $request->input('employee_id'),
-                'year' => $attendanceLogConfig->year,
-                'month' => $attendanceLogConfig->month,
-                'days' => $config,
-                'month_work_days' => $countMonthWorkDays,
-                'celebration_days' => $countCelebrationRestDays,
-                'month_work_day_hours' => $countMonthWorkDayHours,
-                'start_date' => Carbon::createFromDate($year, $month, 1),
-                'end_date' => Carbon::createFromDate($year, $month, Carbon::createFromDate($year, $month, 1)
-                    ->daysInMonth),
-            ]);
+        $generatedConfig = [];
+
+        for ($i = 0; $i < count($config); $i++) {
+            if ($i + 1 == $month) {
+                for ($j = 0; $j < count($config[$i]['days']); $j++) {
+                    if ($day > $config[$i]['days'][$j]['day']) {
+                        $generatedConfig[$i]['days'][$j] = [
+                            'day' => $config[$i]['days'][$j]['day'],
+                            'status' => 'NULL_DAY'
+                        ];
+                    } else {
+                        $generatedConfig[$i]['days'][$j] = [
+                            'day' => $config[$i]['days'][$j]['day'],
+                            'status' => $config[$i]['days'][$j]['status']
+                        ];
+                    }
+                }
+            }
+        }
+
+        $config[$month - 1]['days'] = $generatedConfig[$month - 1]['days'];
+
+        foreach ($config as $key => $value) {
+            foreach ($value['days'] as $k => $d) {
+                if ($value['days'][$key]['status'] == 'NULL_DAY') {
+                    break 2;
+                }
+
+                $config[$key]['days'][$k]['status'] = 'NULL_DAY';
+            }
+        }
+
+        foreach ($config as $key => $value) {
+            $countMonthWorkDayHours = getMonthWorkDayHours($config[$key]['days']);
+            $countCelebrationRestDays = getCelebrationRestDaysCount($config[$key]['days']);
+            $countMonthWorkDays = getMonthWorkDaysCount($config[$key]['days']);
+
+            AttendanceLog::query()
+                ->create([
+                    'company_id' => $attendanceLogConfig->company_id,
+                    'employee_id' => $request->input('employee_id'),
+                    'year' => $attendanceLogConfig->year,
+                    'month' => $value['month'],
+                    'days' => $value['days'],
+                    'month_work_days' => $countMonthWorkDays,
+                    'celebration_days' => $countCelebrationRestDays,
+                    'month_work_day_hours' => $countMonthWorkDayHours,
+                    'start_date' => Carbon::createFromDate($year, $month, 1),
+                    'end_date' => Carbon::createFromDate($year, $month, Carbon::createFromDate($year, $month, 1)
+                        ->daysInMonth),
+                ]);
+        }
 
         $documentPath = public_path('assets/order_templates/HIRING.docx');
         $fileName = 'HIRING_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';

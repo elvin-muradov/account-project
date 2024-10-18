@@ -7,6 +7,8 @@ use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderStoreRequ
 use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderUpdateRequest;
 use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderCollection;
 use App\Http\Resources\Api\V1\Orders\BusinessTripOrders\BusinessTripOrderResource;
+use App\Models\Company\AttendanceLog;
+use App\Models\Company\AttendanceLogConfig;
 use App\Models\Company\Company;
 use App\Models\Employee;
 use App\Models\Orders\BusinessTripOrder;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
@@ -40,7 +43,7 @@ class BusinessTripOrderController extends Controller
      * @throws CopyFileException
      * @throws CreateTemporaryFileException
      */
-    public function store(BusinessTripOrderStoreRequest $request): JsonResponse
+    public function store(BusinessTripOrderStoreRequest $request)
     {
         $data = $request->validated();
         $company = $this->getCompany($request->input('company_id'));
@@ -72,6 +75,69 @@ class BusinessTripOrderController extends Controller
             'end_date' => $endDate,
             'order_date' => $orderDate
         ]);
+
+        $startYear = Carbon::parse($request->input('start_date'))->format('Y');
+        $startMonth = Carbon::parse($request->input('start_date'))->format('n');
+        $startDay = Carbon::parse($request->input('start_date'))->format('j');
+
+        $endYear = Carbon::parse($request->input('end_date'))->format('Y');
+        $endMonth = Carbon::parse($request->input('end_date'))->format('n');
+        $endDay = Carbon::parse($request->input('end_date'))->format('j');
+
+        DB::beginTransaction();
+
+        $existsAttendanceLog = AttendanceLog::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->where('year', $startYear)
+            ->where('month', $startMonth)
+            ->first();
+
+        if (!$existsAttendanceLog) {
+            return $this->error(message: 'İşçi tabeldə mövcud deyil', code: 404);
+        }
+
+        $attendanceLogs = AttendanceLog::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->whereBetween('year', [$startYear, $endYear])
+            ->whereBetween('month', [$startMonth, $endMonth])
+            ->get();
+
+        foreach ($attendanceLogs as $log) {
+            $monthDays = [];
+
+            foreach ($log->days as $k => $day) {
+                $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
+
+                if ($dayDate >= $request->start_date && $dayDate <= $request->end_date) {
+                    if ($day['status'] == 'NULL_DAY') {
+                        DB::rollBack();
+
+                        return $this
+                            ->error(message: "Ezamiyyət tarixi aralığı tabel üzrə düzgün qeyd olunmayıb",
+                                code: 400);
+                    }
+
+                    $day['status'] = 'BUSINESS_TRIP';
+
+                    $monthDays[] = $day;
+                } else {
+                    $monthDays[] = $log->days[$k];
+                }
+            }
+
+            $countMonthWorkDayHours = getMonthWorkDayHours($monthDays);
+            $countCelebrationRestDays = getCelebrationRestDaysCount($monthDays);
+            $countMonthWorkDays = getMonthWorkDaysCount($monthDays);
+
+            $log->update([
+                'days' => $monthDays,
+                'month_work_days' => $countMonthWorkDays,
+                'celebration_days' => $countCelebrationRestDays,
+                'month_work_day_hours' => $countMonthWorkDayHours,
+            ]);
+        }
 
         $documentPath = public_path('assets/order_templates/BUSINESS_TRIP.docx');
         $fileName = 'BUSINESS_TRIP_ORDER_' . Str::slug($companyName . $orderNumber, '_') . '.docx';
@@ -109,6 +175,8 @@ class BusinessTripOrderController extends Controller
         ]);
 
         unlink($filePath);
+
+        DB::commit();
 
         return $this->success(data: $businessTripOrder, message: 'Ezamiyyət əmri uğurla yaradıldı');
     }

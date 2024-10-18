@@ -25,6 +25,7 @@ class AttendanceLogController extends Controller
                 'employee:id,name,surname,position_id',
                 'employee.position:id,name'
             ])
+            ->orderBy('id', 'asc')
             ->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new AttendanceLogCollection($attendanceLogs));

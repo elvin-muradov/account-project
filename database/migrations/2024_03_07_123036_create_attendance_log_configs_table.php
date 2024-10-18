@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->integer('year');
-            $table->integer('month');
             $table->jsonb('config');
             $table->date('log_date');
             $table->timestamps();
