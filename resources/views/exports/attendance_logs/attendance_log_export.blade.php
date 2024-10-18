@@ -185,13 +185,13 @@
                 @endif
             @endforeach
             <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                {{ $totalMonthWorkDays }}
+                5
             </td>
             <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                {{ $totalCelebrationDays }}
+                6
             </td>
             <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                {{ $totalMonthWorkDayHours }}
+                7
             </td>
         </tr>
         </tbody>
