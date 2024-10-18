@@ -92,14 +92,19 @@
                 </td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->position?->name }}</td>
+
                 @foreach($attendanceLog->days as $i => $value)
                     @php
-                        $colspan = 0;
+                        $days = $attendanceLog->days;
+                        $totalDays = count($days);
+                        // Aynı statüdeki günleri saymak için bir değişken oluşturuyoruz
+                        $colspan = 1;
 
-                        $currentStatus = $value['status'];
+                        // Şu anki günün statüsü
+                        $currentStatus = $days[$i]['status'];
 
                         // Aynı statüye sahip olan diğer günleri buluyoruz
-                        for ($j = $i + 1; $j < count($attendanceLog->days) && $attendanceLog->days[$j]['status'] == $currentStatus; $j++) {
+                        for ($j = $i + 1; $j < $totalDays && $days[$j]['status'] == $currentStatus; $j++) {
                             $colspan++;
                         }
                     @endphp
