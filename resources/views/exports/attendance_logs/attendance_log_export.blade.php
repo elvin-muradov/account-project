@@ -99,7 +99,7 @@
                             İ
                         </td>
                     @elseif($value['status'] == 'NULL_DAY')
-                        <td>
+                        <td style="border-collapse: collapse;border: 2px solid black;">
                         </td>
                     @elseif($value['status'] == 'DAY_OF_CELEBRATION')
                         <td @php echo $cellDays; @endphp>
