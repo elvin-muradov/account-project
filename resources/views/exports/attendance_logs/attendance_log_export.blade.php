@@ -77,8 +77,8 @@
         </tr>
         <tr>
             @foreach($attendanceLogs->first()->days as $key => $value)
-                <th id="thclass{{ $key+1 }}"
-                    style="width: 30px;text-align: center;border-collapse: collapse;border: 2px solid black">{{ $key+1 }}</th>
+                <th id="thclass{{ $value['day'] }}"
+                    style="width: 30px;text-align: center;border-collapse: collapse;border: 2px solid black">{{ $value['day'] }}</th>
             @endforeach
         </tr>
         </thead>
