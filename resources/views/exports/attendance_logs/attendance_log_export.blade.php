@@ -146,8 +146,6 @@
             <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif" colspan="3">
                 CƏMİ
             </td>
-            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
-            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
 
             @foreach($attendanceLog->days as $i => $value)
                 @if($value['status'] == 'REST_DAY')
