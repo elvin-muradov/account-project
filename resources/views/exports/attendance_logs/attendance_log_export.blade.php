@@ -92,7 +92,18 @@
                 </td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->position?->name }}</td>
-                @foreach($attendanceLog->days as $value)
+                @foreach($attendanceLog->days as $i => $value)
+                    @php
+                        $colspan = 0;
+
+                        $currentStatus = $value['status'];
+
+                        // Aynı statüye sahip olan diğer günleri buluyoruz
+                        for ($j = $i + 1; $j < count($attendanceLog->days) && $attendanceLog->days[$j]['status'] == $currentStatus; $j++) {
+                            $colspan++;
+                        }
+                    @endphp
+
                     @if($value['status'] == 'REST_DAY')
                         <td @php echo $cellDays; @endphp>
                             İ
@@ -113,7 +124,7 @@
                             X
                         </td>
                     @elseif($value['status'] == 'BUSINESS_TRIP')
-                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                        <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif" colspan="{{ $colspan }}">
                             E
                         </td>
                     @elseif($value['status'] == 'HOLIDAY')
