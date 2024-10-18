@@ -91,7 +91,7 @@ class DefaultHolidayOrderController extends Controller
                         DB::rollBack();
 
                         return $this
-                            ->error(message: "Ezamiyyət tarixi aralığı tabel üzrə düzgün qeyd olunmayıb",
+                            ->error(message: "Məzuniyyət tarixi aralığı tabel üzrə düzgün qeyd olunmayıb",
                                 code: 400);
                     }
 
