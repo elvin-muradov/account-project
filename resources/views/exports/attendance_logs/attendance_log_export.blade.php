@@ -85,6 +85,11 @@
         </tr>
         </thead>
         <tbody>
+        @php
+            $totalMonthWorkDays = 0;
+            $totalCelebrationDays = 0;
+            $totalMonthWorkDayHours = 0;
+        @endphp
         @foreach($attendanceLogs as $key => $attendanceLog)
             <tr>
                 <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
@@ -131,9 +136,16 @@
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->celebration_days }}</td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
             </tr>
+
+            @php
+                $totalMonthWorkDays += $attendanceLog->month_work_days;
+                $totalCelebrationDays += $attendanceLog->celebration_days;
+                $totalMonthWorkDayHours += $attendanceLog->month_work_day_hours;
+            @endphp
         @endforeach
         <tr>
-            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif" colspan="2">
+            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"
+                colspan="3">
                 CƏMİ
             </td>
             <td style="border-collapse: collapse;border: 2px solid black;">
@@ -172,9 +184,15 @@
                     </td>
                 @endif
             @endforeach
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">5</td>
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">6</td>
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">7</td>
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                {{ $totalMonthWorkDays }}
+            </td>
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                {{ $totalCelebrationDays }}
+            </td>
+            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                {{ $totalMonthWorkDayHours }}
+            </td>
         </tr>
         </tbody>
     </table>
