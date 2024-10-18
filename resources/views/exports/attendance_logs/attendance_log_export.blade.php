@@ -133,42 +133,41 @@
             </tr>
         @endforeach
         <tr>
-            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
-
+            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif" colspan="2">
+                CƏMİ
             </td>
-            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
-            <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"></td>
+            <td style="border-collapse: collapse;border: 2px solid black;">
+            <td style="border-collapse: collapse;border: 2px solid black;">
 
             @foreach($attendanceLog->days as $i => $value)
                 @if($value['status'] == 'REST_DAY')
-                    <td @php echo $cellDays; @endphp>
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @elseif($value['status'] == 'NULL_DAY')
                     <td style="border-collapse: collapse;border: 2px solid black;">
                     </td>
                 @elseif($value['status'] == 'DAY_OF_CELEBRATION')
-                    <td @php echo $cellDays; @endphp>
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @elseif($value['status'] == 'LEAVING_WORK')
-                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @elseif($value['status'] == 'ILLNESS')
-                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
-
+                    <td style="border-collapse: collapse;border: 2px solid black;">
                     </td>
                 @elseif($value['status'] == 'BUSINESS_TRIP')
-                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @elseif($value['status'] == 'HOLIDAY')
-                    <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @else
-                    <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                    <td style="border-collapse: collapse;border: 2px solid black;">
 
                     </td>
                 @endif
