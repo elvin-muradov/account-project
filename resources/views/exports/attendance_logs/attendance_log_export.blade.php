@@ -122,7 +122,7 @@
                         <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             E
                         </td>
-                    @elseif($value['status'] == 'HOLIDAY')
+                    @elseif($value['status'] == 'DEFAULT_HOLIDAY')
                         <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                             M
                         </td>
