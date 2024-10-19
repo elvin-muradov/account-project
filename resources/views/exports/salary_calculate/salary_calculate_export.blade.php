@@ -99,7 +99,7 @@
 
                 $awardedSalary = 0;
                 $calculatedSalary = number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '');
-                $holidaySalary = number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '');
+                $holidaySalary = number_format((float)\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '');
                 $totalSalary = $awardedSalary + $calculatedSalary + $holidaySalary;
 
                 $gTax = 0;

@@ -38,7 +38,10 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e): Response|Throwable|JsonResponse
     {
         return match ($request->expectsJson()) {
-
+            $e instanceof NotFoundHttpException, $e instanceof RouteNotFoundException => $this->error(
+                message: $e->getMessage(),
+                code: 404
+            ),
             $e instanceof HttpResponseException, $e instanceof QueryException => $this->error(
                 message: $e->getMessage(),
                 code: 500
