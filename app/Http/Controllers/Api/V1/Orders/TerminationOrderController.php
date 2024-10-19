@@ -75,11 +75,7 @@ class TerminationOrderController extends Controller
         $attendanceLogs = AttendanceLog::query()
             ->where('company_id', $request->input('company_id'))
             ->where('employee_id', $request->input('employee_id'))
-            ->whereBetween('year', [$startYear, $endYear])
-            ->whereBetween('month', [$startMonth, $endMonth])
             ->get();
-
-        dd($attendanceLogs);
 
         foreach ($attendanceLogs as $log) {
             $monthDays = [];
