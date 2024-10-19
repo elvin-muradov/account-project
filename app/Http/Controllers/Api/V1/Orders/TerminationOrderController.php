@@ -55,12 +55,6 @@ class TerminationOrderController extends Controller
 
         $orderNumber = generateOrderNumber(TerminationOrder::class, $company->company_short_name);
 
-        $startYear = Carbon::parse($request->input('employment_start_date'))->format('Y');
-        $startMonth = Carbon::parse($request->input('employment_start_date'))->format('n');
-
-        $endYear = Carbon::parse($request->input('termination_date'))->format('Y');
-        $endMonth = Carbon::parse($request->input('termination_date'))->format('n');
-
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
