@@ -108,6 +108,7 @@ class PregnantOrderController extends Controller
             $countMonthWorkDays = getMonthWorkDaysCount($monthDays);
 
             $log->update([
+                'salary' => $employee->salary,
                 'days' => $monthDays,
                 'month_work_days' => $countMonthWorkDays,
                 'celebration_days' => $countCelebrationRestDays,

@@ -144,6 +144,7 @@ class HiringOrderController extends Controller
                     'employee_id' => $request->input('employee_id'),
                     'year' => $attendanceLogConfig->year,
                     'month' => $value['month'],
+                    'salary' => $employee->salary,
                     'days' => $value['days'],
                     'month_work_hours' => $value['month_work_hours'],
                     'month_work_days' => $countMonthWorkDays,

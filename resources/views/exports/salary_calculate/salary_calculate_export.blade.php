@@ -70,6 +70,8 @@
             <th @php echo $cellHeadClass200Width; @endphp>Ayda iş saatları</th>
             <th @php echo $cellHeadClass200Width; @endphp>Faktiki iş saatları</th>
             <th @php echo $cellHeadClass200Width; @endphp>Hesablanmış əmək haqqı</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Mükafat</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Məzuniyyət</th>
         </tr>
         </thead>
         <tbody>
@@ -90,6 +92,21 @@
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
                     {!! number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '') !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    0
+                </td>
+                @php
+                    $holidaysCount = 0;
+
+                    foreach ($attendanceLog->days as $day){
+                        if ($day['status'] == \App\Enums\AttendanceLogDayTypes::DEFAULT_HOLIDAY->value) {
+                            $holidaysCount++;
+                        }
+                    }
+                @endphp
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! \App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount !!}
                 </td>
             </tr>
             @php
