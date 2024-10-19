@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('employee_id');
             $table->integer('year');
             $table->integer('month');
-            $table->float('salary', 8, 2)->nullable();
+            $table->float('salary', 8, 2)->default(0);
             $table->jsonb('days');
             $table->integer('month_work_hours');
             $table->integer('month_work_days');
