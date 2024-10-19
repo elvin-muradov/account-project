@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->integer('year');
             $table->integer('month');
             $table->jsonb('days');
+            $table->integer('month_work_hours');
             $table->integer('month_work_days');
             $table->integer('celebration_days');
             $table->integer('month_work_day_hours');

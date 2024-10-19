@@ -66,8 +66,10 @@
             <th @php echo $cellHeadClass2; @endphp>№</th>
             <th @php echo $cellHeadClass200Width; @endphp>Soyadı, Adı</th>
             <th @php echo $cellHeadClass200Width; @endphp>Vəzifəsi</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Əmək haqqı</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Ayda işlədiyi günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Maaş</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Ayda iş günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Faktiki iş günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Hesablanmış əmək haqqı</th>
             <th @php echo $cellHeadClass200Width; @endphp> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
             <th @php echo $cellHeadClass200Width; @endphp>İşlənmiş saatlar</th>
         </tr>
