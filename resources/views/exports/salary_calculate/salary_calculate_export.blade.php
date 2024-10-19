@@ -106,7 +106,7 @@
                     }
                 @endphp
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! \App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount !!}
+                    {!! number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '') !!}
                 </td>
             </tr>
             @php
