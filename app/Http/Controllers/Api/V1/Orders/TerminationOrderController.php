@@ -79,6 +79,8 @@ class TerminationOrderController extends Controller
             ->whereBetween('month', [$startMonth, $endMonth])
             ->get();
 
+        dd($attendanceLogs);
+
         foreach ($attendanceLogs as $log) {
             $monthDays = [];
 
