@@ -85,7 +85,7 @@ class TerminationOrderController extends Controller
             foreach ($log->days as $k => $day) {
                 $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
 
-                if ($dayDate <= $request->termination_date) {
+                if ($dayDate >= $request->termination_date) {
                     if ($day['status'] == AttendanceLogDayTypes::NULL_DAY->value) {
                         DB::rollBack();
 
