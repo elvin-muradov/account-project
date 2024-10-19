@@ -66,16 +66,16 @@
         <tr>
             <th @php echo $cellHeadClass2; @endphp>№</th>
             <th @php echo $cellHeadClass200Width; @endphp>Soyadı, Adı</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Vəzifəsi</th>
+            <th @php echo $cellHeadClass100Width; @endphp>Vəzifəsi</th>
             <th @php echo $cellHeadClass100Width; @endphp>Maaş</th>
             <th @php echo $cellHeadClass100Width; @endphp>Ayda iş <br/>saatları</th>
             <th @php echo $cellHeadClass100Width; @endphp>Faktiki <br/>iş saatları</th>
             <th @php echo $cellHeadClass100Width; @endphp>Hesablanmış <br/>əmək haqqı</th>
             <th @php echo $cellHeadClass100Width; @endphp>Mükafat</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Məzuniyyət</th>
+            <th @php echo $cellHeadClass100Width; @endphp>Məzuniyyət</th>
             <th @php echo $cellHeadClass100Width; @endphp>CƏMİ</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Gəlir Vergisi (14%)</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Pensiya Fondu (10%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Gəlir Vergisi <br/>(14%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Pensiya Fondu <br/>(10%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>İ.S.H (0.5%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>İ.T.S.H (2%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>Cəmi <br/>Tutulmuşdur</th>
