@@ -98,15 +98,6 @@
                 $totalMonthWorkDayHours += $attendanceLog->month_work_day_hours;
             @endphp
         @endforeach
-        <tr>
-            <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif"
-                colspan="3">
-                CƏMİ
-            </td>
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $totalMonthWorkDays }}</td>
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $totalCelebrationDays }}</td>
-            <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $totalMonthWorkDayHours }}</td>
-        </tr>
         </tbody>
     </table>
 @endif
