@@ -145,7 +145,7 @@ class HiringOrderController extends Controller
                     'year' => $attendanceLogConfig->year,
                     'month' => $value['month'],
                     'days' => $value['days'],
-                    'month_work_hours' => $countMonthWorkDayHours,
+                    'month_work_hours' => $value['month_work_hours'],
                     'month_work_days' => $countMonthWorkDays,
                     'celebration_days' => $countCelebrationRestDays,
                     'month_work_day_hours' => $countMonthWorkDayHours,
