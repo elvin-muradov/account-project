@@ -89,6 +89,14 @@
         @endphp
         @foreach($attendanceLogs as $key => $attendanceLog)
             @php
+                $holidaysCount = 0;
+
+                foreach ($attendanceLog->days as $day){
+                    if ($day['status'] == \App\Enums\AttendanceLogDayTypes::DEFAULT_HOLIDAY->value) {
+                        $holidaysCount++;
+                    }
+                }
+
                 $awardedSalary = 0;
                 $calculatedSalary = number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '');
                 $holidaySalary = number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '');
@@ -144,15 +152,6 @@
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
                     {{ $awardedSalary }}
                 </td>
-                @php
-                    $holidaysCount = 0;
-
-                    foreach ($attendanceLog->days as $day){
-                        if ($day['status'] == \App\Enums\AttendanceLogDayTypes::DEFAULT_HOLIDAY->value) {
-                            $holidaysCount++;
-                        }
-                    }
-                @endphp
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
                     {!! $holidaySalary !!}
                 </td>
