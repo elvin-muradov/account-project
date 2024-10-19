@@ -72,6 +72,13 @@
             <th @php echo $cellHeadClass200Width; @endphp>Hesablanmış əmək haqqı</th>
             <th @php echo $cellHeadClass200Width; @endphp>Mükafat</th>
             <th @php echo $cellHeadClass200Width; @endphp>Məzuniyyət</th>
+            <th @php echo $cellHeadClass200Width; @endphp>CƏMİ</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Gəlir Vergisi (14%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Pensiya Fondu (10%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>İ.S.H (0.5%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>İ.T.S.H (2%)</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Cəmi Tutulmuşdur</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Ödəniləsi Məbləğ</th>
         </tr>
         </thead>
         <tbody>
@@ -81,6 +88,43 @@
             $totalMonthWorkDayHours = 0;
         @endphp
         @foreach($attendanceLogs as $key => $attendanceLog)
+            @php
+                $awardedSalary = 0;
+                $calculatedSalary = number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '');
+                $holidaySalary = number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '');
+                $totalSalary = $awardedSalary + $calculatedSalary + $holidaySalary;
+
+                $gTax = 0;
+                $pFund = 0;
+                $iSH = 0;
+                $iTSH = 0;
+
+                if($totalSalary <= 8000){
+                    $gTax = 0;
+                }
+
+                if($totalSalary > 8000){
+                    $gTax = number_format(($totalSalary - 8000)*0.14, 2, ',', '');
+                }
+
+                if($totalSalary <= 200){
+                    $pFund = $totalSalary * 0.03;
+                }
+
+                if($totalSalary > 200){
+                    $pFund = 6 + ($totalSalary - 200) * 0.1;
+                }
+
+                $iSH = $totalSalary * 0.005;
+
+                if($totalSalary <= 8000){
+                    $iTSH =  $totalSalary * 0.02;
+                }
+
+                if($totalSalary > 8000){
+                    $iTSH =  160 + ($totalSalary - 8000) * 0.005;
+                }
+            @endphp
             <tr>
                 <td style="font-weight: bold;text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
                     {{ $key + 1 }}
@@ -88,13 +132,17 @@
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->position?->name }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->salary }}</td>
-                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_hours }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '') !!}
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">
+                    {{ $attendanceLog->month_work_hours }}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    0
+                    {{ $attendanceLog->month_work_day_hours }}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $calculatedSalary !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {{ $awardedSalary }}
                 </td>
                 @php
                     $holidaysCount = 0;
@@ -106,7 +154,28 @@
                     }
                 @endphp
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '') !!}
+                    {!! $holidaySalary !!}
+                </td>
+                <td style="font-weight: bold;border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $totalSalary  !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $gTax !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $pFund !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $iSH !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $iTSH !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $gTax + $pFund + $iSH + $iTSH !!}
+                </td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
+                    {!! $totalSalary - ($gTax + $pFund + $iSH + $iTSH) !!}
                 </td>
             </tr>
             @php
