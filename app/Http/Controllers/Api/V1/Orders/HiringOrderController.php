@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\Enums\AttendanceLogDayTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\HiringOrder\HiringOrderUpdateRequest;
@@ -108,7 +109,7 @@ class HiringOrderController extends Controller
                     if ($day > $config[$i]['days'][$j]['day']) {
                         $generatedConfig[$i]['days'][$j] = [
                             'day' => $config[$i]['days'][$j]['day'],
-                            'status' => 'NULL_DAY'
+                            'status' => AttendanceLogDayTypes::NULL_DAY->value
                         ];
                     } else {
                         $generatedConfig[$i]['days'][$j] = [
@@ -124,11 +125,11 @@ class HiringOrderController extends Controller
 
         foreach ($config as $key => $value) {
             foreach ($value['days'] as $k => $d) {
-                if ($value['days'][$key]['status'] == 'NULL_DAY') {
+                if ($value['days'][$key]['status'] == AttendanceLogDayTypes::NULL_DAY->value) {
                     break 2;
                 }
 
-                $config[$key]['days'][$k]['status'] = 'NULL_DAY';
+                $config[$key]['days'][$k]['status'] = AttendanceLogDayTypes::NULL_DAY->value;
             }
         }
 

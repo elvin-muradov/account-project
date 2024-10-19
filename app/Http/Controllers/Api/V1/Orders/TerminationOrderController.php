@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\Enums\AttendanceLogDayTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\TerminationOrder\TerminationOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\TerminationOrder\TerminationOrderUpdateRequest;
 use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderCollection;
 use App\Http\Resources\Api\V1\Orders\TerminationOrders\TerminationOrderResource;
+use App\Models\Company\AttendanceLog;
 use App\Models\Company\Company;
 use App\Models\Employee;
 use App\Models\Orders\TerminationOrder;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
@@ -51,6 +54,65 @@ class TerminationOrderController extends Controller
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
         $orderNumber = generateOrderNumber(TerminationOrder::class, $company->company_short_name);
+
+        $startYear = Carbon::parse($request->input('employment_start_date'))->format('Y');
+        $startMonth = Carbon::parse($request->input('employment_start_date'))->format('n');
+
+        $endYear = Carbon::parse($request->input('termination_date'))->format('Y');
+        $endMonth = Carbon::parse($request->input('termination_date'))->format('n');
+
+        DB::beginTransaction();
+
+        $existsAttendanceLog = AttendanceLog::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->first();
+
+        if (!$existsAttendanceLog) {
+            return $this->error(message: 'İşçi tabeldə mövcud deyil', code: 404);
+        }
+
+        $attendanceLogs = AttendanceLog::query()
+            ->where('company_id', $request->input('company_id'))
+            ->where('employee_id', $request->input('employee_id'))
+            ->whereBetween('year', [$startYear, $endYear])
+            ->whereBetween('month', [$startMonth, $endMonth])
+            ->get();
+
+        foreach ($attendanceLogs as $log) {
+            $monthDays = [];
+
+            foreach ($log->days as $k => $day) {
+                $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
+
+                if ($dayDate > $request->termination_date) {
+                    if ($day['status'] == AttendanceLogDayTypes::NULL_DAY->value) {
+                        DB::rollBack();
+
+                        return $this->error(
+                            message: "Xitam tarixi aralığı tabel üzrə düzgün qeyd olunmayıb",
+                            code: 400);
+                    }
+
+                    $day['status'] = AttendanceLogDayTypes::LEAVING_WORK->value;
+
+                    $monthDays[] = $day;
+                } else {
+                    $monthDays[] = $log->days[$k];
+                }
+            }
+
+            $countMonthWorkDayHours = getMonthWorkDayHours($monthDays);
+            $countCelebrationRestDays = getCelebrationRestDaysCount($monthDays);
+            $countMonthWorkDays = getMonthWorkDaysCount($monthDays);
+
+            $log->update([
+                'days' => $monthDays,
+                'month_work_days' => $countMonthWorkDays,
+                'celebration_days' => $countCelebrationRestDays,
+                'month_work_day_hours' => $countMonthWorkDayHours,
+            ]);
+        }
 
         $char1 = substr($terminationDate, '-2');
         $char2 = substr($employmentStartDate, '-2');
@@ -108,6 +170,8 @@ class TerminationOrderController extends Controller
         ]);
 
         unlink($filePath);
+
+        DB::commit();
 
         return $this->success(data: $terminationOrder, message: 'Xitam əmri uğurla yaradıldı');
     }

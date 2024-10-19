@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\Enums\AttendanceLogDayTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderStoreRequest;
 use App\Http\Requests\Api\V1\Orders\BusinessTripOrder\BusinessTripOrderUpdateRequest;
@@ -78,11 +79,9 @@ class BusinessTripOrderController extends Controller
 
         $startYear = Carbon::parse($request->input('start_date'))->format('Y');
         $startMonth = Carbon::parse($request->input('start_date'))->format('n');
-        $startDay = Carbon::parse($request->input('start_date'))->format('j');
 
         $endYear = Carbon::parse($request->input('end_date'))->format('Y');
         $endMonth = Carbon::parse($request->input('end_date'))->format('n');
-        $endDay = Carbon::parse($request->input('end_date'))->format('j');
 
         DB::beginTransaction();
 
@@ -111,7 +110,7 @@ class BusinessTripOrderController extends Controller
                 $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
 
                 if ($dayDate >= $request->start_date && $dayDate <= $request->end_date) {
-                    if ($day['status'] == 'NULL_DAY') {
+                    if ($day['status'] == AttendanceLogDayTypes::NULL_DAY->value) {
                         DB::rollBack();
 
                         return $this
@@ -119,7 +118,7 @@ class BusinessTripOrderController extends Controller
                                 code: 400);
                     }
 
-                    $day['status'] = 'BUSINESS_TRIP';
+                    $day['status'] = AttendanceLogDayTypes::BUSINESS_TRIP->value;
 
                     $monthDays[] = $day;
                 } else {

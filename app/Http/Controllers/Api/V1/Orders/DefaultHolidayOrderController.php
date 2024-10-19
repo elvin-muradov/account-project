@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Orders;
 
+use App\Enums\AttendanceLogDayTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderStore;
 use App\Http\Requests\Api\V1\Orders\DefaultHolidayOrder\DefaultHolidayOrderUpdate;
@@ -87,7 +88,7 @@ class DefaultHolidayOrderController extends Controller
                 $dayDate = sprintf('%s-%02d-%02d', $log->year, $log->month, $day['day']);
 
                 if ($dayDate >= $request->holiday_start_date && $dayDate <= $request->holiday_end_date) {
-                    if ($day['status'] == 'NULL_DAY') {
+                    if ($day['status'] == AttendanceLogDayTypes::NULL_DAY->value) {
                         DB::rollBack();
 
                         return $this
@@ -95,7 +96,7 @@ class DefaultHolidayOrderController extends Controller
                                 code: 400);
                     }
 
-                    $day['status'] = 'DEFAULT_HOLIDAY';
+                    $day['status'] = AttendanceLogDayTypes::DEFAULT_HOLIDAY->value;
 
                     $monthDays[] = $day;
                 } else {

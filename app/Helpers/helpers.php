@@ -290,8 +290,11 @@ if (!function_exists('getCelebrationRestDaysCount')) {
 if (!function_exists('getMonthWorkDaysCount')) {
     function getMonthWorkDaysCount(array $config): float|int
     {
-        $config = collect($config)->where('status', '!=', 'NULL_DAY')
-            ->where('status', '!=', 'DEFAULT_HOLIDAY')
+        $config = collect($config)->where('status', '!=', AttendanceLogDayTypes::NULL_DAY->value)
+            ->where('status', '!=', AttendanceLogDayTypes::DEFAULT_HOLIDAY->value)
+            ->where('status', '!=', AttendanceLogDayTypes::LEAVING_WORK->value)
+            ->where('status', '!=', AttendanceLogDayTypes::ILLNESS->value)
+            ->where('status', '!=', AttendanceLogDayTypes::BUSINESS_TRIP->value)
             ->toArray();
 
         return count($config) - getCelebrationRestDaysCount($config);

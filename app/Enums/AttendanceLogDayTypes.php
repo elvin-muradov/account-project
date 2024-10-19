@@ -14,5 +14,5 @@ enum AttendanceLogDayTypes: string
     case LEAVING_WORK = 'LEAVING_WORK'; // İşdən çıxış
     case ILLNESS = 'ILLNESS'; // Xəstəlik
     case BUSINESS_TRIP = 'BUSINESS_TRIP'; // Ezamiyyət
-    case HOLIDAY = 'HOLIDAY'; // Məzuniyyət
+    case DEFAULT_HOLIDAY = 'DEFAULT_HOLIDAY'; // Məzuniyyət
 }
