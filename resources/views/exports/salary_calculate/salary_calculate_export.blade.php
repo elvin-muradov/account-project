@@ -68,7 +68,7 @@
             <th @php echo $cellHeadClass200Width; @endphp>Soyadı, Adı</th>
             <th @php echo $cellHeadClass200Width; @endphp>Vəzifəsi</th>
             <th @php echo $cellHeadClass100Width; @endphp>Maaş</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Ayda iş saatları</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Ayda iş <br/>saatları</th>
             <th @php echo $cellHeadClass200Width; @endphp>Faktiki iş saatları</th>
             <th @php echo $cellHeadClass200Width; @endphp>Hesablanmış əmək haqqı</th>
             <th @php echo $cellHeadClass100Width; @endphp>Mükafat</th>
