@@ -87,7 +87,6 @@
             $totalCelebrationDays = 0;
             $totalMonthWorkDayHours = 0;
         @endphp
-        @dd('salam')
         @foreach($attendanceLogs as $key => $attendanceLog)
             @php
                 $holidaysCount = 0;
@@ -98,9 +97,9 @@
                     }
                 }
 
-                $awardedSalary = 0;
-                $calculatedSalary = number_format($attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours, 2, ',', '');
-                $holidaySalary = number_format(\App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount, 2, ',', '');
+                $awardedSalary = 0.00;
+                $calculatedSalary = $attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours;
+                $holidaySalary = \App\Models\Company\AttendanceLog::query()->where('employee_id', $attendanceLog->employee_id)->sum('salary')/12/30.4*$holidaysCount;
                 $totalSalary = $awardedSalary + $calculatedSalary + $holidaySalary;
 
                 $gTax = 0;
@@ -108,12 +107,12 @@
                 $iSH = 0;
                 $iTSH = 0;
 
-                if($totalSalary <= 8000){
-                    $gTax = 0;
-                }
-
                 if($totalSalary > 8000){
                     $gTax = number_format(($totalSalary - 8000)*0.14, 2, ',', '');
+                }
+
+                if($totalSalary <= 8000){
+                    $gTax = 0;
                 }
 
                 if($totalSalary <= 200){
