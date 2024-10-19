@@ -156,25 +156,25 @@
                     {!! $holidaySalary !!}
                 </td>
                 <td style="font-weight: bold;border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $totalSalary  !!}
+                    {!! number_format($totalSalary, 2, ',', '')  !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $gTax !!}
+                    {!! number_format($gTax, 2, ',', '') !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $pFund !!}
+                    {!! number_format($pFund, 2, ',', '') !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $iSH !!}
+                    {!! number_format($iSH, 2, ',', '') !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $iTSH !!}
+                    {!! number_format($iTSH, 2, ',', '') !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $gTax + $pFund + $iSH + $iTSH !!}
+                    {!! number_format($gTax + $pFund + $iSH + $iTSH, 2, ',', '') !!}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $totalSalary - ($gTax + $pFund + $iSH + $iTSH) !!}
+                    {!! number_format($totalSalary - ($gTax + $pFund + $iSH + $iTSH), 2, ',', '') !!}
                 </td>
             </tr>
             @php
