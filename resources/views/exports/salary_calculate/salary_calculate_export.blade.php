@@ -67,11 +67,9 @@
             <th @php echo $cellHeadClass200Width; @endphp>Soyadı, Adı</th>
             <th @php echo $cellHeadClass200Width; @endphp>Vəzifəsi</th>
             <th @php echo $cellHeadClass200Width; @endphp>Maaş</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Ayda iş günləri</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Faktiki iş günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Ayda iş saatları</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Faktiki iş saatları</th>
             <th @php echo $cellHeadClass200Width; @endphp>Hesablanmış əmək haqqı</th>
-            <th @php echo $cellHeadClass200Width; @endphp> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
-            <th @php echo $cellHeadClass200Width; @endphp>İşlənmiş saatlar</th>
         </tr>
         </thead>
         <tbody>
@@ -88,9 +86,9 @@
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->name . ' ' . $attendanceLog->employee?->surname }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->position?->name }}</td>
                 <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->salary }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_days }}</td>
-                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->celebration_days }}</td>
+                <td style="text-align: center;vertical-align: middle;border-collapse: collapse;border: 2px solid black;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_hours }}</td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->month_work_day_hours }}</td>
+                <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">{{ $attendanceLog->employee?->salary / $attendanceLog->month_work_hours * $attendanceLog->month_work_day_hours }}</td>
             </tr>
             @php
                 $totalMonthWorkDays += $attendanceLog->month_work_days;
