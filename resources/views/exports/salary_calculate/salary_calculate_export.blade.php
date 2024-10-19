@@ -93,7 +93,7 @@
 
                 foreach ($attendanceLog->days as $day){
                     if ($day['status'] == \App\Enums\AttendanceLogDayTypes::DEFAULT_HOLIDAY->value) {
-                        $holidaysCount++;
+                        $holidaysCount+=1;
                     }
                 }
 
