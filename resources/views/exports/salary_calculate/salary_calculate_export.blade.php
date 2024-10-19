@@ -63,15 +63,13 @@
     <table style="border-collapse: collapse;border:4px solid black">
         <thead>
         <tr>
-            <th @php echo $cellHeadClass2; @endphp rowspan="3">№</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Soyadı, Adı</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Vəzifəsi</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Əmək haqqı</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3">Ayda işlədiyi günləri</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3"> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
-            <th @php echo $cellHeadClass200Width; @endphp rowspan="3">İşlənmiş saatlar</th>
-        </tr>
-        <tr>
+            <th @php echo $cellHeadClass2; @endphp>№</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Soyadı, Adı</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Vəzifəsi</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Əmək haqqı</th>
+            <th @php echo $cellHeadClass200Width; @endphp>Ayda işlədiyi günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp> İstirahət və bayram&nbsp;&nbsp;&nbsp;günləri</th>
+            <th @php echo $cellHeadClass200Width; @endphp>İşlənmiş saatlar</th>
         </tr>
         </thead>
         <tbody>
