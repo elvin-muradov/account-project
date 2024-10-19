@@ -33,12 +33,24 @@ class AttendanceLogSeeder extends Seeder
                         'status' => 'REST_DAY',
                     ];
                 } else {
+
                     $attendanceLogs[$i - 1]['days'][] = [
                         'day' => $j,
                         'status' => 8,
                     ];
                 }
             }
+        }
+
+        foreach ($attendanceLogs as $key => $value) {
+            $totalWorkHours = 0;
+            foreach ($value['days'] as $k => $day) {
+                if (gettype($day['status']) == 'integer') {
+                    $totalWorkHours += $day['status'];
+                }
+            }
+
+            $attendanceLogs[$key]['month_work_hours'] = $totalWorkHours;
         }
 
         $attendanceLog = AttendanceLogConfig::query()->create([
