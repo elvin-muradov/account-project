@@ -25,7 +25,7 @@ class SalaryCalculateExport implements FromView
             ->get();
 
         return view('exports.salary_calculate.salary_calculate_export', [
-            'data' => $attendanceLogs
+            'attendanceLogs' => $attendanceLogs
         ]);
     }
 }
