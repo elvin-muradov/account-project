@@ -74,8 +74,8 @@
             <th @php echo $cellHeadClass100Width; @endphp>Mükafat</th>
             <th @php echo $cellHeadClass100Width; @endphp>Məzuniyyət</th>
             <th @php echo $cellHeadClass100Width; @endphp>CƏMİ</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Gəlir <br/>Vergisi (14%)</th>
-            <th @php echo $cellHeadClass200Width; @endphp>Pensiya <br/>Fondu (10%)</th>
+            <th @php echo $cellHeadClass100Width; @endphp>Gəlir <br/>Vergisi (14%)</th>
+            <th @php echo $cellHeadClass100Width; @endphp>Pensiya <br/>Fondu (10%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>İ.S.H (0.5%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>İ.T.S.H (2%)</th>
             <th @php echo $cellHeadClass100Width; @endphp>Cəmi <br/>Tutulmuşdur</th>
