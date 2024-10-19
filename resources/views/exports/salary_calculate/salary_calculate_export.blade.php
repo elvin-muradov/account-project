@@ -154,7 +154,7 @@
                     {{ $awardedSalary }}
                 </td>
                 <td style="border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
-                    {!! $holidaySalary !!}
+                    {!! number_format($holidaySalary, 2, ',', '') !!}
                 </td>
                 <td style="font-weight: bold;border-collapse: collapse;border: 2px solid black;text-align: center;vertical-align: middle;font-family:Times New Roman, Times, serif">
                     {!! number_format($totalSalary, 2, ',', '')  !!}
