@@ -35,7 +35,7 @@ class EmployeeController extends Controller
         $password = ['password' => Hash::make($request->input('password'))];
         $data = array_merge($data, $lowerCases, $password);
 
-        if ($request->input('employee_type') == EmployeeTypes::EMPLOYEE->value) {
+        if ($request->input('employee_type') === EmployeeTypes::EMPLOYEE->value) {
             $data['password'] = null;
         }
 

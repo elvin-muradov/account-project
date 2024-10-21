@@ -11,13 +11,4 @@ enum EmployeeTypes: string
     case EMPLOYEE = "EMPLOYEE"; // İşçi
     case DIRECTOR = "DIRECTOR"; // Direktor
     case FOUNDER = "FOUNDER"; // Təsisçi
-
-    public function getLabel(): string
-    {
-        return match ($this) {
-            self::EMPLOYEE => 'İşçi',
-            self::DIRECTOR => 'Direktor',
-            self::FOUNDER => 'Təsisçi'
-        };
-    }
 }
