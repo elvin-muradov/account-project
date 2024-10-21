@@ -20,9 +20,12 @@ class UserRoleCheckingForServedCompanies
     {
         $authCheck = auth()->check();
 
-        if ($authCheck && auth()->user()->hasRole('accountant')) {
-            $authUser = auth()->user();
-            $userServedCompanies = $authUser->companiesServed()->pluck('id')->toArray();
+        if (!$authCheck) {
+            return $this->error(message: "Giriş edin", code: 403);
+        }
+
+        if (auth()->user()->hasRole(['accountant'])) {
+            $userServedCompanies = auth()->user()->companiesServed()->pluck('id')->toArray();
 
             if ($request->input('company_id') && !in_array($request->input('company_id'), $userServedCompanies)) {
                 return $this->error(message: "Siz bu şirkətə xidmət göstərmirsiniz", code: 403);
