@@ -39,6 +39,7 @@ class UserSeeder extends Seeder
             'account_status' => 'APPROVED',
             'password' => Hash::make('123456789'),
         ]);
+
         $orkhanDepartmentHead = User::query()->create([
             'name' => 'Orxan',
             'surname' => 'Accountant',
@@ -101,6 +102,9 @@ class UserSeeder extends Seeder
         $leadingExpert->assignRole('leading_expert');
         $accountant->assignRole('accountant');
 
+        $accountant->assignCompanies([
+            1, 2, 3, 4, 5, 6
+        ]);
         $position1 = Position::query()->create([
             'name' => 'Baş mühəndis',
             'company_id' => 1

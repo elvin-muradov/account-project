@@ -20,7 +20,7 @@ class UserRoleCheckingForServedCompanies
     {
         $authCheck = auth()->check();
 
-        if ($authCheck) {
+        if ($authCheck && auth()->user()->hasRole('accountant')) {
             $authUser = auth()->user();
             $userServedCompanies = $authUser->companiesServed()->pluck('id')->toArray();
 
