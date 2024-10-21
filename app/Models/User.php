@@ -67,11 +67,6 @@ class User extends Authenticatable
         'self_photo_files' => 'array'
     ];
 
-    protected $with = [
-        'companiesServed:id,company_name,company_short_name'
-    ];
-
-
     public function assignCompanies(array $companyIds): int
     {
         $accountantCompanies = $this->companiesServed;
