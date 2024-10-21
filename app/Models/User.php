@@ -44,7 +44,7 @@ class User extends Authenticatable
         'last_login_at'
     ];
 
-    protected $with = ['companiesServed'];
+    protected $with = ['companiesServed:id,company_name,company_short_name'];
     /**
      * The attributes that should be hidden for serialization.
      *
