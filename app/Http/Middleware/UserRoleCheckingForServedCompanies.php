@@ -27,8 +27,6 @@ class UserRoleCheckingForServedCompanies
             if ($request->input('company_id') && !in_array($request->input('company_id'), $userServedCompanies)) {
                 return $this->error(message: "Siz bu şirkətə xidmət göstərmirsiniz", code: 403);
             }
-        } else {
-            return $this->error(message: "Giriş edin", code: 401);
         }
 
         return $next($request);
