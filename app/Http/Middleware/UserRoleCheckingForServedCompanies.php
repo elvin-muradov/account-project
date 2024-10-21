@@ -25,7 +25,7 @@ class UserRoleCheckingForServedCompanies
         }
 
         if (auth()->user()->hasRole(['accountant'])) {
-            $userServedCompanies = auth()->user()->companiesServed()->pluck('id')->toArray();
+            $userServedCompanies = auth()->user()->load('companiesServed')->companiesServed()->pluck('id')->toArray();
 
             if ($request->input('company_id') && !in_array($request->input('company_id'), $userServedCompanies)) {
                 return $this->error(message: "Siz bu şirkətə xidmət göstərmirsiniz", code: 403);
