@@ -99,8 +99,8 @@ class EnumsController extends Controller
 
         return array_map(function ($type) {
             return [
-                'value' => $type,
-                'label' => trans('gender_types.' . $type)
+                'value' => strtoupper($type),
+                'label' => trans('gender_types.' . strtoupper($type))
             ];
         }, $types);
     }
