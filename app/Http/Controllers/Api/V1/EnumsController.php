@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\EducationTypesEnum;
 use App\Http\Controllers\Controller;
 
 class EnumsController extends Controller
@@ -76,5 +77,17 @@ class EnumsController extends Controller
                 'label' => trans('transport_types.CFR')
             ]
         ];
+    }
+
+    public function educationTypes(): array
+    {
+        $educationTypes = EducationTypesEnum::toArray();
+
+        return array_map(function ($type) {
+            return [
+                'value' => $type,
+                'label' => trans('education_types.' . $type)
+            ];
+        }, $educationTypes);
     }
 }
