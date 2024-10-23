@@ -242,8 +242,8 @@ class CompanyController extends Controller
         if ($request->hasFile('fixed_asset_files')) {
             $fixedAssetFiles = $request->file('fixed_asset_files');
             $fixedAssetFilesArr = $company->fixed_asset_files;
+            $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');
             if ($fixedAssetFilesExists) {
-                $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');
                 $data = array_merge($data, ['fixed_asset_files' => array_merge($fixedAssetFilesArr, $updatedFiles)]);
             } else {
                 $data = array_merge($data, ['fixed_asset_files' => $fixedAssetFilesArr]);
