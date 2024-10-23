@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\EducationTypesEnum;
+use App\Enums\EmployeeTypes;
+use App\Enums\GenderTypes;
 use App\Http\Controllers\Controller;
 
 class EnumsController extends Controller
@@ -81,13 +83,37 @@ class EnumsController extends Controller
 
     public function educationTypes(): array
     {
-        $educationTypes = EducationTypesEnum::toArray();
+        $types = EducationTypesEnum::toArray();
 
         return array_map(function ($type) {
             return [
                 'value' => $type,
                 'label' => trans('education_types.' . $type)
             ];
-        }, $educationTypes);
+        }, $types);
+    }
+
+    public function genderTypes(): array
+    {
+        $types = GenderTypes::toArray();
+
+        return array_map(function ($type) {
+            return [
+                'value' => $type,
+                'label' => trans('genders.' . $type)
+            ];
+        }, $types);
+    }
+
+    public function employeeTypes(): array
+    {
+        $types = EmployeeTypes::toArray();
+
+        return array_map(function ($type) {
+            return [
+                'value' => $type,
+                'label' => trans('employee_types.' . $type)
+            ];
+        }, $types);
     }
 }

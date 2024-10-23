@@ -13,6 +13,7 @@ enum OrderTypes: string
     case DEFAULT_HOLIDAY = 'DEFAULT_HOLIDAY'; // Adi Məzuniyyət
     case PREGNANT_HOLIDAY = 'PREGNANT_HOLIDAY'; // Hamiləlik Məzuniyyəti
     case MOTHERHOOD_HOLIDAY = 'MOTHERHOOD_HOLIDAY'; // Analıq Məzuniyyəti
+    
     case BUSINESS_TRIP = 'BUSINESS_TRIP'; // Ezamiyyət
     case AWARD = 'AWARD'; // Mükafat
 }
