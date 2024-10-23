@@ -239,11 +239,15 @@ class CompanyController extends Controller
             $data = array_merge($data, ['founding_decision_files' => array_merge($foundingDecisionFilesArr,
                 $updatedFiles)]);
         }
-        if ($request->hasFile('fixed_asset_files') && $fixedAssetFilesExists) {
+        if ($request->hasFile('fixed_asset_files')) {
             $fixedAssetFiles = $request->file('fixed_asset_files');
             $fixedAssetFilesArr = $company->fixed_asset_files ?? [];
-            $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');
-            $data = array_merge($data, ['fixed_asset_files' => array_merge($fixedAssetFilesArr, $updatedFiles)]);
+            if ($fixedAssetFilesExists) {
+                $updatedFiles = returnFilesArray($fixedAssetFiles, 'fixed_asset_files');
+                $data = array_merge($data, ['fixed_asset_files' => array_merge($fixedAssetFilesArr, $updatedFiles)]);
+            } else {
+                $data = array_merge($data, ['fixed_asset_files' => $fixedAssetFilesArr]);
+            }
         }
 
         $company->update($data);
