@@ -56,8 +56,10 @@ class CompanyUpdateRequest extends FormRequest
             'creators_files' => ['nullable', 'array', Rule::requiredIf(empty($usedCompany->creators_files))],
             'creators_files .*' => ['mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'fixed_asset_files_exists' => ['required', 'boolean'],
-            'fixed_asset_files' => ['nullable', Rule::requiredIf(empty($usedCompany->fixed_asset_files)), 'array'],
-            'fixed_asset_files .*' => ['nullable', Rule::requiredIf(empty($usedCompany->fixed_asset_files)),
+            'fixed_asset_files' => ['nullable', Rule::requiredIf(empty($usedCompany->fixed_asset_files) ||
+                $this->fixed_asset_files_exists), 'array'],
+            'fixed_asset_files .*' => ['nullable', Rule::requiredIf(empty($usedCompany->fixed_asset_files ||
+                $this->fixed_asset_files_exists)), 'file',
                 'mimes:png,jpg,jpeg,pdf,xlsx,xls,docx,doc'],
             'founding_decision_files' => ['nullable', 'array',
                 Rule::requiredIf(empty($usedCompany->founding_decision_files))],
