@@ -20,7 +20,7 @@ class MaterialGroupStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array|JsonResponse
      */
     public function rules(): array|JsonResponse
     {
