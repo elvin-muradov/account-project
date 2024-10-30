@@ -24,14 +24,13 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php'; // Login/Register routes - (User/Employee)
 
-Route::middleware(['validate_company'])->group(function () {
-    require __DIR__ . '/users_employees.php'; // Users/Employee routes
-    require __DIR__ . '/companies.php'; // Company routes
-    require __DIR__ . '/orders.php'; // Order routes
-    require __DIR__ . '/enums.php'; // ENUMs
-    require __DIR__ . '/envelopes.php'; // Envelopes
-    require __DIR__ . '/import_queries.php'; // Import Query routes
-});
+
+require __DIR__ . '/users_employees.php'; // Users/Employee routes
+require __DIR__ . '/companies.php'; // Company routes
+require __DIR__ . '/orders.php'; // Order routes
+require __DIR__ . '/enums.php'; // ENUMs
+require __DIR__ . '/envelopes.php'; // Envelopes
+require __DIR__ . '/import_queries.php'; // Import Query routes
 
 Route::get('/test', [TestController::class, 'test']);
 Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
