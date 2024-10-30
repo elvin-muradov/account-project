@@ -18,12 +18,12 @@ class ValidateCompanyID
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $companyId = $request->header('company-id') ?? null;
+        $companyId = $request->header('company-id');
 
-        if (!empty($companyId)) {
-            return $next($request);
+        if (!$companyId) {
+            return $this->error(message: "Şirkət identifikatorı yoxdur", code: 400);
         }
 
-        return $this->error(message: "Şirkət identifikatorı yoxdur", code: 400);
+        return $next($request);
     }
 }
