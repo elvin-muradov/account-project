@@ -20,7 +20,7 @@ class ValidateCompanyID
     {
         $companyId = request()->header('company-id');
 
-        if ($companyId) {
+        if (!empty($companyId)) {
             return $next($request);
         }
 
