@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php'; // Login/Register routes - (User/Employee)
 
-Route::group(['middleware' => ['validate_company']], function () {
+Route::middleware(['validate_company'])->group(function () {
     require __DIR__ . '/users_employees.php'; // Users/Employee routes
     require __DIR__ . '/companies.php'; // Company routes
     require __DIR__ . '/orders.php'; // Order routes
