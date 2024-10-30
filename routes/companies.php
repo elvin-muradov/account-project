@@ -60,8 +60,7 @@ Route::middleware(['auth:user', 'lang', 'check_role_for_served'])->group(functio
 
     //Company Material Group Routes
     Route::get('/material-groups', [MaterialGroupController::class, 'index']);
-    Route::post('/material-groups', [MaterialGroupController::class, 'store'])
-        ->middleware('validate_company');
+    Route::post('/material-groups', [MaterialGroupController::class, 'store']);
     Route::post('/material-groups/{materialGroup}', [MaterialGroupController::class, 'update']);
     Route::get('/material-groups/{materialGroup}', [MaterialGroupController::class, 'show']);
     Route::delete('/material-groups/{materialGroup}', [MaterialGroupController::class, 'destroy']);
