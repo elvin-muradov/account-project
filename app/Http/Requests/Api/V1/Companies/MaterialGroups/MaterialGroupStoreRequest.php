@@ -26,6 +26,7 @@ class MaterialGroupStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('material_groups', 'name')
                 ->where('company_id', $this->header('company-id'))],
+            'company-id' => ['required', 'integer', 'exists:companies,id'],
         ];
     }
 }
