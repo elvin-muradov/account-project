@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:user', 'lang', 'check_role_for_served'])->group(function () {
+Route::middleware(['auth:user', 'lang', 'check_role_for_served','validate_company'])->group(function () {
     //Company Routes
     Route::get('/companies', [CompanyController::class, 'index']);
     Route::get('/individual-companies', [CompanyController::class, 'individualCompanies']);
