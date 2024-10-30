@@ -18,7 +18,7 @@ class ValidateCompanyID
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $companyId = $request->hasHeader('company-id') ? $request->header('company-id') : null;
+        $companyId = $request->header('company-id') ?? null;
 
         if (!empty($companyId)) {
             return $next($request);
