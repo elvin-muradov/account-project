@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ValidateCompanyID
 {
     use HttpResponses;
+
     /**
      * Handle an incoming request.
      *
@@ -17,12 +18,12 @@ class ValidateCompanyID
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $companyId = getHeaderCompanyId();
+        $companyId = request()->header('company-id');
 
-        if (!$companyId) {
-            return $this->error(message: "İcazəniz yoxdur", code: 403);
+        if ($companyId) {
+            return $next($request);
         }
 
-        return $next($request);
+        return $this->error(message: "Şirkət identifikatorı yoxdur", code: 403);
     }
 }
