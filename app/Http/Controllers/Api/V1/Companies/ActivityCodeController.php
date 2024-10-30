@@ -16,9 +16,16 @@ class ActivityCodeController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $activityCodes = ActivityCode::query()
-            ->with('company')
-            ->paginate($request->limit ?? 10);
+        $companyId = getHeaderCompanyId();
+
+        if ($companyId) {
+            $activityCodes = ActivityCode::query()
+                ->where('company_id', $companyId)
+                ->with('company')
+                ->paginate($request->limit ?? 10);
+        } else {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
 
         return $this->success(data: new ActivityCodeCollection($activityCodes));
     }
@@ -34,7 +41,16 @@ class ActivityCodeController extends Controller
 
     public function show($activityCode): JsonResponse
     {
-        $activityCode = ActivityCode::query()->with('company')->find($activityCode);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $activityCode = ActivityCode::query()
+            ->where('company_id', $companyId)
+            ->with('company')
+            ->find($activityCode);
 
         if (!$activityCode) {
             return $this->error(message: 'Fəaliyyət kodu tapılmadı', code: 404);
@@ -63,12 +79,17 @@ class ActivityCodeController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'company_id' => ['required', 'exists:companies,id'],
             'activity_code' => ['required', 'integer', 'digits:7'],
         ]);
 
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $activityCode = ActivityCode::query()->create([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'activity_code' => $request->input('activity_code'),
         ]);
 
@@ -78,19 +99,26 @@ class ActivityCodeController extends Controller
 
     public function update(Request $request, $activityCode): JsonResponse
     {
-        $activityCode = ActivityCode::query()->find($activityCode);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $activityCode = ActivityCode::query()
+            ->where('company_id', $companyId)
+            ->find($activityCode);
 
         if (!$activityCode) {
             return $this->error(message: 'Fəaliyyət kodu tapılmadı', code: 404);
         }
 
         $request->validate([
-            'company_id' => ['required', 'exists:companies,id'],
             'activity_code' => ['required', 'integer', 'digits:7'],
         ]);
 
         $activityCode->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'activity_code' => $request->input('activity_code'),
         ]);
 
@@ -99,7 +127,15 @@ class ActivityCodeController extends Controller
 
     public function destroy($activityCode): JsonResponse
     {
-        $activityCode = ActivityCode::query()->find($activityCode);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $activityCode = ActivityCode::query()
+            ->where('company_id', $companyId)
+            ->find($activityCode);
 
         if (!$activityCode) {
             return $this->error(message: 'Fəaliyyət kodu tapılmadı', code: 404);

@@ -9,6 +9,7 @@ use App\Models\Measures\Measure;
 use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MeasureController extends Controller
 {
@@ -16,7 +17,14 @@ class MeasureController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $measures = Measure::query()
+            ->where('company_id', $companyId)
             ->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new MeasureCollection($measures));
@@ -24,7 +32,13 @@ class MeasureController extends Controller
 
     public function show($measure): JsonResponse
     {
-        $measure = Measure::query()->find($measure);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $measure = Measure::query()->where('company_id', $companyId)->find($measure);
 
         if (!$measure) {
             return $this->error(message: "Ölçü vahidi tapılmadı", code: 404);
@@ -35,12 +49,20 @@ class MeasureController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $request->validate([
-            'title' => ['required', 'string', 'unique:measures,title'],
+            'title' => ['required', 'string', Rule::unique('measures', 'title')
+                ->where('company_id', $companyId)],
         ]);
 
         $measure = Measure::query()->create([
             'title' => $request->input('title'),
+            'company_id' => $companyId
         ]);
 
         return $this->success(
@@ -50,18 +72,27 @@ class MeasureController extends Controller
 
     public function update(Request $request, $measure): JsonResponse
     {
-        $measure = Measure::query()->find($measure);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $measure = Measure::query()->where('company_id', $companyId)->find($measure);
 
         if (!$measure) {
             return $this->error(message: "Ölçü vahidi tapılmadı", code: 404);
         }
 
         $request->validate([
-            'title' => ['required', 'string', 'unique:measures,title,' . $measure->id],
+            'title' => ['required', 'string',
+                Rule::unique('measures', 'title')->where('company_id', $companyId)
+                    ->ignore($measure)],
         ]);
 
         $measure->update([
             'title' => $request->input('title'),
+            'company_id' => $companyId
         ]);
 
         return $this->success(
@@ -71,7 +102,13 @@ class MeasureController extends Controller
 
     public function destroy($measure): JsonResponse
     {
-        $measure = Measure::query()->find($measure);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $measure = Measure::query()->where('company_id', $companyId)->find($measure);
 
         if (!$measure) {
             return $this->error(message: "Ölçü vahidi tapılmadı", code: 404);

@@ -33,7 +33,14 @@ class IllnessOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $orders = IllnessOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -46,10 +53,23 @@ class IllnessOrderController extends Controller
      */
     public function store(IllnessOrderStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')
+            ->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: "İşçi tapılmadı", code: 404);
+        }
 
         $orderNumber = generateOrderNumber(IllnessOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))
@@ -67,7 +87,7 @@ class IllnessOrderController extends Controller
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->where('year', $startYear)
             ->where('month', $startMonth)
@@ -78,7 +98,7 @@ class IllnessOrderController extends Controller
         }
 
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->whereBetween('year', [$startYear, $endYear])
             ->whereBetween('month', [$startMonth, $endMonth])
@@ -137,6 +157,7 @@ class IllnessOrderController extends Controller
             'd_name' => $company->director?->name,
             'd_surname' => $company->director?->surname,
             'd_father_name' => $company->director?->father_name,
+            'company_id' => $companyId,
         ]);
 
 
@@ -149,7 +170,7 @@ class IllnessOrderController extends Controller
 
         $illnessOrder = IllnessOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -188,17 +209,31 @@ class IllnessOrderController extends Controller
      */
     public function update(IllnessOrderUpdateRequest $request, $illnessOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
-        $illnessOrder = IllnessOrder::query()->find($illnessOrder);
+        $illnessOrder = IllnessOrder::query()
+            ->where('company_id', $companyId)
+            ->find($illnessOrder);
 
         if (!$illnessOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
         $orderNumber = $illnessOrder->order_number;
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($illnessOrder->employee_id);
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')->find($illnessOrder->employee_id);
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
 
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
@@ -220,7 +255,8 @@ class IllnessOrderController extends Controller
             'tax_id_number' => $company->tax_id_number,
             'd_name' => $company->director?->name,
             'd_surname' => $company->director?->surname,
-            'd_father_name' => $company->director?->father_name
+            'd_father_name' => $company->director?->father_name,
+            'company_id' => $companyId
         ]);
 
         $documentPath = public_path('assets/order_templates/ILLNESS_HOLIDAY.docx');
@@ -240,7 +276,7 @@ class IllnessOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'illness_orders');
 
         $illnessOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $employee->name,
@@ -267,7 +303,15 @@ class IllnessOrderController extends Controller
 
     public function show($illnessOrder): JsonResponse
     {
-        $illnessOrder = IllnessOrder::query()->with('company')->find($illnessOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $illnessOrder = IllnessOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($illnessOrder);
 
         if (!$illnessOrder) {
             return $this->error(message: 'Əmək qabiliyyətinin itirilməsinə görə əmr tapılmadı', code: 404);
@@ -304,7 +348,17 @@ class IllnessOrderController extends Controller
 
     public function destroy($illnessOrder): JsonResponse
     {
-        $illnessOrder = IllnessOrder::query()->find($illnessOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this
+                ->error(message: "Şirkət tapılmadı",
+                    code: 404);
+        }
+
+        $illnessOrder = IllnessOrder::query()
+            ->where('company_id', $companyId)
+            ->find($illnessOrder);
 
         if (!$illnessOrder) {
             return $this

@@ -23,7 +23,7 @@ class CompanyController extends Controller
     {
         $authUser = auth()->user()->load('companiesServed');
         $companiesServed = $authUser->companiesServed()->pluck('id')->toArray();
-        
+
         $companies = Company::search($request->input('filter_by'), $request->input('logic_operator'))
             ->order($request->input('order_by'))
             ->with(['mainUser', 'director'])

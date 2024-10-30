@@ -26,15 +26,14 @@ class MaterialUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'code' => ['nullable', 'string', 'max:255', Rule::unique('materials', 'code')
-                ->where('company_id', $this->company_id)->ignore($this->material)],
+                ->where('company_id', request()->header('company-id'))->ignore($this->material)],
             'description' => ['nullable', 'string', 'max:255'],
-            'company_id' => ['required', 'integer', 'exists:companies,id'],
             'material_group_id' => ['required', 'integer',
                 Rule::exists('material_groups', 'id')
-                    ->where('company_id', $this->company_id)],
+                    ->where('company_id', request()->header('company-id'))],
             'warehouse_id' => ['nullable', 'integer', 'exists:warehouses,id',
                 Rule::exists('warehouses', 'id')
-                    ->where('company_id', $this->company_id)],
+                    ->where('company_id', request()->header('company-id'))],
         ];
     }
 }

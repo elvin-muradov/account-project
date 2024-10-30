@@ -25,7 +25,7 @@ class MaterialGroupUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('material_groups', 'name')
-                ->where('company_id', $this->company_id)->ignore($this->materialGroup)],
+                ->where('company_id', request()->header('company-id'))->ignore($this->materialGroup)],
             'company_id' => ['required', 'integer', 'exists:companies,id']
         ];
     }

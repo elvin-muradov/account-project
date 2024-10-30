@@ -19,7 +19,14 @@ class RentalContractController extends Controller
 
     public function indexAllRentalContracts(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $rentalContracts = RentalContract::query()
+            ->where('company_id', $companyId)
             ->with(['company'])
             ->paginate($request->limit ?? 10);
 
@@ -28,9 +35,16 @@ class RentalContractController extends Controller
 
     public function indexShopRentalContracts(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $shopRentalContracts = RentalContract::query()
-            ->with(['company'])
+            ->where('company_id', $companyId)
             ->where('type', 'SHOP')
+            ->with(['company'])
             ->paginate($request->limit ?? 10);
 
         return $this->success(data: new RentalContractCollection($shopRentalContracts));
@@ -38,9 +52,16 @@ class RentalContractController extends Controller
 
     public function indexWarehouseRentalContracts(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $warehouseRentalContracts = RentalContract::query()
-            ->with(['company'])
+            ->where('company_id', $companyId)
             ->where('type', 'WAREHOUSE')
+            ->with(['company'])
             ->paginate($request->limit ?? 10);
 
         return $this->success(data: new RentalContractCollection($warehouseRentalContracts));
@@ -48,9 +69,16 @@ class RentalContractController extends Controller
 
     public function indexVehicleRentalContracts(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $vehicleRentalContracts = RentalContract::query()
-            ->with(['company'])
+            ->where('company_id', $companyId)
             ->where('type', 'VEHICLE')
+            ->with(['company'])
             ->paginate($request->limit ?? 10);
 
         return $this->success(data: new RentalContractCollection($vehicleRentalContracts));
@@ -58,7 +86,15 @@ class RentalContractController extends Controller
 
     public function store(RentalContractStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
+
+        $data = array_merge($data, ['company_id' => $companyId]);
 
         if ($request->hasFile('contract_files')) {
             $contractFiles = $request->file('contract_files');
@@ -80,13 +116,23 @@ class RentalContractController extends Controller
 
     public function update(RentalContractUpdateRequest $request, $rentalContract): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
 
-        $rentalContract = RentalContract::query()->find($rentalContract);
+        $rentalContract = RentalContract::query()
+            ->where('company_id', $companyId)
+            ->find($rentalContract);
 
         if (!$rentalContract) {
             return $this->error(message: "İcarə müqaviləsi tapılmadı", code: 404);
         }
+
+        $data = array_merge($data, ['company_id' => $companyId]);
 
         if ($request->has('delete_contract_files') && $request->delete_contract_files != null) {
             $deletedRentalContractFiles = $request->input('delete_contract_files');
@@ -121,7 +167,14 @@ class RentalContractController extends Controller
 
     public function show($rentalContract): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $rentalContract = RentalContract::query()
+            ->where('company_id', $companyId)
             ->with(['company'])
             ->find($rentalContract);
 
@@ -134,7 +187,15 @@ class RentalContractController extends Controller
 
     public function destroy($rentalContract): JsonResponse
     {
-        $rentalContract = RentalContract::query()->find($rentalContract);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $rentalContract = RentalContract::query()
+            ->where('company_id', $companyId)
+            ->find($rentalContract);
 
         if (!$rentalContract) {
             return $this->error(message: "İcarə müqaviləsi tapılmadı", code: 404);

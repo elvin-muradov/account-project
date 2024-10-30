@@ -18,7 +18,14 @@ class MaterialGroupController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $materialGroups = MaterialGroup::query()
+            ->where('company_id', $companyId)
             ->with(['company'])
             ->paginate($request->input('limit') ?? 10);
 
@@ -27,7 +34,14 @@ class MaterialGroupController extends Controller
 
     public function show($materialGroup): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $materialGroup = MaterialGroup::query()
+            ->where('company_id', $companyId)
             ->with(['company', 'materials'])
             ->find($materialGroup);
 
@@ -40,9 +54,15 @@ class MaterialGroupController extends Controller
 
     public function store(MaterialGroupStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $materialGroup = MaterialGroup::query()->create([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id')
+            'company_id' => $companyId
         ]);
 
         return $this->success(data: MaterialGroupResource::make($materialGroup),
@@ -51,7 +71,13 @@ class MaterialGroupController extends Controller
 
     public function update($materialGroup, MaterialGroupUpdateRequest $request): JsonResponse
     {
-        $materialGroup = MaterialGroup::query()->find($materialGroup);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $materialGroup = MaterialGroup::query()->where('company_id', $companyId)->find($materialGroup);
 
         if (!$materialGroup) {
             return $this->error(message: 'Material qrupu tapılmadı', code: 404);
@@ -59,7 +85,7 @@ class MaterialGroupController extends Controller
 
         $materialGroup->update([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id')
+            'company_id' => $companyId
         ]);
 
         return $this->success(data: MaterialGroupResource::make($materialGroup),
@@ -68,7 +94,13 @@ class MaterialGroupController extends Controller
 
     public function destroy($materialGroup): JsonResponse
     {
-        $materialGroup = MaterialGroup::query()->find($materialGroup);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $materialGroup = MaterialGroup::query()->where('company_id', $companyId)->find($materialGroup);
 
         if (!$materialGroup) {
             return $this->error(message: 'Material qrupu tapılmadı', code: 404);

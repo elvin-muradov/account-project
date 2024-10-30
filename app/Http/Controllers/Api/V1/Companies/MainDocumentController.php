@@ -28,7 +28,13 @@ class MainDocumentController extends Controller
             'type' => ['nullable', 'string', 'in:' . CompanyMainDocuments::toString()]
         ]);
 
-        $company = Company::query()->find($company);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $company = Company::query()->find($companyId);
 
         $type = $request->input('type');
 
@@ -63,7 +69,13 @@ class MainDocumentController extends Controller
      */
     public function downloadCompanyMainDocument($company, $type)
     {
-        $company = Company::query()->find($company);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $company = Company::query()->find($companyId);
 
         if ($company) {
             $file = match ($type) {

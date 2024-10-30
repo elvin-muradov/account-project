@@ -32,7 +32,14 @@ class TerminationOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $terminationOrders = TerminationOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -45,10 +52,22 @@ class TerminationOrderController extends Controller
      */
     public function store(TerminationOrderStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
 
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
@@ -58,7 +77,7 @@ class TerminationOrderController extends Controller
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->first();
 
@@ -67,7 +86,7 @@ class TerminationOrderController extends Controller
         }
 
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->get();
 
@@ -139,7 +158,7 @@ class TerminationOrderController extends Controller
 
         $terminationOrder = TerminationOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -175,17 +194,32 @@ class TerminationOrderController extends Controller
      */
     public function update(TerminationOrderUpdateRequest $request, $terminationOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
-        $terminationOrder = TerminationOrder::query()->find($terminationOrder);
+        $terminationOrder = TerminationOrder::query()
+            ->where('company_id', $companyId)
+            ->find($terminationOrder);
 
         if (!$terminationOrder) {
             return $this->error(message: 'Xitam sənədi tapılmadı', code: 404);
         }
 
         $orderNumber = $terminationOrder->order_number;
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
+
         $terminationDate = Carbon::parse($request->input('termination_date'))->format('d.m.Y');
         $employmentStartDate = Carbon::parse($request->input('employment_start_date'))->format('d.m.Y');
 
@@ -229,7 +263,7 @@ class TerminationOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'termination_orders');
 
         $terminationOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -254,7 +288,15 @@ class TerminationOrderController extends Controller
 
     public function show($terminationOrder): JsonResponse
     {
-        $terminationOrder = TerminationOrder::query()->with('company')->find($terminationOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $terminationOrder = TerminationOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($terminationOrder);
 
         if (!$terminationOrder) {
             return $this->error(message: 'Xitam əmri tapılmadı', code: 404);
@@ -289,7 +331,15 @@ class TerminationOrderController extends Controller
 
     public function destroy($terminationOrder): JsonResponse
     {
-        $terminationOrder = TerminationOrder::query()->find($terminationOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $terminationOrder = TerminationOrder::query()
+            ->where('company_id', $companyId)
+            ->find($terminationOrder);
 
         if (!$terminationOrder) {
             return $this->error(message: 'Xitam əmri tapılmadı', code: 404);

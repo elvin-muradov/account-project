@@ -27,7 +27,6 @@ class RentalContractUpdateRequest extends FormRequest
         return [
             'object_name' => ['required', 'string', 'max:255'],
             'object_code' => ['nullable', 'string', 'max:255', 'unique:rental_contracts,object_code,' . $this->rentalContract],
-            'company_id' => ['required', 'exists:companies,id'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'rental_area' => ['required', 'string', 'max:255'],

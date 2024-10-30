@@ -18,7 +18,14 @@ class PositionController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $positions = Position::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -27,7 +34,14 @@ class PositionController extends Controller
 
     public function show($positions): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $position = Position::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->find($positions);
 
@@ -52,15 +66,20 @@ class PositionController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('positions', 'name')
-                ->where('company_id', $request->input('company_id'))],
-            'company_id' => ['required', 'integer', 'exists:companies,id'],
+                ->where('company_id', $companyId)]
         ]);
 
         $position = Position::query()->create([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
         ]);
 
         return $this->success(data: PositionResource::make($position), message: 'Vəzifə əlavə edildi', code: 201);
@@ -68,14 +87,19 @@ class PositionController extends Controller
 
     public function update(Request $request, $position): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('positions', 'name')
-                ->where('company_id', $request->input('company_id'))
-                ->ignore($position)],
-            'company_id' => ['required', 'integer', 'exists:companies,id'],
+                ->where('company_id', $companyId)
+                ->ignore($position)]
         ]);
 
-        $position = Position::query()->find($position);
+        $position = Position::query()->where('company_id', $companyId)->find($position);
 
         if (!$position) {
             return $this->error(message: 'Vəzifə tapılmadı', code: 404);
@@ -83,7 +107,7 @@ class PositionController extends Controller
 
         $position->update([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
         ]);
 
         return $this->success(data: PositionResource::make($position), message: 'Vəzifə uğurla yeniləndi');
@@ -91,7 +115,15 @@ class PositionController extends Controller
 
     public function destroy($position): JsonResponse
     {
-        $position = Position::query()->find($position);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $position = Position::query()
+            ->where('company_id', $companyId)
+            ->find($position);
 
         if (!$position) {
             return $this->error(message: 'Vəzifə tapılmadı', code: 404);

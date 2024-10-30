@@ -15,7 +15,7 @@ class AttendanceLogExcelController extends Controller
         $req = $request->validate([
             'company_id' => ['required', 'integer', 'exists:companies,id'],
             'year' => ['required', 'integer'],
-            'month' => ['required', 'integer'],
+            'month' => ['required', 'integer']
         ]);
 
         return Excel::download(new AttendanceLogExport($req), 'attendance_log_export.xlsx');

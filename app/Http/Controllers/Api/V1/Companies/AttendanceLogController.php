@@ -19,7 +19,14 @@ class AttendanceLogController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $attendanceLogs = AttendanceLog::query()
+            ->where('company_id', $companyId)
             ->with([
                 'company:id,company_name',
                 'employee:id,name,surname,position_id',
@@ -33,7 +40,14 @@ class AttendanceLogController extends Controller
 
     public function show($attendanceLog): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $attendanceLog = AttendanceLog::query()
+            ->where('company_id', $companyId)
             ->with([
                 'company:id,company_name',
                 'employee:id,name,surname,position_id',
@@ -60,7 +74,15 @@ class AttendanceLogController extends Controller
                 })],
         ]);
 
-        $attendaceLogConfig = AttendanceLogConfig::query()->find($request->input('attendance_log_config_id'));
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $attendaceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
+            ->find($request->input('attendance_log_config_id'));
 
         $request->validate([
             'employee_id' => [Rule::unique('attendance_logs', 'employee_id')
@@ -92,20 +114,30 @@ class AttendanceLogController extends Controller
 
     public function update(Request $request, $attendanceLog): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $request->validate([
             'attendance_log_config_id' => ['required', 'integer', Rule::exists('attendance_log_configs', 'id')
-                ->where(function ($query) use ($request) {
-                    $query->where('company_id', $request->input('company_id'));
+                ->where(function ($query) use ($companyId) {
+                    $query->where('company_id', $companyId);
                 })],
             'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
-                ->where(function ($query) use ($request) {
-                    $query->where('company_id', $request->input('company_id'));
+                ->where(function ($query) use ($companyId) {
+                    $query->where('company_id', $companyId);
                 })],
         ]);
 
-        $attendaceLogConfig = AttendanceLogConfig::query()->find($request->input('attendance_log_config_id'));
+        $attendaceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
+            ->find($request->input('attendance_log_config_id'));
 
-        $attendanceLog = AttendanceLog::query()->find($attendanceLog);
+        $attendanceLog = AttendanceLog::query()
+            ->where('company_id', $companyId)
+            ->find($attendanceLog);
 
         if (!$attendanceLog) {
             return $this->error(message: "Tabel məlumatı tapılmadı", code: 404);
@@ -141,7 +173,15 @@ class AttendanceLogController extends Controller
 
     public function destroy($attendanceLog): JsonResponse
     {
-        $attendanceLog = AttendanceLog::query()->find($attendanceLog);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $attendanceLog = AttendanceLog::query()
+            ->where('company_id', $companyId)
+            ->find($attendanceLog);
 
         if (!$attendanceLog) {
             return $this->error(message: "Tabel məlumatı tapılmadı", code: 404);

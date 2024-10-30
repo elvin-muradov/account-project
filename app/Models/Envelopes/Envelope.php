@@ -23,6 +23,11 @@ class Envelope extends Model
         'envelopes' => 'array'
     ];
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
     public function fromCompany(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'from_company_id');

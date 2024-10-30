@@ -34,7 +34,14 @@ class HiringOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $hiringOrders = HiringOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -47,9 +54,15 @@ class HiringOrderController extends Controller
      */
     public function store(HiringOrderStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
 
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
         $employee = Employee::query()->with(['position'])->find($data['employee_id']);
 
@@ -73,7 +86,8 @@ class HiringOrderController extends Controller
             'd_father_name' => $company->director?->father_name,
             'gender' => $gender,
             'start_date' => $startDate,
-            'tax_id_number' => $company->tax_id_number
+            'tax_id_number' => $company->tax_id_number,
+            'company_id' => $companyId
         ]);
 
         $year = Carbon::parse($request->input('start_date'))->format('Y');
@@ -81,7 +95,7 @@ class HiringOrderController extends Controller
         $day = Carbon::parse($request->input('start_date'))->format('j');
 
         $attendanceLogConfig = AttendanceLogConfig::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('year', $year)
             ->first();
 
@@ -165,7 +179,7 @@ class HiringOrderController extends Controller
 
         $hiringOrder = HiringOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -201,14 +215,22 @@ class HiringOrderController extends Controller
      */
     public function update(HiringOrderUpdateRequest $request, $hiringOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
-        $hiringOrder = HiringOrder::query()->find($hiringOrder);
+        $hiringOrder = HiringOrder::query()
+            ->where('company_id', $companyId)
+            ->find($hiringOrder);
 
         if (!$hiringOrder) {
             return $this->error(message: 'İşə götürmə sənədi tapılmadı', code: 404);
         }
 
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
         $employee = Employee::query()->with(['position'])->find($request->input('employee_id'));
         $orderNumber = $hiringOrder->order_number;
@@ -233,6 +255,7 @@ class HiringOrderController extends Controller
             'gender' => $gender,
             'start_date' => $startDate,
             'tax_id_number' => $company->tax_id_number,
+            'company_id' => $companyId
         ]);
 
         $year = Carbon::parse($request->input('start_date'))->format('Y');
@@ -240,7 +263,7 @@ class HiringOrderController extends Controller
         $day = Carbon::parse($request->input('start_date'))->format('j');
 
         $attendanceLogConfig = AttendanceLogConfig::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('year', $year)
             ->where('month', $month)
             ->first();
@@ -299,7 +322,7 @@ class HiringOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'hiring_orders');
 
         $hiringOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $employee->name,
@@ -325,7 +348,15 @@ class HiringOrderController extends Controller
 
     public function show($hiringOrder): JsonResponse
     {
-        $hiringOrder = HiringOrder::query()->with('company')->find($hiringOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $hiringOrder = HiringOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($hiringOrder);
 
         if (!$hiringOrder) {
             return $this->error(message: 'İşə götürmə sənədi tapılmadı', code: 404);
@@ -360,7 +391,15 @@ class HiringOrderController extends Controller
 
     public function destroy($hiringOrder): JsonResponse
     {
-        $hiringOrder = HiringOrder::query()->find($hiringOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $hiringOrder = HiringOrder::query()
+            ->where('company_id', $companyId)
+            ->find($hiringOrder);
 
         if (!$hiringOrder) {
             return $this->error(message: 'İşə götürmə sənədi tapılmadı', code: 404);

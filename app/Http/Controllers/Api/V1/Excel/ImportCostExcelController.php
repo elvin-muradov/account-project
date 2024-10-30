@@ -17,6 +17,7 @@ class ImportCostExcelController extends Controller
 
         return Excel::download(new ImportCostExport($selectedIds), 'import_costs_export.xlsx');
     }
+
     public function exportImportCostsVNExcel(Request $request): BinaryFileResponse
     {
         $selectedIds = $request->has('selected_ids') ? explode(',', $request->input('selected_ids')) : null;

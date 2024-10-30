@@ -12,8 +12,12 @@ return new class extends Migration {
     {
         Schema::create('measures', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('title');
+            $table->unsignedBigInteger('company_id');
             $table->timestamps();
+
+            $table->foreign('company_id')->references('id')->on('companies')
+                ->onDelete('cascade');
         });
     }
 

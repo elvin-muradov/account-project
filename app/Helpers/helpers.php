@@ -313,3 +313,21 @@ if (!function_exists('getNumberAsWords')) {
         return $numberToWordsTransformer->toWords($number);
     }
 }
+
+if (!function_exists('getHeaderCompanyId')) {
+    function getHeaderCompanyId(): int|bool
+    {
+        $companyId = request()->header('company-id');
+        $authUserCompanies = auth()->user()->companiesServed()->pluck('id')->toArray();
+
+        if (auth()->user()->hasRole(['leading_expert', 'department_head'])) {
+            return $companyId;
+        }
+
+        if (auth()->user()->hasRole(['accountant']) && $companyId && in_array($companyId, $authUserCompanies)) {
+            return $companyId;
+        }
+
+        return false;
+    }
+}

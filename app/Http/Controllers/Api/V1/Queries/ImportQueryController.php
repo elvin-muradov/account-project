@@ -20,7 +20,14 @@ class ImportQueryController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $importQueries = ImportQuery::query()
+            ->where('company_id', $companyId)
             ->with(['company', 'currency'])
             ->paginate($request->input('limit') ?? 10);
 
@@ -30,6 +37,11 @@ class ImportQueryController extends Controller
     public function store(ImportQueryStoreRequest $request): JsonResponse
     {
         $request->validated();
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
 
         $invoiceValue = 0;
         $customsTransactionFee = $request->input('customs_transaction_fee');
@@ -59,7 +71,7 @@ class ImportQueryController extends Controller
         }
 
         $importQuery = ImportQuery::query()->create([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'query_number' => $request->input('query_number'),
             'customs_barcode' => $request->input('customs_barcode'),
             'seller_company_name' => $request->input('seller_company_name'),
@@ -102,7 +114,14 @@ class ImportQueryController extends Controller
 
     public function update($importQuery, ImportQueryUpdateRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $importQuery = ImportQuery::query()
+            ->where('company_id', $companyId)
             ->find($importQuery);
 
         if (!$importQuery) {
@@ -136,7 +155,7 @@ class ImportQueryController extends Controller
         }
 
         $importQuery->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'query_number' => $request->input('query_number'),
             'customs_barcode' => $request->input('customs_barcode'),
             'seller_company_name' => $request->input('seller_company_name'),
@@ -183,7 +202,14 @@ class ImportQueryController extends Controller
 
     public function show($importQuery): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $importQuery = ImportQuery::query()
+            ->where('company_id', $companyId)
             ->with(['importQueryDetails', 'company', 'currency'])
             ->find($importQuery);
 
@@ -196,7 +222,14 @@ class ImportQueryController extends Controller
 
     public function destroy($importQuery): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $importQuery = ImportQuery::query()
+            ->where('company_id', $companyId)
             ->find($importQuery);
 
         if (!$importQuery) {

@@ -25,8 +25,7 @@ class WarehouseUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('warehouses', 'name')
-                ->where('company_id', $this->company_id)->ignore($this->warehouse)],
-            'company_id' => ['required', 'integer', 'exists:companies,id'],
+                ->where('company_id', request()->header('company-id'))->ignore($this->warehouse)],
         ];
     }
 }

@@ -27,7 +27,7 @@ class TerminationOrderStoreRequest extends FormRequest
         return [
             'company_id' => ['required', 'exists:companies,id'],
             'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
-                ->where('company_id', $this->input('company_id'))
+                ->where('company_id', request()->header('company-id')),
             ],
             'employment_start_date' => ['required', 'date'],
             'termination_date' => ['required', 'date'],

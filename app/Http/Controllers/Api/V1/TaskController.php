@@ -16,26 +16,37 @@ class TaskController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        //dd($request->route()->getName());
         $request->validate([
             'limit' => ['nullable', 'integer'],
         ]);
 
-        $tasks = Task::query()->with(['employee', 'company', 'accountant'])
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $tasks = Task::query()
+            ->where('company_id', $companyId)
             ->where('accountant_id', auth()->id())
+            ->with(['employee', 'company', 'accountant'])
             ->paginate($request->input('limit') ?? 10);
 
         if ($request->has('type')) {
-            $tasks = Task::query()->with(['employee', 'company', 'accountant'])
+            $tasks = Task::query()
+                ->where('company_id', $companyId)
                 ->where('accountant_id', auth()->id())
                 ->where('type', $request->input('type'))
+                ->with(['employee', 'company', 'accountant'])
                 ->paginate($request->input('limit') ?? 10);
         }
 
         if ($request->has('subtype')) {
-            $tasks = Task::query()->with(['employee', 'company', 'accountant'])
+            $tasks = Task::query()
+                ->where('company_id', $companyId)
                 ->where('accountant_id', auth()->id())
                 ->where('subtype', $request->input('subtype'))
+                ->with(['employee', 'company', 'accountant'])
                 ->paginate($request->input('limit') ?? 10);
         }
 
@@ -44,7 +55,15 @@ class TaskController extends Controller
 
     public function show($task): JsonResponse
     {
-        $task = Task::query()->with(['employee', 'company', 'accountant'])
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $task = Task::query()
+            ->where('company_id', $companyId)
+            ->with(['employee', 'company', 'accountant'])
             ->find($task);
 
         if (!$task) {
@@ -60,7 +79,16 @@ class TaskController extends Controller
             'is_completed' => ['required', 'boolean']
         ]);
 
-        $task = Task::query()->with(['accountant', 'company', 'employee'])->find($task);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $task = Task::query()
+            ->where('company_id', $companyId)
+            ->with(['accountant', 'company', 'employee'])
+            ->find($task);
 
         if (!$task || !empty($task->completed_at) || $task->accountant_id !== auth()->id()) {
             return $this->error(message: 'Tapşırıq tapılmadı', code: 404);
@@ -79,13 +107,13 @@ class TaskController extends Controller
                 }
                 break;
             case 'COMPANY':
-                if ($task->subtype == 'ASAN_SIGN' && $task->company->asan_sign_expired_at < now()) {
+                if ($task->subtype == 'ASAN_SIGN' && $task->company?->asan_sign_expired_at < now()) {
                     return $this
                         ->error(message: 'ASAN imza vaxtı ilə bağlı tapşırığınız tamamlanmayıb',
                             code: 404);
                 }
 
-                if ($task->subtype == 'YDM_CARD' && $task->company->ydm_card_expired_at < now()) {
+                if ($task->subtype == 'YDM_CARD' && $task->company?->ydm_card_expired_at < now()) {
                     return $this
                         ->error(message: 'YDM kartının bitmə vaxtı ilə bağlı tapşırığınız tamamlanmayıb',
                             code: 404);
@@ -107,7 +135,15 @@ class TaskController extends Controller
 
     public function destroy($task): JsonResponse
     {
-        $task = Task::query()->find($task);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $task = Task::query()
+            ->where('company_id', $companyId)
+            ->find($task);
 
         if (!$task) {
             return $this->error(message: 'Tapşırıq tapılmadı', code: 404);

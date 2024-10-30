@@ -52,7 +52,6 @@ class EmployeeStoreRequest extends FormRequest
                         ->employee_type == EmployeeTypes::DIRECTOR->value ||
                     $this->employee_type == EmployeeTypes::FOUNDER->value),
                 'confirmed', 'string', 'min:8', 'max:16'],
-            'company_id' => ['required', 'numeric', 'exists:companies,id'],
             'position_id' => ['required', 'integer',
                 Rule::exists("positions", "id")
                     ->where("company_id", $this->company_id)],

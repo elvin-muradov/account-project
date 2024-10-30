@@ -32,7 +32,14 @@ class AwardOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $awardOrders = AwardOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -46,9 +53,15 @@ class AwardOrderController extends Controller
      */
     public function store(AwardOrderStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
 
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
 
         $orderNumber = generateOrderNumber(AwardOrder::class, $company->company_short_name);
@@ -60,7 +73,8 @@ class AwardOrderController extends Controller
             'order_number' => $orderNumber,
             'company_name' => $companyName,
             'order_date' => $orderDate,
-            'last_char_od' => $lastCharOD
+            'last_char_od' => $lastCharOD,
+            'company_id' => $companyId
         ]);
 
         $documentPath = public_path('assets/order_templates/AWARD.docx');
@@ -72,13 +86,13 @@ class AwardOrderController extends Controller
 
         $awardOrder = AwardOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
+            'tax_id_number' => $company->tax_id_number,
             'order_date' => $request->input('order_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order'),
             'worker_infos' => $request->input('worker_infos')
         ]);
@@ -100,15 +114,24 @@ class AwardOrderController extends Controller
      */
     public function update(AwardOrderUpdateRequest $request, $awardOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $awardOrder = AwardOrder::query()->find($awardOrder);
+
+        $awardOrder = AwardOrder::query()
+            ->where('company_id', $companyId)
+            ->find($awardOrder);
 
         if (!$awardOrder) {
             return $this->error(message: 'Mükafat əmri tapılmadı', code: 404);
         }
 
         $orderNumber = $awardOrder->order_number;
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
         $orderDate = Carbon::parse($request->input('order_date'))->format('d.m.Y');
 
@@ -120,7 +143,8 @@ class AwardOrderController extends Controller
             'order_number' => $orderNumber,
             'last_char_od' => $lastCharOD,
             'company_name' => $companyName,
-            'order_date' => $orderDate
+            'order_date' => $orderDate,
+            'company_id' => $companyId
         ]);
 
         $documentPath = public_path('assets/order_templates/AWARD.docx');
@@ -140,13 +164,13 @@ class AwardOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'award_orders');
 
         $awardOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
-            'tax_id_number' => $request->input('tax_id_number'),
+            'tax_id_number' => $company->tax_id_number,
             'order_date' => $request->input('order_date'),
-            'd_name' => $request->input('d_name'),
-            'd_surname' => $request->input('d_surname'),
-            'd_father_name' => $request->input('d_father_name'),
+            'd_name' => $company->director?->name,
+            'd_surname' => $company->director?->surname,
+            'd_father_name' => $company->director?->father_name,
             'main_part_of_order' => $request->input('main_part_of_order'),
             'worker_infos' => $request->input('worker_infos'),
             'generated_file' => $generatedFilePath
@@ -159,7 +183,14 @@ class AwardOrderController extends Controller
 
     public function show($awardOrder): JsonResponse
     {
-        $awardOrder = AwardOrder::query()->with(['company'])->find($awardOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $awardOrder = AwardOrder::query()
+            ->where('company_id', $companyId)->with(['company'])->find($awardOrder);
 
         if (!$awardOrder) {
             return $this->error(message: "Mükafat əmri tapılmadı", code: 404);
@@ -189,7 +220,15 @@ class AwardOrderController extends Controller
 
     public function destroy($awardOrder): JsonResponse
     {
-        $awardOrder = AwardOrder::query()->find($awardOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $awardOrder = AwardOrder::query()
+            ->where('company_id', $companyId)
+            ->find($awardOrder);
 
         if (!$awardOrder) {
             return $this->error(message: "Mükafat əmri tapılmadı", code: 404);

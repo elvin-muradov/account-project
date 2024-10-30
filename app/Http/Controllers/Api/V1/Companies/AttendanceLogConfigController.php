@@ -19,7 +19,14 @@ class AttendanceLogConfigController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $attendanceLogConfigs = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
             ->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new AttendanceLogConfigCollection($attendanceLogConfigs));
@@ -28,7 +35,6 @@ class AttendanceLogConfigController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'company_id' => ['required', 'integer', 'exists:companies,id'],
             'year' => ['required', 'integer', 'between:2000,2080'],
             'month' => ['required', 'integer', 'between:1,12',
                 Rule::unique('attendance_log_configs', 'month')
@@ -39,6 +45,12 @@ class AttendanceLogConfigController extends Controller
             'config.*.day' => ['required', 'integer'],
             'config.*.status' => ['required', 'string', 'in:' . AttendanceLogConfigDayTypes::toString()]
         ]);
+
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
 
         $carbonDate = Carbon::createFromDate($request->input('year'), $request->input('month'));
         $monthDaysCount = $carbonDate->lastOfMonth()->day;
@@ -55,7 +67,7 @@ class AttendanceLogConfigController extends Controller
         }
 
         $attendanceLogConfig = AttendanceLogConfig::query()->create([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'year' => $request->input('year'),
             'month' => $request->input('month'),
             'config' => $request->input('config'),
@@ -69,7 +81,14 @@ class AttendanceLogConfigController extends Controller
 
     public function show($attendanceLogConfig): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $attendanceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
             ->with('company:id,company_name')
             ->find($attendanceLogConfig);
 
@@ -82,7 +101,15 @@ class AttendanceLogConfigController extends Controller
 
     public function update(Request $request, $attendanceLogConfig): JsonResponse
     {
-        $attendanceLogConfig = AttendanceLogConfig::query()->find($attendanceLogConfig);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $attendanceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
+            ->find($attendanceLogConfig);
 
         if (!$attendanceLogConfig) {
             return $this->error(message: 'Tabel şablonu tapılmadı', code: 404);
@@ -116,7 +143,7 @@ class AttendanceLogConfigController extends Controller
         }
 
         $attendanceLogConfig->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'year' => $request->input('year'),
             'month' => $request->input('month'),
             'config' => $request->input('config')
@@ -127,7 +154,15 @@ class AttendanceLogConfigController extends Controller
 
     public function destroy($attendanceLogConfig): JsonResponse
     {
-        $attendanceLogConfig = AttendanceLogConfig::query()->find($attendanceLogConfig);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $attendanceLogConfig = AttendanceLogConfig::query()
+            ->where('company_id', $companyId)
+            ->find($attendanceLogConfig);
 
         if (!$attendanceLogConfig) {
             return $this->error(message: 'Tabel şablonu tapılmadı', code: 404);

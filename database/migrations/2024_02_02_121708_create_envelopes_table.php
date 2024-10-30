@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('envelopes', function (Blueprint $table) {
             $table->id();
             $table->string('code')->nullable();
+            $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('from_company_id')->nullable();
             $table->string('to_company_name')->nullable();
             $table->unsignedBigInteger('to_company_id')->nullable();
@@ -23,6 +24,8 @@ return new class extends Migration {
             $table->enum('type', ['OUTGOING', 'INCOMING']);
             $table->timestamps();
 
+            $table->foreign('company_id')->references('id')
+                ->on('companies')->onDelete('cascade');
             $table->foreign('from_company_id')->nullOnDelete()->references('id')
                 ->on('companies')->onDelete('cascade');
             $table->foreign('to_company_id')->nullOnDelete()

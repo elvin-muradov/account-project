@@ -33,7 +33,14 @@ class BusinessTripOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $businessTripOrders = BusinessTripOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -46,10 +53,22 @@ class BusinessTripOrderController extends Controller
      */
     public function store(BusinessTripOrderStoreRequest $request)
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $company = $this->getCompany($request->input('company_id'));
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $company = $this->getCompany($companyId);
+        $employee = Employee::query()->with('position')
+            ->where('company_id', $companyId)
+            ->find($request->input('employee_id'));
         $companyName = $company->company_name;
+
+        if (!$employee) {
+            return $this->error(message: "İşçi tapılmadı", code: 404);
+        }
 
         $orderNumber = generateOrderNumber(BusinessTripOrder::class, $company->company_short_name);
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
@@ -74,7 +93,8 @@ class BusinessTripOrderController extends Controller
             'position' => $employee->position?->name,
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'order_date' => $orderDate
+            'order_date' => $orderDate,
+            'company_id' => $companyId
         ]);
 
         $startYear = Carbon::parse($request->input('start_date'))->format('Y');
@@ -86,7 +106,7 @@ class BusinessTripOrderController extends Controller
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->where('year', $startYear)
             ->where('month', $startMonth)
@@ -97,7 +117,7 @@ class BusinessTripOrderController extends Controller
         }
 
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->whereBetween('year', [$startYear, $endYear])
             ->whereBetween('month', [$startMonth, $endMonth])
@@ -148,7 +168,7 @@ class BusinessTripOrderController extends Controller
 
         $businessTripOrder = BusinessTripOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -187,16 +207,31 @@ class BusinessTripOrderController extends Controller
      */
     public function update(BusinessTripOrderUpdateRequest $request, $businessTripOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
-        $businessTripOrder = BusinessTripOrder::query()->find($businessTripOrder);
+
+        $businessTripOrder = BusinessTripOrder::query()
+            ->where('company_id', $companyId)
+            ->find($businessTripOrder);
 
         if (!$businessTripOrder) {
             return $this->error(message: 'Ezamiyyət əmri tapılmadı', code: 404);
         }
 
-        $company = $this->getCompany($request->input('company_id'));
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $company = $this->getCompany($companyId);
+        $employee = Employee::query()->with('position')
+            ->where('company_id', $companyId)
+            ->find($request->input('employee_id'));
         $companyName = $company->company_name;
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
 
         $orderNumber = $businessTripOrder->order_number;
         $startDate = Carbon::parse($request->input('start_date'))->format('d.m.Y');
@@ -221,7 +256,8 @@ class BusinessTripOrderController extends Controller
             'gender' => $gender,
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'order_date' => $orderDate
+            'order_date' => $orderDate,
+            'company_id' => $companyId
         ]);
 
         $documentPath = public_path('assets/order_templates/BUSINESS_TRIP.docx');
@@ -240,7 +276,7 @@ class BusinessTripOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'business_trip_orders');
 
         $businessTripOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -268,7 +304,11 @@ class BusinessTripOrderController extends Controller
 
     public function show($businessTripOrder): JsonResponse
     {
-        $businessTripOrder = BusinessTripOrder::query()->with('company')->find($businessTripOrder);
+        $companyId = getHeaderCompanyId();
+
+        $businessTripOrder = BusinessTripOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($businessTripOrder);
 
         if (!$businessTripOrder) {
             return $this->error(message: 'Ezamiyyət əmri tapılmadı', code: 404);
@@ -306,7 +346,15 @@ class BusinessTripOrderController extends Controller
 
     public function destroy($businessTripOrder): JsonResponse
     {
-        $businessTripOrder = BusinessTripOrder::query()->find($businessTripOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $businessTripOrder = BusinessTripOrder::query()
+            ->where('company_id', $companyId)
+            ->find($businessTripOrder);
 
         if (!$businessTripOrder) {
             return $this->error(message: 'Ezamiyyət əmri tapılmadı', code: 404);

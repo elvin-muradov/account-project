@@ -4,6 +4,7 @@ namespace App\Models\Company;
 
 use App\Models\Employee;
 use App\Models\Envelopes\Envelope;
+use App\Models\Measures\Measure;
 use App\Models\User;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -87,6 +88,11 @@ class Company extends Model
     public function attendanceLogs(): HasMany
     {
         return $this->hasMany(AttendanceLog::class, 'company_id');
+    }
+
+    public function measures(): HasMany
+    {
+        return $this->hasMany(Measure::class, 'company_id');
     }
 
     public function scopeOrder($query, $order_by): void

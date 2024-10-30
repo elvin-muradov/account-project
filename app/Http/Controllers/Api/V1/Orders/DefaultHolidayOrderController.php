@@ -32,7 +32,14 @@ class DefaultHolidayOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $defaultHolidayOrders = DefaultHolidayOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -45,10 +52,22 @@ class DefaultHolidayOrderController extends Controller
      */
     public function store(DefaultHolidayOrderStore $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('company')->find($request->input('employee_id'));
+        $employee = Employee::query()->with(['company'])
+            ->where('company_id', $companyId)
+            ->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
 
         $orderNumber = generateOrderNumber(DefaultHolidayOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
@@ -64,7 +83,7 @@ class DefaultHolidayOrderController extends Controller
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->where('year', $startYear)
             ->where('month', $startMonth)
@@ -75,7 +94,7 @@ class DefaultHolidayOrderController extends Controller
         }
 
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->whereBetween('year', [$startYear, $endYear])
             ->whereBetween('month', [$startMonth, $endMonth])
@@ -144,6 +163,7 @@ class DefaultHolidayOrderController extends Controller
             'd_name' => $company->director?->name,
             'd_surname' => $company->director?->surname,
             'd_father_name' => $company->director?->father_name,
+            'company_id' => $companyId,
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
@@ -155,7 +175,7 @@ class DefaultHolidayOrderController extends Controller
 
         $defaultHolidayOrder = DefaultHolidayOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -191,8 +211,18 @@ class DefaultHolidayOrderController extends Controller
      * @throws CopyFileException
      * @throws CreateTemporaryFileException
      */
+    /**
+     * @throws CopyFileException
+     * @throws CreateTemporaryFileException
+     */
     public function update(DefaultHolidayOrderUpdate $request, $defaultHolidayOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
         $defaultHolidayOrder = DefaultHolidayOrder::query()->find($defaultHolidayOrder);
 
@@ -201,9 +231,16 @@ class DefaultHolidayOrderController extends Controller
         }
 
         $orderNumber = $defaultHolidayOrder->order_number;
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')
+            ->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
 
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
@@ -236,7 +273,8 @@ class DefaultHolidayOrderController extends Controller
             'employment_start_date' => $employmentStartDate,
             'd_name' => $company->director?->name,
             'd_surname' => $company->director?->surname,
-            'd_father_name' => $company->director?->father_name
+            'd_father_name' => $company->director?->father_name,
+            'company_id' => $companyId
         ]);
 
         $documentPath = public_path('assets/order_templates/DEFAULT_HOLIDAY.docx');
@@ -256,7 +294,7 @@ class DefaultHolidayOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'default_holiday_orders');
 
         $defaultHolidayOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
             'name' => $employee->name,
@@ -283,7 +321,15 @@ class DefaultHolidayOrderController extends Controller
 
     public function show($defaultHolidayOrder): JsonResponse
     {
-        $defaultHolidayOrder = DefaultHolidayOrder::query()->with('company')->find($defaultHolidayOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $defaultHolidayOrder = DefaultHolidayOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($defaultHolidayOrder);
 
         if (!$defaultHolidayOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
@@ -321,7 +367,15 @@ class DefaultHolidayOrderController extends Controller
 
     public function destroy($defaultHolidayOrder): JsonResponse
     {
-        $defaultHolidayOrder = DefaultHolidayOrder::query()->find($defaultHolidayOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $defaultHolidayOrder = DefaultHolidayOrder::query()
+            ->where('company_id', $companyId)
+            ->find($defaultHolidayOrder);
 
         if (!$defaultHolidayOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);

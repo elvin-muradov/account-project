@@ -25,7 +25,6 @@ class ImportQueryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_id' => ['required', 'integer', 'exists:companies,id'], // Şirkət adı
             'query_number' => ['required', 'string', 'max:255', 'unique:import_queries,query_number'], // Sorğu №
             'customs_barcode' => ['required', 'string', 'max:255', 'unique:import_queries,customs_barcode'], // Sorğu №
             'seller_company_name' => ['required', 'string', 'max:255'], // Satış sirkəti adı

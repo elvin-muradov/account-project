@@ -8,7 +8,6 @@ use App\Http\Requests\Api\V1\Employee\EmployeeStoreRequest;
 use App\Http\Requests\Api\V1\Employee\EmployeeUpdateRequest;
 use App\Http\Resources\Api\V1\Employee\EmployeeCollection;
 use App\Http\Resources\Api\V1\Employee\EmployeeResource;
-use App\Models\Company\Company;
 use App\Models\Employee;
 use App\Traits\HttpResponses;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +20,15 @@ class EmployeeController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $employees = Employee::query()->paginate($request->limit ?? 10);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $employees = Employee::query()
+            ->where('company_id', $companyId)
+            ->paginate($request->limit ?? 10);
 
         return $this->success(
             data: new EmployeeCollection($employees)
@@ -30,10 +37,16 @@ class EmployeeController extends Controller
 
     public function store(EmployeeStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
         $lowerCases = array_map('strtolower', $request->only('email'));
         $password = ['password' => Hash::make($request->input('password'))];
-        $data = array_merge($data, $lowerCases, $password);
+        $data = array_merge($data, $lowerCases, $password, ['company_id' => $companyId]);
 
         if ($request->input('employee_type') === EmployeeTypes::EMPLOYEE->value) {
             $data['password'] = null;
@@ -50,7 +63,14 @@ class EmployeeController extends Controller
 
     public function show($employee): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $employee = Employee::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->find($employee);
 
@@ -65,11 +85,19 @@ class EmployeeController extends Controller
 
     public function update(EmployeeUpdateRequest $request, $employee): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
         $lowerCases = array_map('strtolower', $request->only('email'));
-        $data = array_merge($data, $lowerCases);
+        $data = array_merge($data, $lowerCases, ['company_id' => $companyId]);
 
-        $employee = Employee::query()->find($employee);
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->find($employee);
 
         if (!$employee) {
             return $this->error(message: 'Əməkdaş tapılmadı', code: 404);
@@ -98,7 +126,15 @@ class EmployeeController extends Controller
 
     public function destroy($employee): JsonResponse
     {
-        $employee = Employee::query()->find($employee);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->find($employee);
 
         if (!$employee) {
             return $this->error(message: 'Əməkdaş tapılmadı', code: 404);

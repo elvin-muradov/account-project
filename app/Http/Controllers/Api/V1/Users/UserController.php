@@ -23,8 +23,8 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         $users = User::query()
-            ->with('roles')
-            ->paginate($request->limit ?? 10);
+            ->with(['roles'])
+            ->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new UserCollection($users));
     }

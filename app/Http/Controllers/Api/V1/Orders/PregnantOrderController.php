@@ -32,7 +32,14 @@ class PregnantOrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $pregnantOrders = PregnantOrder::query()
+            ->where('company_id', $companyId)
             ->with('company')
             ->paginate($request->input('limit') ?? 10);
 
@@ -45,10 +52,23 @@ class PregnantOrderController extends Controller
      */
     public function store(PregnantOrderStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $company = $this->getCompany($request->input('company_id'));
+        $company = $this->getCompany($companyId);
         $companyName = $company->company_name;
-        $employee = Employee::query()->with('position')->find($request->input('employee_id'));
+        $employee = Employee::query()
+            ->where('company_id', $companyId)
+            ->with('position')->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
+
         $orderNumber = generateOrderNumber(PregnantOrder::class, $company->company_short_name);
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
@@ -63,7 +83,7 @@ class PregnantOrderController extends Controller
         DB::beginTransaction();
 
         $existsAttendanceLog = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->where('year', $startYear)
             ->where('month', $startMonth)
@@ -74,7 +94,7 @@ class PregnantOrderController extends Controller
         }
 
         $attendanceLogs = AttendanceLog::query()
-            ->where('company_id', $request->input('company_id'))
+            ->where('company_id', $companyId)
             ->where('employee_id', $request->input('employee_id'))
             ->whereBetween('year', [$startYear, $endYear])
             ->whereBetween('month', [$startMonth, $endMonth])
@@ -133,6 +153,7 @@ class PregnantOrderController extends Controller
             'd_name' => $company->director?->name,
             'd_surname' => $company->director?->surname,
             'd_father_name' => $company->director?->father_name,
+            'company_id' => $companyId,
         ]);
 
         $documentPath = public_path('assets/order_templates/PREGNANT_HOLIDAY.docx');
@@ -144,7 +165,7 @@ class PregnantOrderController extends Controller
 
         $pregnantOrder = PregnantOrder::query()->create([
             'order_number' => $orderNumber,
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'employee_id' => $request->input('employee_id'),
             'company_name' => $companyName,
             'tax_id_number' => $company->tax_id_number,
@@ -182,17 +203,30 @@ class PregnantOrderController extends Controller
      */
     public function update(PregnantOrderUpdateRequest $request, $pregnantOrder): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
         $data = $request->validated();
-        $pregnantOrder = PregnantOrder::query()->find($pregnantOrder);
+        $pregnantOrder = PregnantOrder::query()
+            ->where('company_id', $companyId)
+            ->find($pregnantOrder);
 
         if (!$pregnantOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
         }
 
         $orderNumber = $pregnantOrder->order_number;
-        $company = $this->getCompany($request->input('company_id'));
-        $employee = Employee::query()->with('position')
+        $company = $this->getCompany($companyId);
+        $employee = Employee::query()->where('company_id', $companyId)->with('position')
             ->find($request->input('employee_id'));
+
+        if (!$employee) {
+            return $this->error(message: 'İşçi tapılmadı', code: 404);
+        }
+
         $companyName = $company->company_name;
         $holidayStartDate = Carbon::parse($request->input('holiday_start_date'))->format('d.m.Y');
         $holidayEndDate = Carbon::parse($request->input('holiday_end_date'))->format('d.m.Y');
@@ -234,7 +268,7 @@ class PregnantOrderController extends Controller
         $generatedFilePath = returnOrderFile($filePath, $fileName, 'pregnant_orders');
 
         $pregnantOrder->update([
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
             'company_name' => $companyName,
             'employee_id' => $request->input('employee_id'),
             'tax_id_number' => $company->tax_id_number,
@@ -261,7 +295,15 @@ class PregnantOrderController extends Controller
 
     public function show($pregnantOrder): JsonResponse
     {
-        $pregnantOrder = PregnantOrder::query()->with('company')->find($pregnantOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $pregnantOrder = PregnantOrder::query()
+            ->where('company_id', $companyId)
+            ->with('company')->find($pregnantOrder);
 
         if (!$pregnantOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);
@@ -298,7 +340,15 @@ class PregnantOrderController extends Controller
 
     public function destroy($pregnantOrder): JsonResponse
     {
-        $pregnantOrder = PregnantOrder::query()->find($pregnantOrder);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: 'Şirkət tapılmadı', code: 404);
+        }
+
+        $pregnantOrder = PregnantOrder::query()
+            ->where('company_id', $companyId)
+            ->find($pregnantOrder);
 
         if (!$pregnantOrder) {
             return $this->error(message: 'Məzuniyyət əmri tapılmadı', code: 404);

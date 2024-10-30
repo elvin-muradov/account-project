@@ -19,8 +19,14 @@ class EnvelopeController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $envelopes = Envelope::query()->with([
-            'fromCompany', 'toCompany', 'creator'
+            'fromCompany', 'toCompany', 'creator', 'company'
         ])->paginate($request->input('limit') ?? 10);
 
         return $this->success(data: new EnvelopeCollection($envelopes));
@@ -28,9 +34,16 @@ class EnvelopeController extends Controller
 
     public function show($envelope): JsonResponse
     {
-        $envelope = Envelope::query()->with([
-            'fromCompany', 'toCompany', 'creator'
-        ])->find($envelope);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $envelope = Envelope::query()
+            ->where('company_id', $companyId)
+            ->with(['fromCompany', 'toCompany', 'creator', 'company'])
+            ->find($envelope);
 
         if (!$envelope) {
             return $this->error(message: "Məktub tapılmadı", code: 404);
@@ -41,7 +54,17 @@ class EnvelopeController extends Controller
 
     public function store(EnvelopeStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
+
+        $data = array_merge($data, [
+            'company_id' => $companyId
+        ]);
 
         if ($request->hasFile('envelopes')) {
             $envelopes = $request->file('envelopes');
@@ -66,8 +89,21 @@ class EnvelopeController extends Controller
 
     public function update(EnvelopeUpdateRequest $request, $envelope): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $data = $request->validated();
-        $envelope = Envelope::query()->find($envelope);
+
+        $data = array_merge($data, [
+            'company_id' => $companyId
+        ]);
+
+        $envelope = Envelope::query()
+            ->where('company_id', $companyId)
+            ->find($envelope);
 
         if (!$envelope) {
             return $this->error(message: "Məktub tapılmadı", code: 404);
@@ -102,7 +138,15 @@ class EnvelopeController extends Controller
 
     public function destroy($envelope): JsonResponse
     {
-        $envelope = Envelope::query()->find($envelope);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $envelope = Envelope::query()
+            ->where('company_id', $companyId)
+            ->find($envelope);
 
         if (!$envelope) {
             return $this->error(message: "Məktub tapılmadı", code: 404);

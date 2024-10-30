@@ -25,9 +25,8 @@ class MotherhoodHolidayOrderStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_id' => ['required', 'exists:companies,id'],
             'employee_id' => ['required', 'integer', Rule::exists('employees', 'id')
-                ->where('company_id', $this->input('company_id'))
+                ->where('company_id', request()->header('company-id')),
             ],
             'holiday_start_date' => ['required', 'date'],
             'holiday_end_date' => ['required', 'date'],

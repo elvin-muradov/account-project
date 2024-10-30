@@ -18,7 +18,14 @@ class WarehouseController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $warehouses = Warehouse::query()
+            ->where('company_id', $companyId)
             ->with(['company'])
             ->paginate($request->input('limit') ?? 10);
 
@@ -27,7 +34,14 @@ class WarehouseController extends Controller
 
     public function show($warehouse): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $warehouse = Warehouse::query()
+            ->where('company_id', $companyId)
             ->with(['company', 'materials'])
             ->find($warehouse);
 
@@ -40,9 +54,15 @@ class WarehouseController extends Controller
 
     public function store(WarehouseStoreRequest $request): JsonResponse
     {
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
         $warehouse = Warehouse::query()->create([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id')
+            'company_id' => $companyId
         ]);
 
         return $this->success(data: WarehouseResource::make($warehouse),
@@ -51,7 +71,13 @@ class WarehouseController extends Controller
 
     public function update($warehouse, WarehouseUpdateRequest $request): JsonResponse
     {
-        $warehouse = Warehouse::query()->find($warehouse);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $warehouse = Warehouse::query()->where('company_id', $companyId)->find($warehouse);
 
         if (!$warehouse) {
             return $this->error(message: 'Anbar tapılmadı', code: 404);
@@ -59,7 +85,7 @@ class WarehouseController extends Controller
 
         $warehouse->update([
             'name' => $request->input('name'),
-            'company_id' => $request->input('company_id'),
+            'company_id' => $companyId,
         ]);
 
         return $this->success(data: WarehouseResource::make($warehouse),
@@ -68,7 +94,15 @@ class WarehouseController extends Controller
 
     public function destroy($warehouse): JsonResponse
     {
-        $warehouse = Warehouse::query()->find($warehouse);
+        $companyId = getHeaderCompanyId();
+
+        if (!$companyId) {
+            return $this->error(message: "Şirkət tapılmadı", code: 404);
+        }
+
+        $warehouse = Warehouse::query()
+            ->where('company_id', $companyId)
+            ->find($warehouse);
 
         if (!$warehouse) {
             return $this->error(message: 'Anbar tapılmadı', code: 404);
