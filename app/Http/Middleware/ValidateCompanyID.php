@@ -24,6 +24,6 @@ class ValidateCompanyID
             return $next($request);
         }
 
-        return $this->error(message: "Şirkət identifikatorı yoxdur", code: 403);
+        return $this->error(message: "Şirkət identifikatorı yoxdur", code: 400);
     }
 }
