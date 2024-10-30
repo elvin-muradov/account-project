@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\Companies\MaterialGroups;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 
 class MaterialGroupStoreRequest extends FormRequest
@@ -21,7 +22,7 @@ class MaterialGroupStoreRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
-    public function rules(): array
+    public function rules(): array|JsonResponse
     {
         $companyId = getHeaderCompanyId();
 
@@ -30,6 +31,8 @@ class MaterialGroupStoreRequest extends FormRequest
                 'name' => ['required', 'string', 'max:255', Rule::unique('material_groups', 'name')
                     ->where('company_id', $companyId)],
             ];
+        }else{
+            return response()->json(['message' => 'Company not found'], 404);
         }
     }
 }
