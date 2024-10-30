@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'lang' => \App\Http\Middleware\SetLangMiddleware::class,
         'check_role_update' => \App\Http\Middleware\CheckRoleForUpdate::class,
         'check_role_for_served' => \App\Http\Middleware\UserRoleCheckingForServedCompanies::class,
+        'expert_head' => \App\Http\Middleware\ExpertHeadMiddleware::class,
     ];
 }

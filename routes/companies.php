@@ -29,10 +29,10 @@ Route::middleware(['auth:user', 'lang', 'check_role_for_served'])->group(functio
     Route::get('/individual-companies', [CompanyController::class, 'individualCompanies']);
     Route::get('/legal-companies', [CompanyController::class, 'legalCompanies']);
     Route::get('/has-not-accountant-companies', [CompanyController::class, 'hasNotAccountantCompanies']);
-    Route::post('/companies', [CompanyController::class, 'store']);
-    Route::post('/companies/{company}', [CompanyController::class, 'update']);
+    Route::post('/companies', [CompanyController::class, 'store'])->middleware(['expert_head']);
+    Route::post('/companies/{company}', [CompanyController::class, 'update'])->middleware(['expert_head']);
     Route::get('/companies/{company}', [CompanyController::class, 'show']);
-    Route::delete('/companies/{company}', [CompanyController::class, 'destroy']);
+    Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->middleware(['expert_head']);
     Route::get('/companies/{company}/main-documents', [MainDocumentController::class, 'companyMainDocuments']);
     Route::get('/companies/{company}/{type}/download-documents', [MainDocumentController::class, 'downloadCompanyMainDocument'])
         ->withoutMiddleware(['auth:user']);
