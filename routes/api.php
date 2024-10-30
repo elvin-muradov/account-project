@@ -36,7 +36,7 @@ Route::middleware(['validate_company'])->group(function () {
 Route::get('/test', [TestController::class, 'test']);
 Route::get('/show-s3-file/{bucket}/{key}', [S3ApiGatewayController::class, 'getObjectUrl']);
 
-Route::middleware(['auth:user', 'lang'])->group(function () {
+Route::middleware(['auth:user', 'lang', 'validate_company'])->group(function () {
     //Roles
     Route::get('/roles', [RolePermissionController::class, 'getAllRoles']);
     Route::get('/currency-rates', [CurrencyController::class, 'index']);
