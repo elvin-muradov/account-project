@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'check_role_update' => \App\Http\Middleware\CheckRoleForUpdate::class,
         'check_role_for_served' => \App\Http\Middleware\UserRoleCheckingForServedCompanies::class,
         'expert_head' => \App\Http\Middleware\ExpertHeadMiddleware::class,
+        'validate_company' => \App\Http\Middleware\ValidateCompanyID::class,
     ];
 }
