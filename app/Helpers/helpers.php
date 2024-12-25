@@ -248,15 +248,34 @@ if (!function_exists('returnMonthDaysAsArray')) {
     }
 }
 if (!function_exists('checkMonthDaysUnique')) {
-    function checkMonthDaysUnique(int $count, array $requestDays): bool
+    function checkMonthDaysUnique(array $yearConfig, array $requestConfig): bool|int|string
     {
-        $monthDays = returnMonthDaysAsArray($count);
 
-        //dd($monthDays);
+        $yearConfigDays = [];
+        $requestConfigDays = [];
 
-        foreach ($requestDays as $key => $day) {
-            if (count(array_unique($requestDays)) !== count($monthDays)) {
-                return false;
+        foreach ($yearConfig as $yearConfigDetail) {
+            $yearConfigDays[$yearConfigDetail['month_name']] = collect($yearConfigDetail['days'])->map(function ($day) {
+                return $day['day'];
+            })->toArray();
+        }
+
+        foreach ($requestConfig as $requestConfigDay) {
+            $requestConfigDays[$requestConfigDay['month_name']] =
+                collect($requestConfigDay['days'])->map(function ($day) {
+                    return $day['day'];
+                })->toArray();
+        }
+
+        $duplicatedMonths = array_diff(array_keys($yearConfigDays), array_keys($requestConfigDays));
+
+        if (!empty($duplicatedMonths)) {
+            return implode(',', array_values($duplicatedMonths));
+        }
+
+        foreach ($yearConfigDays as $key => $ycd) {
+            if ($requestConfigDays[$key] != $ycd) {
+                return $key;
             }
         }
 

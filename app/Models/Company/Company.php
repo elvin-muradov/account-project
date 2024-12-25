@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\Envelopes\Envelope;
 use App\Models\Measures\Measure;
 use App\Models\User;
+use App\Models\Company\FixedAsset;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -93,6 +94,16 @@ class Company extends Model
     public function measures(): HasMany
     {
         return $this->hasMany(Measure::class, 'company_id');
+    }
+
+    public function fixedAssetCategories(): HasMany
+    {
+        return $this->hasMany(FixedAssetCategory::class, 'company_id');
+    }
+
+    public function fixedAssets(): HasMany
+    {
+        return $this->hasMany(FixedAsset::class, 'company_id');
     }
 
     public function scopeOrder($query, $order_by): void

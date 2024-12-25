@@ -148,9 +148,9 @@ class HiringOrderController extends Controller
         }
 
         foreach ($config as $key => $value) {
-            $countMonthWorkDayHours = getMonthWorkDayHours($config[$key]['days']);
-            $countCelebrationRestDays = getCelebrationRestDaysCount($config[$key]['days']);
-            $countMonthWorkDays = getMonthWorkDaysCount($config[$key]['days']);
+            $countMonthWorkDayHours = getMonthWorkDayHours($value['days']);
+            $countCelebrationRestDays = getCelebrationRestDaysCount($value['days']);
+            $countMonthWorkDays = getMonthWorkDaysCount($value['days']);
 
             AttendanceLog::query()
                 ->create([

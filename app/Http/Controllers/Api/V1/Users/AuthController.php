@@ -64,7 +64,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        if ($user = $this->getUser($request->phone, $request->password)) {
+        if ($user = $this->getUser($request->input('phone'), $request->input('password'))) {
             $token = $user->createToken('loginToken')->plainTextToken;
             $user->update(['last_login_at' => now()]);
 

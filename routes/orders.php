@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['lang'])->group(function () {
+Route::middleware(['auth:user', 'lang'])->group(function () {
     Route::get('/hiring-orders', [HiringOrderController::class, 'index']);
     Route::post('/hiring-orders', [HiringOrderController::class, 'store']);
     Route::get('/hiring-orders/{hiringOrder}/download', [OrderController::class, 'downloadHiringOrderFile']);

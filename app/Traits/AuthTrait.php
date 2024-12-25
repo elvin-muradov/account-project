@@ -17,7 +17,7 @@ trait AuthTrait
     protected function getUser(string $phone, string $password): bool|User
     {
         if ($phone && $password) {
-            $user = $this->user->wherePhone($phone)->first();
+            $user = $this->user->where('phone', '=', $phone)->first();
             if ($user) {
                 return Hash::check($password, $user->password) ? $user : false;
             }

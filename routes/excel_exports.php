@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Excel\AttendanceLogExcelController;
+use App\Http\Controllers\Api\V1\Excel\FixedAssetExcelController;
 use App\Http\Controllers\Api\V1\Excel\ImportCostExcelController;
 use App\Http\Controllers\Api\V1\Excel\ImportQueryExcelController;
 use App\Http\Controllers\Api\V1\Excel\SalaryCalculateExcelController;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/fixed-assets-amortization/export', [FixedAssetExcelController::class, 'exportFixedAssetsExcel']);
 Route::get('/attendance-logs-excel/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 Route::get('/salary-calculate/export', [SalaryCalculateExcelController::class, 'exportSalaryCalculateExcel']);
 Route::get('/import-queries/export', [ImportQueryExcelController::class, 'exportImportQueryExcel']);

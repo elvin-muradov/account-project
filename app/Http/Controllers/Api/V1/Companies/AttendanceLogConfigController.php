@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Companies;
 
 use App\Enums\AttendanceLogConfigDayTypes;
+use App\Enums\MonthsLocale;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Companies\AttendanceLogConfig\AttendanceLogConfigCollection;
 use App\Http\Resources\Api\V1\Companies\AttendanceLogConfig\AttendanceLogConfigResource;
@@ -11,6 +12,7 @@ use App\Traits\HttpResponses;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class AttendanceLogConfigController extends Controller
@@ -34,44 +36,71 @@ class AttendanceLogConfigController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'year' => ['required', 'integer', 'between:2000,2080'],
-            'month' => ['required', 'integer', 'between:1,12',
-                Rule::unique('attendance_log_configs', 'month')
-                    ->where('year', $request->input('year'))
-                    ->where('company_id', $request->input('company_id'))
-            ],
-            'config' => ['required', 'array'],
-            'config.*.day' => ['required', 'integer'],
-            'config.*.status' => ['required', 'string', 'in:' . AttendanceLogConfigDayTypes::toString()]
-        ]);
-
         $companyId = getHeaderCompanyId();
 
         if (!$companyId) {
             return $this->error(message: "Şirkət tapılmadı", code: 404);
         }
 
-        $carbonDate = Carbon::createFromDate($request->input('year'), $request->input('month'));
-        $monthDaysCount = $carbonDate->lastOfMonth()->day;
-        $monthDaysList = returnMonthDaysAsArray($monthDaysCount);
-        $monthDaysListEnum = implode(',', $monthDaysList);
-        $checkMonthDaysUnique = checkMonthDaysUnique($monthDaysCount, $request->input('config.*.day'));
-
         $request->validate([
-            'config.*.day' => ['required', 'integer', 'in:' . $monthDaysListEnum, 'between:1,' . $monthDaysCount],
+            'year' => ['required', 'integer', 'unique:attendance_log_configs,year', 'between:2000,2080'],
+            'config' => ['required', 'array'],
+            'config.*.month' => ['required', 'integer', 'between:1,12',
+                Rule::unique('attendance_log_configs', 'year')
+                    ->where('year', $request->input('year'))
+                    ->where('company_id', $companyId)
+            ],
+            'config.*.days' => ['required', 'array'],
+            'config.*.days.*.day' => ['required', 'integer'],
+            'config.*.days.*.status' => ['required', 'in:' . AttendanceLogConfigDayTypes::toString()]
         ]);
 
-        if (!$checkMonthDaysUnique) {
-            return $this->error(message: 'Zəhmət olmasa günləri düzgün daxil edin', code: 400);
+        $yearConfig = collect(range(1, 12))->map(function ($month) use ($request) {
+            return [
+                'days' => collect(range(1, intval(Carbon::createFromDate($request->input('year'),
+                    $month, 1)->daysInMonth)))->map(function ($day) {
+                    return [
+                        'day' => $day,
+                    ];
+                })->toArray(),
+                'month' => $month,
+                'month_name' => Carbon::createFromDate($request->input('year'),
+                    $month, 1)->isoFormat('MMMM'),
+            ];
+        })->toArray();
+
+        $checkUnique = checkMonthDaysUnique($yearConfig, $request->input('config'));
+
+        if (gettype($checkUnique) == 'string') {
+            return $this->error(message: 'Zəhmət olmasa '
+                . $checkUnique .
+                ' ayını düzgün daxil edin', code: 400);
+        }
+
+        $carbonDate = Carbon::create($request->input('year'), $request->input('config')[0]['month'], 1);
+
+        $generatedConfig = [];
+
+        foreach ($request->input('config') as $configDetail) {
+            $monthWorkHours = 0;
+
+            foreach ($configDetail['days'] as $day) {
+                $monthWorkHours += intval($day['status']);
+            }
+
+            $generatedConfig[] = [
+                'days' => $configDetail['days'],
+                'month' => $configDetail['month'],
+                'month_name' => $configDetail['month_name'],
+                'month_work_hours' => $monthWorkHours
+            ];
         }
 
         $attendanceLogConfig = AttendanceLogConfig::query()->create([
             'company_id' => $companyId,
             'year' => $request->input('year'),
-            'month' => $request->input('month'),
-            'config' => $request->input('config'),
             'log_date' => $carbonDate->format('Y-m-d'),
+            'config' => $generatedConfig,
         ]);
 
         return $this
@@ -116,40 +145,72 @@ class AttendanceLogConfigController extends Controller
         }
 
         $request->validate([
-            'year' => ['required', 'integer', 'between:2000,2080'],
-            'month' => ['required', 'integer', 'between:1,12',
-                Rule::unique('attendance_log_configs', 'month')
-                    ->where('year', $request->input('year'))
-                    ->where('company_id', $attendanceLogConfig->company_id)
-                    ->ignore($attendanceLogConfig->id)
-            ],
+            'year' => ['required', 'integer', 'between:2000,2080',
+                Rule::unique('attendance_log_configs', 'year')->ignore($attendanceLogConfig->id)],
             'config' => ['required', 'array'],
-            'config.*.day' => ['required', 'integer'],
-            'config.*.status' => ['required', 'string', 'in:' . AttendanceLogConfigDayTypes::toString()]
+            'config.*.month' => ['required', 'integer', 'between:1,12',
+                Rule::unique('attendance_log_configs', 'year')
+                    ->where('year', $request->input('year'))
+                    ->where('company_id', $request->input('company_id'))
+                    ->ignore($attendanceLogConfig->id),
+            ],
+            'config.*.month_name' => ['required', 'string', 'in:' . MonthsLocale::toString()],
+            'config.*.days' => ['required', 'array'],
+            'config.*.days.*.day' => ['required', 'integer'],
+            'config.*.days.*.status' => ['required', 'in:' . AttendanceLogConfigDayTypes::toString()]
         ]);
 
-        $carbonDate = Carbon::createFromDate($request->input('year'), $request->input('month'));
-        $monthDaysCount = $carbonDate->lastOfMonth()->day;
-        $monthDaysList = returnMonthDaysAsArray($monthDaysCount);
-        $monthDaysListEnum = implode(',', $monthDaysList);
-        $checkMonthDaysUnique = checkMonthDaysUnique($monthDaysCount, $request->input('config.*.day'));
+        $yearConfig = collect(range(1, 12))->map(function ($month) use ($request) {
+            return [
+                'days' => collect(range(1, intval(Carbon::createFromDate($request->input('year'),
+                    $month, 1)->daysInMonth)))->map(function ($day) {
+                    return [
+                        'day' => $day,
+                    ];
+                })->toArray(),
+                'month' => $month,
+                'month_name' => Carbon::createFromDate($request->input('year'),
+                    $month, 1)->isoFormat('MMMM'),
+            ];
+        })->toArray();
 
-        $request->validate([
-            'config.*.day' => ['required', 'integer', 'in:' . $monthDaysListEnum, 'between:1,' . $monthDaysCount],
-        ]);
+        $checkUnique = checkMonthDaysUnique($yearConfig, $request->input('config'));
 
-        if (!$checkMonthDaysUnique) {
-            return $this->error(message: 'Eyni gün birdən artıq daxil edilə bilməz', code: 400);
+        if (gettype($checkUnique) == 'string') {
+            return $this->error(message: 'Zəhmət olmasa '
+                . $checkUnique .
+                ' ayını düzgün daxil edin', code: 400);
+        }
+
+        $carbonDate = Carbon::create($request->input('year'), $request->input('config')[0]['month'], 1);
+
+        $generatedConfig = [];
+
+        foreach ($request->input('config') as $configDetail) {
+            $monthWorkHours = 0;
+
+            foreach ($configDetail['days'] as $day) {
+                $monthWorkHours += intval($day['status']);
+            }
+
+            $generatedConfig[] = [
+                'days' => $configDetail['days'],
+                'month' => $configDetail['month'],
+                'month_name' => $configDetail['month_name'],
+                'month_work_hours' => $monthWorkHours
+            ];
         }
 
         $attendanceLogConfig->update([
             'company_id' => $companyId,
             'year' => $request->input('year'),
-            'month' => $request->input('month'),
-            'config' => $request->input('config')
+            'log_date' => $carbonDate->format('Y-m-d'),
+            'config' => $generatedConfig,
         ]);
 
-        return $this->success(data: $attendanceLogConfig, message: "Tabel şablonu uğurla yeniləndi");
+        return $this
+            ->success(data: AttendanceLogConfigResource::make($attendanceLogConfig),
+                message: "Tabel şablonu uğurla yeniləndi", code: 201);
     }
 
     public function destroy($attendanceLogConfig): JsonResponse

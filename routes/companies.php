@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\V1\Companies\ActivityCodeController;
 use App\Http\Controllers\Api\V1\Companies\AttendanceLogConfigController;
 use App\Http\Controllers\Api\V1\Companies\AttendanceLogController;
 use App\Http\Controllers\Api\V1\Companies\CompanyController;
+use App\Http\Controllers\Api\V1\Companies\FixedAssetCategoryController;
+use App\Http\Controllers\Api\V1\Companies\FixedAssetController;
 use App\Http\Controllers\Api\V1\Companies\MainDocumentController;
 use App\Http\Controllers\Api\V1\Companies\MaterialController;
 use App\Http\Controllers\Api\V1\Companies\MaterialGroupController;
@@ -102,5 +104,19 @@ Route::middleware(['auth:user', 'lang', 'check_role_for_served'])->group(functio
     Route::post('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'update']);
     Route::get('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'show']);
     Route::delete('/attendance-logs/{attendanceLog}', [AttendanceLogController::class, 'destroy']);
+
+    // Fixed Assets Categories Routes
+    Route::get('/fixed-asset-categories', [FixedAssetCategoryController::class, 'index']);
+    Route::get('/fixed-asset-categories/{fixedAssetCategory}', [FixedAssetCategoryController::class, 'show']);
+    Route::post('/fixed-asset-categories', [FixedAssetCategoryController::class, 'store']);
+    Route::put('/fixed-asset-categories/{fixedAssetCategory}', [FixedAssetCategoryController::class, 'update']);
+    Route::delete('/fixed-asset-categories/{fixedAssetCategory}', [FixedAssetCategoryController::class, 'destroy']);
+
+    // Fixed Assets Routes
+    Route::get('/fixed-assets', [FixedAssetController::class, 'index']);
+    Route::get('/fixed-assets/{fixedAsset}', [FixedAssetController::class, 'show']);
+    Route::post('/fixed-assets', [FixedAssetController::class, 'store']);
+    Route::put('/fixed-assets/{fixedAsset}', [FixedAssetController::class, 'update']);
+    Route::delete('/fixed-assets/{fixedAsset}', [FixedAssetController::class, 'destroy']);
 });
 

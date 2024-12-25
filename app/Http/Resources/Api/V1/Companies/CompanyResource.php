@@ -58,7 +58,8 @@ class CompanyResource extends JsonResource
             'created_at' => $this->created_at,
             'accountant' => $this->whenLoaded('accountant') ?
                 $this->accountant?->only('id', 'name', 'surname') : null,
-            'accountant_assign_date' => $this->accountant_assign_date
+            'accountant_assign_date' => $this->accountant_assign_date,
+            'fixedAssets' => $this->whenLoaded('fixedAssets')
         ];
     }
 }
