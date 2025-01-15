@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Excel\FixedAssetExcelController;
 use App\Http\Controllers\Api\V1\Excel\ImportCostExcelController;
 use App\Http\Controllers\Api\V1\Excel\ImportQueryExcelController;
 use App\Http\Controllers\Api\V1\Excel\SalaryCalculateExcelController;
+use App\Http\Controllers\Api\V1\Excel\TreasureTransactionExcelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/transactions/export', [TreasureTransactionExcelController::class,
+    'exportTreasureTransactionExcel']);
 Route::get('/fixed-assets-amortization/export', [FixedAssetExcelController::class, 'exportFixedAssetsExcel']);
 Route::get('/attendance-logs-excel/export', [AttendanceLogExcelController::class, 'exportAttendanceLogExcel']);
 Route::get('/salary-calculate/export', [SalaryCalculateExcelController::class, 'exportSalaryCalculateExcel']);

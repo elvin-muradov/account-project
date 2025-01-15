@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\V1\Companies\MaterialController;
 use App\Http\Controllers\Api\V1\Companies\MaterialGroupController;
 use App\Http\Controllers\Api\V1\Companies\MeasureController;
 use App\Http\Controllers\Api\V1\Companies\PositionController;
+use App\Http\Controllers\Api\V1\Companies\Treasure\TreasureController;
+use App\Http\Controllers\Api\V1\Companies\Treasure\TreasureTransactionController;
 use App\Http\Controllers\Api\V1\Companies\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
@@ -118,5 +120,18 @@ Route::middleware(['auth:user', 'lang', 'check_role_for_served'])->group(functio
     Route::post('/fixed-assets', [FixedAssetController::class, 'store']);
     Route::put('/fixed-assets/{fixedAsset}', [FixedAssetController::class, 'update']);
     Route::delete('/fixed-assets/{fixedAsset}', [FixedAssetController::class, 'destroy']);
+
+    // Treasure Routes
+    Route::get('/treasures', [TreasureController::class, 'index']);
+    Route::post('/treasures', [TreasureController::class, 'store']);
+    Route::get('/treasures/{treasure}', [TreasureController::class, 'show']);
+    Route::post('/treasures/{treasure}', [TreasureController::class, 'update']);
+    Route::delete('/treasures/{treasure}', [TreasureController::class, 'destroy']);
+
+    // Treasure Transaction Routes
+    Route::get('/treasure-transactions', [TreasureTransactionController::class, 'index']);
+    Route::post('/treasure-transactions', [TreasureTransactionController::class, 'store']);
+    Route::get('/treasure-transactions/{treasureTransaction}', [TreasureTransactionController::class, 'show']);
+    Route::delete('/treasure-transactions/{treasureTransaction}', [TreasureTransactionController::class, 'destroy']);
 });
 

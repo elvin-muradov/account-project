@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Traits\HttpResponses;
@@ -38,7 +39,9 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e): Response|Throwable|JsonResponse
     {
         return match ($request->expectsJson()) {
-            $e instanceof NotFoundHttpException, $e instanceof RouteNotFoundException => $this->error(
+            $e instanceof NotFoundHttpException,
+                $e instanceof ModelNotFoundException,
+                $e instanceof RouteNotFoundException => $this->error(
                 message: $e->getMessage(),
                 code: 404
             ),

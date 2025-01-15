@@ -106,6 +106,11 @@ class Company extends Model
         return $this->hasMany(FixedAsset::class, 'company_id');
     }
 
+    public function treasures(): HasMany
+    {
+        return $this->hasMany(Treasure::class, 'company_id');
+    }
+
     public function scopeOrder($query, $order_by): void
     {
         if (is_array($order_by)) {
